@@ -225,7 +225,7 @@ open class CellGridView: ObservableObject
                                                              cellTransparency: self._viewTransparency)
     }
 
-    internal final func updateImage() {
+    public final func updateImage() {
         self._updateImage()
     }
 
