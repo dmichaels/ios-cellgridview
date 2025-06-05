@@ -13,7 +13,7 @@ import Utils
 // We say "point" or "view-point" to mean a pixel coordinate (coming from a gesture) which is not scaled.
 // We say "location" or "cell-location" to mean a cell-based coordinate on the cell-grid or grid-view.
 
-public class CellGridView: ObservableObject
+open class CellGridView: ObservableObject
 {
     public struct Defaults {
 
@@ -109,6 +109,9 @@ public class CellGridView: ObservableObject
     // view can make sure the the image updated here is actually visually updated.
     //
     private var _updateImage: () -> Void = {}
+
+    public init() {
+    }
 
     // This initialize method should be called on startup as soon as possible,
     // e.g. from the onAppear notification of the main view (ZStack or whatever).
@@ -659,16 +662,16 @@ public class CellGridView: ObservableObject
     public final func automationStart() { self.actions.automationStart() }
     public final func automationStop() { self.actions.automationStop() }
 
-    public func automationStep() {}
-    public func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
-    public func onLongTap(_ viewPoint: CGPoint) { self.actions.onLongTap(viewPoint) }
-    public func onDoubleTap() { self.actions.onDoubleTap() }
-    public func onDrag(_ viewPoint: CGPoint) { self.actions.onDrag(viewPoint) }
-    public func onDragEnd(_ viewPoint: CGPoint) { self.actions.onDragEnd(viewPoint) }
-    public func onZoom(_ zoomFactor: CGFloat) { self.actions.onZoom(zoomFactor) }
-    public func onZoomEnd(_ zoomFactor: CGFloat) { self.actions.onZoomEnd(zoomFactor) }
+    open func automationStep() {}
+    open func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
+    open func onLongTap(_ viewPoint: CGPoint) { self.actions.onLongTap(viewPoint) }
+    open func onDoubleTap() { self.actions.onDoubleTap() }
+    open func onDrag(_ viewPoint: CGPoint) { self.actions.onDrag(viewPoint) }
+    open func onDragEnd(_ viewPoint: CGPoint) { self.actions.onDragEnd(viewPoint) }
+    open func onZoom(_ zoomFactor: CGFloat) { self.actions.onZoom(zoomFactor) }
+    open func onZoomEnd(_ zoomFactor: CGFloat) { self.actions.onZoomEnd(zoomFactor) }
 
-    public func createCell<T: Cell>(x: Int, y: Int, foreground: CellColor) -> T? {
+    open func createCell<T: Cell>(x: Int, y: Int, foreground: CellColor) -> T? {
         return Cell(cellGridView: self, x: x, y: y, foreground: foreground) as? T
     }
 }

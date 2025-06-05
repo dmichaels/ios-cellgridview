@@ -38,14 +38,14 @@ public struct CellColor: Equatable, Sendable
         String(format: "%02X", self.value)
     }
 
-    init(_ red: UInt8, _ green: UInt8, _ blue: UInt8, alpha: UInt8 = CellColor.OPAQUE) {
+    public init(_ red: UInt8, _ green: UInt8, _ blue: UInt8, alpha: UInt8 = CellColor.OPAQUE) {
         self._red   = red
         self._green = green
         self._blue  = blue
         self._alpha = alpha
     }
 
-    init(_ red: Int, _ green: Int, _ blue: Int, alpha: Int = Int(CellColor.OPAQUE)) {
+    public init(_ red: Int, _ green: Int, _ blue: Int, alpha: Int = Int(CellColor.OPAQUE)) {
         self._red   = UInt8(red)
         self._green = UInt8(green)
         self._blue  = UInt8(blue)
@@ -56,11 +56,11 @@ public struct CellColor: Equatable, Sendable
     // For example doing this 1200 * 2100 = 2,520,000 times can take
     // nearly 2 full seconds. Be careful to avoid this if/when possible.
     //
-    init(_ color: Color) {
+    public init(_ color: Color) {
         self.init(UIColor(color))
     }
 
-    init(_ color: UIColor) {
+    public init(_ color: UIColor) {
         var red:   CGFloat = 0
         var green: CGFloat = 0
         var blue:  CGFloat = 0

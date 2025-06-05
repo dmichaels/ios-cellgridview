@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public class Cell
+open class Cell
 {
     private var _cellGridView: CellGridView
     private let _x: Int
@@ -25,14 +25,14 @@ public class Cell
         set { self._foreground = newValue }
     }
 
-    init(cellGridView: CellGridView, x: Int, y: Int, foreground: CellColor) {
+    public init(cellGridView: CellGridView, x: Int, y: Int, foreground: CellColor) {
         self._cellGridView = cellGridView
         self._x = x
         self._y = y
         self._foreground = foreground
     }
 
-    public func select(dragging: Bool = false) {
+    open func select(dragging: Bool = false) {
         //
         // To be implemented by subclasses.
         //
