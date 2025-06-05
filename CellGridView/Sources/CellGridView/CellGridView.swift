@@ -638,7 +638,7 @@ open class CellGridView: ObservableObject
 
             if (truncate != 0) {
                 for block in self._bufferBlocks.blocks {
-                    block.writeTruncated(shiftx: truncate, write: writeCellBlock)
+                    block.writeTruncated(truncatex: truncate, write: writeCellBlock)
                 }
             }
             else {

@@ -13,7 +13,7 @@ extension CellGridView
             internal var count: Int
             internal var width: Int
             internal var indexLast: Int
-            internal var shiftxCache: [Int: [(index: Int, count: Int)]] = [:]
+            internal var truncatexCache: [Int: [(index: Int, count: Int)]] = [:]
             internal typealias WriteCellBlock = (_ block: BufferBlock, _ index: Int, _ count: Int) -> Void
 
             init(index: Int, count: Int, foreground: Bool, blend: Float, width: Int) {
@@ -25,56 +25,56 @@ extension CellGridView
                 self.indexLast = self.index
             }
 
-            // Write blocks using the given write function IGNORING indices to the RIGHT of the given shiftx value.
+            // Write blocks using the given write function IGNORING indices to the RIGHT of the given truncatex value.
             //
-            internal func writeLeft(shiftx: Int, write: WriteCellBlock) {
-                self.writeTruncated(shiftx: -shiftx, write: write)
+            internal func writeLeft(truncatex: Int, write: WriteCellBlock) {
+                self.writeTruncated(truncatex: -truncatex, write: write)
             }
 
-            // Write blocks using the given write function IGNORING indices to the LEFT Of the given shiftx value.
+            // Write blocks using the given write function IGNORING indices to the LEFT Of the given truncatex value.
             //
-            internal func writeRight(shiftx: Int, write: WriteCellBlock) {
-                self.writeTruncated(shiftx: shiftx, write: write)
+            internal func writeRight(truncatex: Int, write: WriteCellBlock) {
+                self.writeTruncated(truncatex: truncatex, write: write)
             }
 
             // Write blocks using the given write function IGNORING indices which correspond to
-            // a shifting left or right by the given (shiftx) amount; tricky due to the row-major
+            // a shifting left or right by the given (truncatex) amount; tricky due to the row-major
             // organization of grid cells/pixels in the one-dimensional buffer array.
             //
-            // A positive shiftx means to truncate the values (pixels) LEFT of the given shiftx value; and
-            // a negative shiftx means to truncate the values (pixels) RIGHT of the given shiftx value; and
+            // A positive truncatex means to truncate the values (pixels) LEFT of the given truncatex value; and
+            // a negative truncatex means to truncate the values (pixels) RIGHT of the given truncatex value; and
             //
             // Note that the BufferBlock.index is a byte index into the buffer, i.e. it already has Screen.channels
             // factored into it; and note that the BufferBlock.count refers to the number of 4-byte (UInt32) values,
             //
-            internal func writeTruncated(shiftx: Int, write: WriteCellBlock) {
+            internal func writeTruncated(truncatex: Int, write: WriteCellBlock) {
 
-                if let shiftxValues = self.shiftxCache[shiftx] {
+                if let truncatexValues = self.truncatexCache[truncatex] {
                     //
-                    // Caching block values (index, count) distinct shiftx values can
+                    // Caching block values (index, count) distinct truncatex values can
                     // can really speed things up noticably (e.g. 0.02874s vs 0.07119s).
                     // FYI for really big cell-sizes (e.g. 250 unscaled) the size of this
                     // cache could exceed 25MB; not too bad really for the performance benefit.
                     // We could pre-populate this but it takes too longer (more than a second) for
                     // larger cell-sizes; it would look like this at the end of createBufferBlocks:
                     //
-                    //  for shiftx in 1...(cellSize - 1) {
+                    //  for truncatex in 1...(cellSize - 1) {
                     //    func dummyWriteCellBlock(_ block: BufferBlocks.BufferBlock, _ index: Int, _ count: Int) {}
                     //    for block in blocks._blocks {
-                    //      block.writeTruncated(shiftx: shiftx, write: dummyWriteCellBlock, debug: false)
-                    //      block.writeTruncated(shiftx: -shiftx, write: dummyWriteCellBlock, debug: false)
+                    //      block.writeTruncated(truncatex: truncatex, write: dummyWriteCellBlock, debug: false)
+                    //      block.writeTruncated(truncatex: -truncatex, write: dummyWriteCellBlock, debug: false)
                     //    }
                     //  }
                     //
-                    // self.shiftxCache[shiftx]?.forEach { write(self, $0.index, $0.count) }
-                    shiftxValues.forEach { write(self, $0.index, $0.count) }
+                    // self.truncatexCache[truncatex]?.forEach { write(self, $0.index, $0.count) }
+                    truncatexValues.forEach { write(self, $0.index, $0.count) }
                     return
                 }
 
-                var shiftxValuesToCache: [(index: Int, count: Int)] = []
-                let shiftw: Int = abs(shiftx)
-                let shiftl: Bool = (shiftx < 0)
-                let shiftr: Bool = (shiftx > 0)
+                var truncatexValuesToCache: [(index: Int, count: Int)] = []
+                let shiftw: Int = abs(truncatex)
+                let shiftl: Bool = (truncatex < 0)
+                let shiftr: Bool = (truncatex > 0)
                 var index: Int? = nil
                 var count: Int = 0
                 for i in 0..<self.count {
@@ -89,7 +89,7 @@ extension CellGridView
                         }
                     } else {
                         if let j: Int = index {
-                            shiftxValuesToCache.append((index: j, count: count))
+                            truncatexValuesToCache.append((index: j, count: count))
                             write(self, j, count)
                             if (shiftr && (shift > shiftw)) { break }
                             else if (shiftl && (shift >= shiftw)) { break }
@@ -102,10 +102,10 @@ extension CellGridView
                     }
                 }
                 if let j: Int = index {
-                    shiftxValuesToCache.append((index: j, count: count))
+                    truncatexValuesToCache.append((index: j, count: count))
                     write(self, j, count)
                 }
-                self.shiftxCache[shiftx] = shiftxValuesToCache
+                self.truncatexCache[truncatex] = truncatexValuesToCache
             }
         }
 
@@ -123,7 +123,7 @@ extension CellGridView
         internal var memoryUsageBytes: Int {
             var totalTuples: Int = 0
             for block in self._blocks {
-                totalTuples += block.shiftxCache.values.reduce(0) { $0 + $1.count }
+                totalTuples += block.truncatexCache.values.reduce(0) { $0 + $1.count }
             }
             return totalTuples * MemoryLayout<(Int, Int)>.stride
         }
