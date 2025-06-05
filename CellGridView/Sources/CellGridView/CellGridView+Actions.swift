@@ -3,7 +3,7 @@ import SwiftUI
 
 extension CellGridView
 {
-    public final class Actions
+    internal final class Actions
     {
         private let _cellGridView: CellGridView
         private let _automationInterval: Double
