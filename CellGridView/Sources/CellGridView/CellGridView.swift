@@ -283,7 +283,7 @@ open class CellGridView: ObservableObject
     internal final var shiftTotalScaledX: Int    { self._shiftX + (self._shiftCellX * self._cellSize) }
     internal final var shiftTotalScaledY: Int    { self._shiftY + (self._shiftCellY * self._cellSize) }
 
-    public final var viewScaling: Bool {
+    internal final var viewScaling: Bool {
         get { self._viewScaling }
         set {
             if (newValue) {
