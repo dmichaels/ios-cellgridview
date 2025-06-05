@@ -49,9 +49,9 @@ extension CellGridView
         return nil
     }
 
-    // Returns the cell-grid cell location of the given grid-view cell location.
+    // Returns the cell-grid location of the given grid-view cell location.
     //
-    public final func gridCellLocation(viewCellX: Int, viewCellY: Int) -> CellLocation? {
+    internal final func gridCellLocation(viewCellX: Int, viewCellY: Int) -> CellLocation? {
         guard viewCellX >= 0, viewCellX <= self.viewCellEndX,
               viewCellY >= 0, viewCellY <= self.viewCellEndY else { return nil }
         let gridCellX: Int = viewCellX - self.shiftCellScaledX - ((self.shiftScaledX > 0) ? 1 : 0)
@@ -61,9 +61,9 @@ extension CellGridView
         return CellLocation(gridCellX, gridCellY)
     }
 
-    // Returns the cell location relative to the grid-view of the given grid-view input point, or nil.
+    // Returns the cell-grid location relative to the grid-view of the given grid-view input point, or nil.
     //
-    public final func viewCellLocation(viewPoint: CGPoint) -> CellLocation? {
+    internal final func viewCellLocation(viewPoint: CGPoint) -> CellLocation? {
         let viewPoint: ViewPoint = ViewPoint(self.scaled(viewPoint.x), self.scaled(viewPoint.y))
         guard viewPoint.x >= 0, viewPoint.x < self.viewWidthScaled,
               viewPoint.y >= 0, viewPoint.y < self.viewHeightScaled else { return nil }
@@ -79,9 +79,9 @@ extension CellGridView
         return CellLocation(viewCellX, viewCellY)
     }
 
-    // Returns the grid-view cell location of the given cell-grid cell location, or nil.
+    // Returns the cell-grid location of the given cell-grid cell location, or nil.
     //
-    public final func viewCellLocation(gridCellX: Int, gridCellY: Int) -> CellLocation? {
+    internal final func viewCellLocation(gridCellX: Int, gridCellY: Int) -> CellLocation? {
         guard gridCellX >= 0, gridCellX < self.gridColumns,
               gridCellY >= 0, gridCellY < self.gridRows else { return nil }
         let viewCellX: Int = gridCellX + self.shiftCellScaledX + ((self.shiftScaledX > 0) ? 1 : 0)
@@ -89,46 +89,5 @@ extension CellGridView
         guard viewCellX >= 0, viewCellX <= self.viewCellEndX,
               viewCellY >= 0, viewCellY <= self.viewCellEndY else { return nil }
         return CellLocation(viewCellX, viewCellY)
-    }
-
-    // Normalizes an input point taking into account orientation et cetera.
-    // The input screen point is (as always) unscaled as well as the returned point.
-    //
-    @MainActor public final func normalizePoint(screenPoint: CGPoint,
-                                                viewOrigin: CGPoint,
-                                                orientation: OrientationObserver) -> CGPoint
-    {
-        // Various oddities with upside-down mode and having to know the
-        // previous orientation and whether or not we are an iPad and whatnot.
-        //
-        let x, y: CGFloat
-        switch orientation.current {
-        case .portrait:
-            x = screenPoint.x - viewOrigin.x
-            y = screenPoint.y - viewOrigin.y
-        case .portraitUpsideDown:
-            if (orientation.ipad) {
-                x = CGFloat(self.viewWidth) - 1 - (screenPoint.x - viewOrigin.x)
-                y = CGFloat(self.viewHeight) - 1 - (screenPoint.y - viewOrigin.y)
-            }
-            else if (orientation.previous.isLandscape) {
-                x = screenPoint.y - viewOrigin.x
-                y = CGFloat(self.viewHeight) - 1 - (screenPoint.x - viewOrigin.y)
-            }
-            else {
-                x = screenPoint.x - viewOrigin.x
-                y = screenPoint.y - viewOrigin.y
-            }
-        case .landscapeRight:
-            x = screenPoint.y - viewOrigin.x
-            y = CGFloat(self.viewHeight) - 1 - (screenPoint.x - viewOrigin.y)
-        case .landscapeLeft:
-            x = CGFloat(self.viewWidth) - 1 - (screenPoint.y - viewOrigin.x)
-            y = screenPoint.x - viewOrigin.y
-        default:
-            x = screenPoint.x - viewOrigin.x
-            y = screenPoint.y - viewOrigin.y
-        }
-        return CGPoint(x: x, y: y)
     }
 }
