@@ -1,6 +1,6 @@
 extension CellGridView
 {
-    public typealias PreferredSize = (cellSize: Int, viewWidth: Int, viewHeight: Int)
+    internal typealias PreferredSize = (cellSize: Int, viewWidth: Int, viewHeight: Int)
 
     // Returns a list of preferred sizes for the cell size, such that they fit evenly without bleeding
     // out past the end of the view; the given and returned dimensions are assumed to be unscaled values.
