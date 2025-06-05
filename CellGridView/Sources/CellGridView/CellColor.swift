@@ -47,7 +47,7 @@ public struct CellColor: Equatable, Sendable
         self.init(UIColor(color))
     }
 
-    public init(_ color: UIColor) {
+    private init(_ color: UIColor) {
         var red:   CGFloat = 0
         var green: CGFloat = 0
         var blue:  CGFloat = 0
@@ -111,7 +111,7 @@ public struct CellColor: Equatable, Sendable
     public static let magenta: CellColor = CellColor(UIColor.magenta)
     public static let orange: CellColor = CellColor(UIColor.orange)
     public static let purple: CellColor = CellColor(UIColor.purple)
-    public static let rd: CellColor = CellColor(UIColor.red)
+    public static let red: CellColor = CellColor(UIColor.red)
     public static let white: CellColor = CellColor(UIColor.white)
     public static let yellow: CellColor = CellColor(UIColor.yellow)
 
