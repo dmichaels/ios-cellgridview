@@ -507,7 +507,7 @@ open class CellGridView: ObservableObject
     // pixel level based shift values, negative meaning to shift the grid cell left or up, and positive
     // meaning to shift the grid cell right or down.
     //
-    public final func writeCell(viewCellX: Int, viewCellY: Int)
+    internal final func writeCell(viewCellX: Int, viewCellY: Int)
     {
         // Get the left/right truncation amount.
         // This was all a lot tricker than you might expect (yes basic arithmetic).
