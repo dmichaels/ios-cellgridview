@@ -1,7 +1,7 @@
 import Foundation
 
 // Represents an integer based cell-based (i.e. cell-indexed) location within the cell-grid.
-// Exactly the same as ViewPoint but differential naming has documentation value.
+// Exactly the same as ViewPoint but the differential naming has documentation value.
 //
 public struct CellLocation: Equatable, CustomStringConvertible
 {
