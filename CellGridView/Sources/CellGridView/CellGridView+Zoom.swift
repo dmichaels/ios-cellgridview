@@ -3,7 +3,7 @@ import Utils
 
 extension CellGridView
 {
-    public struct Zoom
+    internal struct Zoom
     {
         private let _cellGridView: CellGridView
         private let _startCellSize: Int
@@ -11,7 +11,7 @@ extension CellGridView
         private let _startShiftedY: Int
         private let _unscaledZoom: Bool
 
-        public init(_ cellGridView: CellGridView, _ zoomFactor: CGFloat) {
+        internal init(_ cellGridView: CellGridView, _ zoomFactor: CGFloat) {
 
             self._unscaledZoom = Defaults.unscaledZoom && cellGridView.viewScaling
             if (self._unscaledZoom) {
@@ -25,13 +25,13 @@ extension CellGridView
             self.zoom(zoomFactor)
         }
 
-        public func zoom(_ zoomFactor: CGFloat) {
+        internal func zoom(_ zoomFactor: CGFloat) {
             let cellSizeZoomed: CGFloat = CGFloat(self._startCellSize) * zoomFactor
             let cellSize: Int = Int(cellSizeZoomed.rounded(FloatingPointRoundingRule.toNearestOrEven))
             Zoom.resizeCells(cellGridView: self._cellGridView, cellSize: cellSize, adjustShift: true, scaled: true)
         }
 
-        public func end(_ zoomFactor: CGFloat) {
+        internal func end(_ zoomFactor: CGFloat) {
             self.zoom(zoomFactor)
             if (self._unscaledZoom) {
                 self._cellGridView.viewScaling = true
@@ -128,7 +128,7 @@ extension CellGridView
             return shiftTotalResult
         }
 
-        public static func scale(_ cellGridView: CellGridView) {
+        internal static func scale(_ cellGridView: CellGridView) {
             guard !cellGridView.viewScaling else {
                 return
             }
@@ -145,7 +145,7 @@ extension CellGridView
             cellGridView.writeCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: true)
         }
 
-        public static func unscale(_ cellGridView: CellGridView) {
+        internal static func unscale(_ cellGridView: CellGridView) {
             guard cellGridView.viewScaling else {
                 return
             }

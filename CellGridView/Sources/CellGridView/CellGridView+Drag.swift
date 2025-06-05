@@ -12,7 +12,7 @@ extension CellGridView
         private let _startShiftedY: Int
         private let _startCell: Cell?
 
-        init(_ cellGridView: CellGridView, _ viewPoint: CGPoint, picker: Bool = false) {
+        internal init(_ cellGridView: CellGridView, _ viewPoint: CGPoint, picker: Bool = false) {
             self._cellGridView = cellGridView
             self._startX = Int(round(viewPoint.x))
             self._startY = Int(round(viewPoint.y))
@@ -21,7 +21,7 @@ extension CellGridView
             self._startCell = picker ? cellGridView.gridCell(viewPoint: viewPoint) : nil
         }
 
-        public func drag(_ viewPoint: CGPoint, end: Bool = false) {
+        internal func drag(_ viewPoint: CGPoint, end: Bool = false) {
             if let _ = self._startCell, let cell: Cell = self._cellGridView.gridCell(viewPoint: viewPoint) {
                 cell.select(dragging: true)
                 return
@@ -36,7 +36,7 @@ extension CellGridView
             self._cellGridView.writeCells(shiftTotalX: shiftX, shiftTotalY: shiftY, dragging: !end)
         }
 
-        public func end(_ viewPoint: CGPoint) {
+        internal func end(_ viewPoint: CGPoint) {
             self.drag(viewPoint, end: true)
         }
     }

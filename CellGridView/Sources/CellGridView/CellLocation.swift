@@ -8,17 +8,17 @@ public struct CellLocation: Equatable, CustomStringConvertible
     public let x: Int
     public let y: Int
 
-    init(_ x: Int, _ y: Int) {
+    public init(_ x: Int, _ y: Int) {
         self.x = x
         self.y = y
     }
 
-    init(_ point: CGPoint) {
+    public init(_ point: CGPoint) {
         self.x = Int(round(point.x))
         self.y = Int(round(point.y))
     }
 
-    init(_ x: CGFloat, _ y: CGFloat) {
+    public init(_ x: CGFloat, _ y: CGFloat) {
         self.x = Int(round(x))
         self.y = Int(round(y))
     }
