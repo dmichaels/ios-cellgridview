@@ -17,10 +17,7 @@ open class CellGridView: ObservableObject
 {
     public struct Defaults {
 
-        public static let centerCellGrid: Bool = true
-        public static let automationInterval: Double = 0.2
-        public static let restrictShiftStrict: Bool = false
-        public static let unscaledZoom: Bool = false
+        // The size related properties here (being outward facing) are unscaled.
 
         public static let viewBackground: CellColor = CellColor.dark
         public static let viewTransparency: UInt8 = CellColor.OPAQUE
@@ -32,14 +29,17 @@ open class CellGridView: ObservableObject
         public static let cellShape: CellShape = CellShape.rounded
         public static let cellForeground: CellColor = CellColor.white // CellColor.black
 
-        // The size related properties here (being effectively outward facing) are unscaled.
-        //
         public static let cellPaddingMax: Int = 8
         public static let cellSizeMax: Int = 200
         public static let cellSizeInnerMin: Int = 3
         public static let cellPreferredSizeMarginMax: Int = 30
         public static let cellAntialiasFade: Float = 0.6  // smaller is smoother
         public static let cellRoundedRectangleRadius: Float = 0.25
+
+        public static let centerCellGrid: Bool = true
+        public static let automationInterval: Double = 0.2
+        public static let restrictShiftStrict: Bool = false
+        public static let unscaledZoom: Bool = false
     }
 
     // Note that internally all size related properties are stored as scaled;
