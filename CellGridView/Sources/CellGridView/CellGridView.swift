@@ -110,8 +110,7 @@ open class CellGridView: ObservableObject
     //
     private var _updateImage: () -> Void = {}
 
-    public init() {
-    }
+    public init() {}
 
     // This initialize method should be called on startup as soon as possible,
     // e.g. from the onAppear notification of the main view (ZStack or whatever).
