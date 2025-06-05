@@ -66,13 +66,6 @@ public struct CellColor: Equatable, Sendable
         }
     }
 
-    init(_ value: UInt32) {
-        self._red   = UInt8((value >> CellColor.RSHIFT) & 0xFF)
-        self._green = UInt8((value >> CellColor.GSHIFT) & 0xFF)
-        self._blue  = UInt8((value >> CellColor.BSHIFT) & 0xFF)
-        self._alpha = UInt8((value >> CellColor.ASHIFT) & 0xFF)
-    }
-
     // Readonly immutable property access.
 
     public var red:   UInt8 { self._red   }
