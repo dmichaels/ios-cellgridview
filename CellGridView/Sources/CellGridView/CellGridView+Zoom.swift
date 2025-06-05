@@ -67,7 +67,8 @@ extension CellGridView
             }
         }
 
-        private static func calculateShiftForResizeCells(cellGridView: CellGridView, cellSize: Int, scaled: Bool = false) -> (x: Int, y: Int) {
+        private static func calculateShiftForResizeCells(cellGridView: CellGridView,
+                                                         cellSize: Int, scaled: Bool = false) -> (x: Int, y: Int) {
             let cellSize = !scaled ? cellGridView.scaled(cellSize) : cellSize
             let cellSizeIncrement: Int = cellSize - cellGridView.cellSizeScaled
             guard cellSizeIncrement != 0 else { return (x: 0, y: 0) }
@@ -134,13 +135,13 @@ extension CellGridView
             let shiftTotalX: Int = cellGridView.screen.scaled(cellGridView.shiftTotalX)
             let shiftTotalY: Int = cellGridView.screen.scaled(cellGridView.shiftTotalY)
             cellGridView.configure(cellSize: cellGridView.cellSize,
-                           cellPadding: cellGridView.cellPadding,
-                           cellShape: cellGridView.cellShape,
-                           viewWidth: cellGridView.viewWidth,
-                           viewHeight: cellGridView.viewHeight,
-                           viewBackground: cellGridView.viewBackground,
-                           viewTransparency: cellGridView.viewTransparency,
-                           viewScaling: true)
+                                   cellPadding: cellGridView.cellPadding,
+                                   cellShape: cellGridView.cellShape,
+                                   viewWidth: cellGridView.viewWidth,
+                                   viewHeight: cellGridView.viewHeight,
+                                   viewBackground: cellGridView.viewBackground,
+                                   viewTransparency: cellGridView.viewTransparency,
+                                   viewScaling: true)
             cellGridView.writeCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: true)
         }
 
@@ -151,13 +152,13 @@ extension CellGridView
             let shiftTotalX: Int = cellGridView.screen.unscaled(cellGridView.shiftTotalScaledX)
             let shiftTotalY: Int = cellGridView.screen.unscaled(cellGridView.shiftTotalScaledY)
             cellGridView.configure(cellSize: cellGridView.cellSize,
-                           cellPadding: cellGridView.cellPadding,
-                           cellShape: cellGridView.cellShape,
-                           viewWidth: cellGridView.viewWidth,
-                           viewHeight: cellGridView.viewHeight,
-                           viewBackground: cellGridView.viewBackground,
-                           viewTransparency: cellGridView.viewTransparency,
-                           viewScaling: false)
+                                   cellPadding: cellGridView.cellPadding,
+                                   cellShape: cellGridView.cellShape,
+                                   viewWidth: cellGridView.viewWidth,
+                                   viewHeight: cellGridView.viewHeight,
+                                   viewBackground: cellGridView.viewBackground,
+                                   viewTransparency: cellGridView.viewTransparency,
+                                   viewScaling: false)
             cellGridView.writeCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: false)
         }
     }

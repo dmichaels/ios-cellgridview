@@ -32,16 +32,16 @@ open class Cell
         self._foreground = foreground
     }
 
-    open func select(dragging: Bool = false) {
-        //
-        // To be implemented by subclasses.
-        //
-    }
-
     public func write(foreground: CellColor, foregroundOnly: Bool = false) {
         if let viewCellLocation = self._cellGridView.viewCellLocation(gridCellX: self._x, gridCellY: self._y) {
             self._foreground = foreground
             self._cellGridView.writeCell(viewCellX: viewCellLocation.x, viewCellY: viewCellLocation.y)
         }
+    }
+
+    open func select(dragging: Bool = false) {
+        //
+        // To be implemented by subclasses.
+        //
     }
 }
