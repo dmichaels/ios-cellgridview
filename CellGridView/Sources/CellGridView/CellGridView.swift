@@ -19,7 +19,7 @@ open class CellGridView: ObservableObject
 
         // The size related properties here (being outward facing) are unscaled.
 
-        public static let viewBackground: CellColor = CellColor.dark
+        public static let viewBackground: CellColor = CellColor.brown
         public static let viewTransparency: UInt8 = CellColor.OPAQUE
         public static let viewScaling: Bool = true
 

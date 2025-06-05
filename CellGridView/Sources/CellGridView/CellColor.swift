@@ -8,35 +8,21 @@ public struct CellColor: Equatable, Sendable
     // These values works with Memory.fastcopy NOT using value.bigEndian;
     // if these were the opposite (i.e. red-24, green-16, blue-8, alpha-0)
     // then we would need to use value.bigEndian there; slightly faster without.
-    //
+
     public static let RSHIFT: Int   =   0
     public static let GSHIFT: Int   =   8
     public static let BSHIFT: Int   =  16
     public static let ASHIFT: Int   =  24
     public static let OPAQUE: UInt8 = 255
 
+    // Private immutable individual RGBA color values.
+
     private let _red:   UInt8
     private let _green: UInt8
     private let _blue:  UInt8
     private let _alpha: UInt8
 
-    public var red:   UInt8 { self._red   }
-    public var green: UInt8 { self._green }
-    public var blue:  UInt8 { self._blue  }
-    public var alpha: UInt8 { self._alpha }
-
-    public var value: UInt32 {
-        get {
-            (UInt32(self._red)   << CellColor.RSHIFT) |
-            (UInt32(self._green) << CellColor.GSHIFT) |
-            (UInt32(self._blue)  << CellColor.BSHIFT) |
-            (UInt32(self._alpha) << CellColor.ASHIFT)
-        }
-    }
-
-    public var hex: String {
-        String(format: "%02X", self.value)
-    }
+    // Sundry constructors.
 
     public init(_ red: UInt8, _ green: UInt8, _ blue: UInt8, alpha: UInt8 = CellColor.OPAQUE) {
         self._red   = red
@@ -52,11 +38,12 @@ public struct CellColor: Equatable, Sendable
         self._alpha = UInt8(alpha)
     }
 
-    // N.B. Creating UIColor many times an be sloooooooooooooow. 
-    // For example doing this 1200 * 2100 = 2,520,000 times can take
-    // nearly 2 full seconds. Be careful to avoid this if/when possible.
-    //
     public init(_ color: Color) {
+        //
+        // N.B. Creating UIColor many times an be sloooooooooooooow. 
+        // For example doing this 1200 * 2100 = 2,520,000 times can take
+        // nearly 2 full seconds. Be careful to avoid this if/when possible.
+        //
         self.init(UIColor(color))
     }
 
@@ -86,14 +73,49 @@ public struct CellColor: Equatable, Sendable
         self._alpha = UInt8((value >> CellColor.ASHIFT) & 0xFF)
     }
 
+    // Readonly immutable property access.
+
+    public var red:   UInt8 { self._red   }
+    public var green: UInt8 { self._green }
+    public var blue:  UInt8 { self._blue  }
+    public var alpha: UInt8 { self._alpha }
+
+    public var value: UInt32 {
+        get {
+            (UInt32(self._red)   << CellColor.RSHIFT) |
+            (UInt32(self._green) << CellColor.GSHIFT) |
+            (UInt32(self._blue)  << CellColor.BSHIFT) |
+            (UInt32(self._alpha) << CellColor.ASHIFT)
+        }
+    }
+
     public var color: Color {
         Color(red: Double(self.red) / 255.0, green: Double(self.green) / 255.0, blue: Double(self.blue) / 255.0)
     }
 
-    public static let black: CellColor = CellColor(0, 0, 0)
-    public static let white: CellColor = CellColor(255, 255, 255)
-    public static let dark:  CellColor = CellColor(50, 50, 50)
-    public static let light: CellColor = CellColor(200, 200, 200)
+    public var hex: String {
+        String(format: "%02X", self.value)
+    }
+
+    // For convenience just replicate all known builtin UIColor colors.
+
+    public static let black: CellColor = CellColor(UIColor.black)
+    public static let blue: CellColor = CellColor(UIColor.blue)
+    public static let brown: CellColor = CellColor(UIColor.brown)
+    public static let clear: CellColor = CellColor(UIColor.clear)
+    public static let cyan: CellColor = CellColor(UIColor.cyan)
+    public static let darkGray: CellColor = CellColor(UIColor.darkGray)
+    public static let gray: CellColor = CellColor(UIColor.gray)
+    public static let green: CellColor = CellColor(UIColor.green)
+    public static let lightGray: CellColor = CellColor(UIColor.lightGray)
+    public static let magenta: CellColor = CellColor(UIColor.magenta)
+    public static let orange: CellColor = CellColor(UIColor.orange)
+    public static let purple: CellColor = CellColor(UIColor.purple)
+    public static let rd: CellColor = CellColor(UIColor.red)
+    public static let white: CellColor = CellColor(UIColor.white)
+    public static let yellow: CellColor = CellColor(UIColor.yellow)
+
+    // For future use.
 
     public static func random(mode: CellColorMode = CellColorMode.color) -> CellColor {
         if (mode == CellColorMode.monochrome) {
