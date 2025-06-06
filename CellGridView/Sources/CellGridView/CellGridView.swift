@@ -10,8 +10,9 @@ import Utils
 //
 // Note on terminology: We say "cell-grid" to mean the virtual grid of all cells in existence,
 // and "grid-view" to mean the viewable window (image) in which is displayed a subset of the cell-grid.
-// We say "point" or "view-point" to mean a pixel coordinate (coming from a gesture) which is not scaled.
-// We say "location" or "cell-location" to mean a cell-based coordinate on the cell-grid or grid-view.
+// We say "point" or "view-point" to mean a pixel-based coordinate (e.g. from a gesture; not scaled)
+// within the grid-view. We say "location" or "cell-location" to mean a cell-based (i.e. cell-index)
+// coordinate on the cell-grid or grid-view.
 
 open class CellGridView: ObservableObject
 {
@@ -40,7 +41,7 @@ open class CellGridView: ObservableObject
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
-        public static let wrapAroundMode: Bool = false
+        public static let gridWrapAround: Bool = true
     }
 
     // Note that internally all size related properties are stored as scaled;
@@ -78,6 +79,7 @@ open class CellGridView: ObservableObject
     private var _gridRows: Int = 0
     private var _gridCellEndX: Int = 0
     private var _gridCellEndY: Int = 0
+    private var _gridWrapAround: Bool = Defaults.gridWrapAround
     private var _gridCells: [Cell] = []
 
     // These change based on moving/shifting the cell-grid around the grid-view.
@@ -262,6 +264,7 @@ open class CellGridView: ObservableObject
     public   final var gridColumns: Int          { self._gridColumns }
     public   final var gridRows: Int             { self._gridRows }
     public   final var gridCells: [Cell]         { self._gridCells }
+    public   final var gridWrapAround: Bool      { self._gridWrapAround }
 
     internal final var shiftCellX: Int  { self._unscaled_shiftCellX }
     internal final var shiftCellY: Int  { self._unscaled_shiftCellY }
@@ -418,7 +421,7 @@ open class CellGridView: ObservableObject
             }
         }
 
-        if (!Defaults.wrapAroundMode) {
+        if (!self._gridWrapAround) {
             if (Defaults.restrictShiftStrict) {
                 restrictShiftStrict(shiftCell: &shiftCellX, shift: &shiftX,
                                     cellSize: self._cellSize,
@@ -496,9 +499,6 @@ open class CellGridView: ObservableObject
 
         for vy in 0...self._viewCellEndY {
             for vx in 0...self._viewCellEndX {
-                if vy == 0 {
-                    print("WC: \(vx)")
-                }
                 self.writeCell(viewCellX: vx, viewCellY: vy)
             }
         }
@@ -564,7 +564,7 @@ open class CellGridView: ObservableObject
         let gridCellX: Int = viewCellX - self._shiftCellX - ((self._shiftX > 0) ? 1 : 0)
         let gridCellY: Int = viewCellY - self._shiftCellY - ((self._shiftY > 0) ? 1 : 0)
         //
-        // Another micro optimization could be if this view-cell does not correspond to a grid-cell
+        // Another micro optimization could be if this view-cell does not correspond to a cell-grid
         // at all (i.e. the below gridCell call returns nil), i.e this is an empty space, then the
         // cell buffer block that we use can be a simplified one which just writes all background;
         // but this is probably not really a typical/common case for things we can think of for now.
@@ -573,20 +573,24 @@ open class CellGridView: ObservableObject
         var cell: Cell? = self.gridCell(gridCellX, gridCellY)
         var foreground: CellColor
         if (cell == nil) {
-            if (Defaults.wrapAroundMode) {
+            //
+            // In wraparound mode (which is a dicey proposition in any case but giving it a try),
+            // a given cell-grid location can map to more than one grid-view locations, i.e. if
+            // the cell-grid dimension is smaller than the grid-view dimension, i.e. if the cell-grid
+            // fits completely WITHIN the grid-view, which is weird (thus the dicey comment) if this
+            // is the case, as ... hm ... maybe if this is the case we don't wraparound ...
+            if (self._gridWrapAround) {
                 let wrapAroundGridCellX: Int = (gridCellX < 0) ? gridCellX + self._gridColumns - 1 : gridCellX % self._gridColumns
                 let wrapAroundGridCellY: Int = (gridCellY < 0) ? gridCellY + self._gridRows - 1 : gridCellY % self._gridRows
                 if let cell = self.gridCell(wrapAroundGridCellX, wrapAroundGridCellY) {
-                    if (gridCellY == 0) { print("WC-NIL: \(gridCellX),\(gridCellY) -> \(wrapAroundGridCellX),\(wrapAroundGridCellY)") }
-                    foreground = cell.foreground
+                    // foreground = cell.foreground
+                    foreground = cell.foreground.darken(by: 0.5) // todo/xyzzy/debug
                 }
                 else {
-                    if (gridCellY == 0) { print("WC-NIL: \(gridCellX),\(gridCellY) -> \(wrapAroundGridCellX),\(wrapAroundGridCellY) -> HMM") }
                     foreground = self._viewBackground
                 }
             }
             else {
-                if (gridCellY == 0) { print("WC-NIL: \(gridCellX)") }
                 foreground = self._viewBackground
             }
         }
