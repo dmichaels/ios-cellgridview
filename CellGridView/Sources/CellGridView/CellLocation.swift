@@ -3,7 +3,7 @@ import Foundation
 // Represents an integer based cell-based (i.e. cell-indexed) location within the cell-grid.
 // Exactly the same as ViewPoint but the differential naming has documentation value.
 //
-public struct CellLocation: Equatable, CustomStringConvertible
+public struct CellLocation: Hashable
 {
     public let x: Int
     public let y: Int
