@@ -25,6 +25,10 @@ open class Cell
         set { self._foreground = newValue }
     }
 
+    open var cellGridView: CellGridView {
+        self._cellGridView
+    }
+
     public init(cellGridView: CellGridView, x: Int, y: Int, foreground: CellColor) {
         self._cellGridView = cellGridView
         self._x = x
