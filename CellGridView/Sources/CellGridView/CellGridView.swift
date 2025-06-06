@@ -41,7 +41,7 @@ open class CellGridView: ObservableObject
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
-        public static let gridWrapAround: Bool = true
+        public static let gridWrapAround: Bool = false
     }
 
     // Note that internally all size related properties are stored as scaled;
