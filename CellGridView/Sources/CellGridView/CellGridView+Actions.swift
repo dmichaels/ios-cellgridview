@@ -44,6 +44,7 @@ extension CellGridView
 
         internal func onTap(_ viewPoint: CGPoint) {
             if let cell: Cell = self._cellGridView.gridCell(viewPoint: viewPoint) {
+                print("ON-TAP: \(cell.x),\(cell.y)")
                 cell.select()
                 self._cellGridView.updateImage()
             }

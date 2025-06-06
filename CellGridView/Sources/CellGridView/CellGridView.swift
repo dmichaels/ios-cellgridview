@@ -36,10 +36,11 @@ open class CellGridView: ObservableObject
         public static let cellAntialiasFade: Float = 0.6  // smaller is smoother
         public static let cellRoundedRectangleRadius: Float = 0.25
 
-        public static let centerCellGrid: Bool = true
+        public static let centerCellGrid: Bool = false
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
+        public static let wrapAroundMode: Bool = false
     }
 
     // Note that internally all size related properties are stored as scaled;
@@ -417,31 +418,33 @@ open class CellGridView: ObservableObject
             }
         }
 
-        if (Defaults.restrictShiftStrict) {
-            restrictShiftStrict(shiftCell: &shiftCellX, shift: &shiftX,
-                                cellSize: self._cellSize,
-                                viewSize: self._viewWidth,
-                                gridCells: self._gridColumns,
-                                dragging: dragging)
-            restrictShiftStrict(shiftCell: &shiftCellY, shift: &shiftY,
-                                cellSize: self._cellSize,
-                                viewSize: self._viewHeight,
-                                gridCells: self._gridRows,
-                                dragging: dragging)
-        }
-        else {
-            restrictShiftLenient(shiftCell: &shiftCellX,
-                                 shift: &shiftX,
-                                 viewCellEnd: self._viewCellEndX - self._viewColumnsExtra,
-                                 viewSizeExtra: self._viewWidthExtra,
-                                 viewSize: self._viewWidth,
-                                 gridCellEnd: self._gridCellEndX)
-            restrictShiftLenient(shiftCell: &shiftCellY,
-                                 shift: &shiftY,
-                                 viewCellEnd: self._viewCellEndY - self._viewRowsExtra,
-                                 viewSizeExtra: self._viewHeightExtra,
-                                 viewSize: self._viewHeight,
-                                 gridCellEnd: self._gridCellEndY)
+        if (!Defaults.wrapAroundMode) {
+            if (Defaults.restrictShiftStrict) {
+                restrictShiftStrict(shiftCell: &shiftCellX, shift: &shiftX,
+                                    cellSize: self._cellSize,
+                                    viewSize: self._viewWidth,
+                                    gridCells: self._gridColumns,
+                                    dragging: dragging)
+                restrictShiftStrict(shiftCell: &shiftCellY, shift: &shiftY,
+                                    cellSize: self._cellSize,
+                                    viewSize: self._viewHeight,
+                                    gridCells: self._gridRows,
+                                    dragging: dragging)
+            }
+            else {
+                restrictShiftLenient(shiftCell: &shiftCellX,
+                                     shift: &shiftX,
+                                     viewCellEnd: self._viewCellEndX - self._viewColumnsExtra,
+                                     viewSizeExtra: self._viewWidthExtra,
+                                     viewSize: self._viewWidth,
+                                     gridCellEnd: self._gridCellEndX)
+                restrictShiftLenient(shiftCell: &shiftCellY,
+                                     shift: &shiftY,
+                                     viewCellEnd: self._viewCellEndY - self._viewRowsExtra,
+                                     viewSizeExtra: self._viewHeightExtra,
+                                     viewSize: self._viewHeight,
+                                     gridCellEnd: self._gridCellEndY)
+            }
         }
 
         // Update the shift related values for the view.
@@ -493,6 +496,9 @@ open class CellGridView: ObservableObject
 
         for vy in 0...self._viewCellEndY {
             for vx in 0...self._viewCellEndX {
+                if vy == 0 {
+                    print("WC: \(vx)")
+                }
                 self.writeCell(viewCellX: vx, viewCellY: vy)
             }
         }
@@ -563,7 +569,30 @@ open class CellGridView: ObservableObject
         // cell buffer block that we use can be a simplified one which just writes all background;
         // but this is probably not really a typical/common case for things we can think of for now.
         //
-        let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.foreground ?? self._viewBackground
+        // let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.foreground ?? self._viewBackground
+        var cell: Cell? = self.gridCell(gridCellX, gridCellY)
+        var foreground: CellColor
+        if (cell == nil) {
+            if (Defaults.wrapAroundMode) {
+                let wrapAroundGridCellX: Int = (gridCellX < 0) ? gridCellX + self._gridColumns - 1 : gridCellX % self._gridColumns
+                let wrapAroundGridCellY: Int = (gridCellY < 0) ? gridCellY + self._gridRows - 1 : gridCellY % self._gridRows
+                if let cell = self.gridCell(wrapAroundGridCellX, wrapAroundGridCellY) {
+                    if (gridCellY == 0) { print("WC-NIL: \(gridCellX),\(gridCellY) -> \(wrapAroundGridCellX),\(wrapAroundGridCellY)") }
+                    foreground = cell.foreground
+                }
+                else {
+                    if (gridCellY == 0) { print("WC-NIL: \(gridCellX),\(gridCellY) -> \(wrapAroundGridCellX),\(wrapAroundGridCellY) -> HMM") }
+                    foreground = self._viewBackground
+                }
+            }
+            else {
+                if (gridCellY == 0) { print("WC-NIL: \(gridCellX)") }
+                foreground = self._viewBackground
+            }
+        }
+        else {
+            foreground = cell!.foreground
+        }
         let foregroundOnly: Bool = false
 
         // Setup the offset for the buffer blocks; offset used within writeCellBlock.
