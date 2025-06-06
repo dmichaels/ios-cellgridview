@@ -61,6 +61,7 @@ extension CellGridView
     }
 
     internal final func printWriteCellsResult(_ start: Date) {
+        let time: TimeInterval = Date().timeIntervalSince(start)
         let shiftOppositeScaled: Int = modulo(self.cellSizeScaled + self.shiftScaledX - self.viewWidthExtraScaled,
                                               self.cellSizeScaled)
         var even: Bool = false
@@ -86,8 +87,7 @@ extension CellGridView
                              " SH:\(self.shiftScaledX),\(shiftScaledY)" +
                              " SHU:\(self.shiftX),\(self.shiftY)" +
                              " SHO:\(shiftOppositeScaled)" +
-                             (even ? " EVEN" : " UNEVEN"),
-              Date().timeIntervalSince(start)))
+                             (even ? " EVEN" : " UNEVEN"), time))
     }
 }
 
