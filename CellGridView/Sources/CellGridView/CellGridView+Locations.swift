@@ -70,7 +70,7 @@ extension CellGridView
     // note that the view input point is always in unscaled units.
     //
     public final func gridCellLocation(viewPoint: CGPoint) -> CellLocation? {
-        if let viewCellLocation: CellLocation = self.viewCellLocation(viewPoint: viewPoint) {
+        if let viewCellLocation: ViewLocation = self.viewCellLocation(viewPoint: viewPoint) {
             var gridCellX: Int = viewCellLocation.x - self.shiftCellScaledX - ((self.shiftScaledX > 0) ? 1 : 0)
             if (self.gridWrapAround) {
                 if ((gridCellX < 0) || (gridCellX >= self.gridColumns)) {
@@ -119,7 +119,7 @@ extension CellGridView
 
     // Returns the cell-grid location relative to the grid-view of the given grid-view input point, or nil.
     //
-    internal final func viewCellLocation(viewPoint: CGPoint) -> CellLocation? {
+    private final func viewCellLocation(viewPoint: CGPoint) -> ViewLocation? {
         let viewPoint: ViewPoint = ViewPoint(self.scaled(viewPoint.x), self.scaled(viewPoint.y))
         guard viewPoint.x >= 0, viewPoint.x < self.viewWidthScaled,
               viewPoint.y >= 0, viewPoint.y < self.viewHeightScaled else { return nil }
@@ -132,12 +132,12 @@ extension CellGridView
         let viewCellY: Int = ((self.shiftScaledY > 0)
                              ? (viewPoint.y + (self.cellSizeScaled - self.shiftScaledY))
                              : (viewPoint.y - self.shiftScaledY)) / self.cellSizeScaled
-        return CellLocation(viewCellX, viewCellY)
+        return ViewLocation(viewCellX, viewCellY)
     }
 
     // Returns the grid-view location of the given cell-grid cell location, or nil.
     //
-    internal final func viewCellLocation(gridCellX: Int, gridCellY: Int) -> CellLocation? {
+    internal final func viewCellLocation(gridCellX: Int, gridCellY: Int) -> ViewLocation? {
         if (self.gridWrapAround) {
             if ((gridCellX < 0) || (gridCellX >= self.gridColumns) || (gridCellY < 0) || (gridCellY >= self.gridRows)) {
                 let wrapAroundGridCellX: Int = ((gridCellX < 0) ? abs(gridCellX + self.gridColumns) : gridCellX) % self.gridColumns
@@ -145,7 +145,7 @@ extension CellGridView
                 let viewCellX: Int = gridCellX + self.shiftCellScaledX + ((self.shiftScaledX > 0) ? 1 : 0)
                 let viewCellY: Int = gridCellY + self.shiftCellScaledY + ((self.shiftScaledY > 0) ? 1 : 0)
                 print("viewCellLocation/wraparound: \(gridCellX),\(gridCellY) -> \(wrapAroundGridCellX),\(wrapAroundGridCellY)")
-                return CellLocation(viewCellX, viewCellY)
+                return ViewLocation(viewCellX, viewCellY)
             }
         }
         guard gridCellX >= 0, gridCellX < self.gridColumns,
@@ -171,10 +171,10 @@ extension CellGridView
                     viewCellY = viewCellY % self.viewCellEndY - 1
                 }
             }
-            return CellLocation(viewCellX, viewCellY)
+            return ViewLocation(viewCellX, viewCellY)
         }
         guard viewCellX >= 0, viewCellX <= self.viewCellEndX,
               viewCellY >= 0, viewCellY <= self.viewCellEndY else { return nil }
-        return CellLocation(viewCellX, viewCellY)
+        return ViewLocation(viewCellX, viewCellY)
     }
 }
