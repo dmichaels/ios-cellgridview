@@ -41,7 +41,7 @@ open class CellGridView: ObservableObject
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
-        public static let gridWrapAround: Bool = false
+        public static let gridWrapAround: Bool = true
     }
 
     // Note that internally all size related properties are stored as scaled;
@@ -286,6 +286,16 @@ open class CellGridView: ObservableObject
     internal final var shiftScaledY: Int         { self._shiftY }
     internal final var shiftTotalScaledX: Int    { self._shiftX + (self._shiftCellX * self._cellSize) }
     internal final var shiftTotalScaledY: Int    { self._shiftY + (self._shiftCellY * self._cellSize) }
+
+    // A "small" cell-grid means the total width or height of the cell-grid, were it to
+    // all be displayed, is smaller than the available width or height of the grid-view;
+    // currently used only to implement the gridWrapAround functionality; if this property
+    // is true then we do not enforce the wrap-around behavior since it doesn't make sense.
+    //
+    internal final var cellGridSmallWidth: Bool  { (self.cellSizeScaled * self.gridColumns) < self.viewWidthScaled }
+    internal final var cellGridSmallHeight: Bool { (self.cellSizeScaled * self.gridRows) < self.viewHeightScaled }
+    internal final var gridWrapAroundX: Bool     { self._gridWrapAround && !self.cellGridSmallWidth }
+    internal final var gridWrapAroundY: Bool     { self._gridWrapAround && !self.cellGridSmallHeight }
 
     internal final var viewScaling: Bool {
         get { self._viewScaling }
@@ -580,11 +590,16 @@ open class CellGridView: ObservableObject
             // fits completely WITHIN the grid-view, which is weird (thus the dicey comment) if this
             // is the case, as ... hm ... maybe if this is the case we don't wraparound ...
             if (self._gridWrapAround) {
-                let wrapAroundGridCellX: Int = (gridCellX < 0) ? gridCellX + self._gridColumns - 1 : gridCellX % self._gridColumns
-                let wrapAroundGridCellY: Int = (gridCellY < 0) ? gridCellY + self._gridRows - 1 : gridCellY % self._gridRows
-                if let cell = self.gridCell(wrapAroundGridCellX, wrapAroundGridCellY) {
-                    // foreground = cell.foreground
-                    foreground = cell.foreground.darken(by: 0.5) // todo/xyzzy/debug
+                if (!self.cellGridSmallWidth && !self.cellGridSmallHeight) {
+                    let wrapAroundGridCellX: Int = (gridCellX < 0) ? gridCellX + self._gridColumns - 1 : gridCellX % self._gridColumns
+                    let wrapAroundGridCellY: Int = (gridCellY < 0) ? gridCellY + self._gridRows - 1 : gridCellY % self._gridRows
+                    if let cell = self.gridCell(wrapAroundGridCellX, wrapAroundGridCellY) {
+                        // foreground = cell.foreground
+                        foreground = cell.foreground.darken(by: 0.5) // todo/xyzzy/debug
+                    }
+                    else {
+                        foreground = self._viewBackground
+                    }
                 }
                 else {
                     foreground = self._viewBackground

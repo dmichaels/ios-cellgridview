@@ -76,6 +76,8 @@ extension CellGridView
                 even = true
             }
         }
+        let cellGridWidth: Int = self.cellSizeScaled * self.gridColumns
+        let cellGridHeight: Int = self.cellSizeScaled * self.gridRows
         print(String(format: "SHIFT(\(shiftTotalX),\(shiftTotalY)) %.5f" +
                              (self.viewScaling ? " SC" : " US") +
                              " CS:\(self.cellSizeScaled)" +
@@ -87,6 +89,12 @@ extension CellGridView
                              " SH:\(self.shiftScaledX),\(shiftScaledY)" +
                              " SHU:\(self.shiftX),\(self.shiftY)" +
                              " SHO:\(shiftOppositeScaled)" +
+                             " VWE:\(self.viewWidthExtraScaled)" +
+                             " VW:\(self.viewWidthScaled)" +
+                             " GW:\(cellGridWidth)" +
+                             " GH:\(cellGridHeight)" +
+                             " GWS:\(self.cellGridSmallWidth)" +
+                             " GHS:\(self.cellGridSmallHeight)" +
                              (even ? " EVEN" : " UNEVEN"), time))
     }
 }

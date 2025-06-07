@@ -13,12 +13,33 @@ extension CellGridView
     //
     public final func gridCell<T: Cell>(_ gridCellX: Int, _ gridCellY: Int) -> T? {
         if (self.gridWrapAround) {
+            var gridCellX: Int = gridCellX
+            var gridCellY: Int = gridCellY
+            // NONONON ... use this new self.gridWrapAroundX property to prevent ... idunno ... pickup later ...
+            if ((gridCellX < 0) || (gridCellX >= self.gridColumns)) {
+                if (!self.gridWrapAroundX) {
+                    return nil
+                }
+                gridCellX = ((gridCellX < 0) ? abs(gridCellX + self.gridColumns) : gridCellX) % self.gridColumns
+            }
+            if ((gridCellY < 0) || (gridCellY >= self.gridRows)) {
+                if (!self.gridWrapAroundY) {
+                    return nil
+                }
+                gridCellY = ((gridCellY < 0) ? abs(gridCellY + self.gridRows) : gridCellY) % self.gridRows
+            }
+            if gridCellX < 0 || gridCellY < 0 {
+                var x = 1
+            }
+            return self.gridCells[gridCellY * self.gridColumns + gridCellX] as? T
+            /*
             if ((gridCellX < 0) || (gridCellX >= self.gridColumns) || (gridCellY < 0) || (gridCellY >= self.gridRows)) {
                 let wrapAroundGridCellX: Int = ((gridCellX < 0) ? abs(gridCellX + self.gridColumns) : gridCellX) % self.gridColumns
                 let wrapAroundGridCellY: Int = ((gridCellY < 0) ? abs(gridCellY + self.gridRows) : gridCellY) % self.gridRows
                 print("gridCell/wraparound: \(gridCellX),\(gridCellY) -> \(wrapAroundGridCellX),\(wrapAroundGridCellY)")
                 return self.gridCells[wrapAroundGridCellY * self.gridColumns + wrapAroundGridCellX] as? T
             }
+            */
         }
         guard gridCellX >= 0, gridCellX < self.gridColumns, gridCellY >= 0, gridCellY < self.gridRows else {
             return nil
@@ -53,7 +74,7 @@ extension CellGridView
             var gridCellX: Int = viewCellLocation.x - self.shiftCellScaledX - ((self.shiftScaledX > 0) ? 1 : 0)
             if (self.gridWrapAround) {
                 if ((gridCellX < 0) || (gridCellX >= self.gridColumns)) {
-                    let wrapAroundGridCellX: Int = (gridCellX < 0) ? gridCellX + self.gridColumns : gridCellX % self.gridColumns
+                    let wrapAroundGridCellX: Int = ((gridCellX < 0) ? abs(gridCellX + self.gridColumns) : gridCellX) % self.gridColumns
                     print("gridCellLocation/wraparound/x: \(viewPoint.x) -> \(gridCellX) -> \(wrapAroundGridCellX)")
                     gridCellX = wrapAroundGridCellX
                 }
@@ -62,7 +83,7 @@ extension CellGridView
             var gridCellY: Int = viewCellLocation.y - self.shiftCellScaledY - ((self.shiftScaledY > 0) ? 1 : 0)
             if (self.gridWrapAround) {
                 if ((gridCellY < 0) || (gridCellY >= self.gridRows)) {
-                    let wrapAroundGridCellY: Int = (gridCellY < 0) ? gridCellY + self.gridRows : gridCellY % self.gridRows
+                    let wrapAroundGridCellY: Int = ((gridCellY < 0) ? abs(gridCellY + self.gridRows) : gridCellY) % self.gridRows
                     print("gridCellLocation/wraparound/y: \(viewPoint.y) -> \(gridCellY) -> \(wrapAroundGridCellY)")
                     gridCellY = wrapAroundGridCellY
                 }
@@ -129,8 +150,29 @@ extension CellGridView
         }
         guard gridCellX >= 0, gridCellX < self.gridColumns,
               gridCellY >= 0, gridCellY < self.gridRows else { return nil }
-        let viewCellX: Int = gridCellX + self.shiftCellScaledX + ((self.shiftScaledX > 0) ? 1 : 0)
-        let viewCellY: Int = gridCellY + self.shiftCellScaledY + ((self.shiftScaledY > 0) ? 1 : 0)
+        var viewCellX: Int = gridCellX + self.shiftCellScaledX + ((self.shiftScaledX > 0) ? 1 : 0)
+        var viewCellY: Int = gridCellY + self.shiftCellScaledY + ((self.shiftScaledY > 0) ? 1 : 0)
+        if (self.gridWrapAround) {
+            if (self.gridWrapAroundX) {
+                // viewCellX = (viewCellX < 0) ? (self.gridColumns + viewCellX) : ((viewCellX % self.viewCellEndX) - 1)
+                if (viewCellX < 0) {
+                    viewCellX = self.gridColumns + viewCellX
+                }
+                else if (viewCellX > self.viewCellEndX) {
+                    viewCellX = viewCellX % self.viewCellEndX - 1
+                }
+            }
+            if (self.gridWrapAroundY) {
+                // viewCellY = (viewCellY < 0) ? (self.gridRows + viewCellY) : ((viewCellY % self.viewCellEndY) - 1)
+                if (viewCellY < 0) {
+                    viewCellY = self.gridRows + viewCellY
+                }
+                else if (viewCellY > self.viewCellEndY) {
+                    viewCellY = viewCellY % self.viewCellEndY - 1
+                }
+            }
+            return CellLocation(viewCellX, viewCellY)
+        }
         guard viewCellX >= 0, viewCellX <= self.viewCellEndX,
               viewCellY >= 0, viewCellY <= self.viewCellEndY else { return nil }
         return CellLocation(viewCellX, viewCellY)
