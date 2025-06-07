@@ -41,7 +41,7 @@ open class CellGridView: ObservableObject
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
-        public static let gridWrapAround: Bool = true
+        public static let gridWrapAround: Bool = false
     }
 
     // Note that internally all size related properties are stored as scaled;
@@ -292,6 +292,8 @@ open class CellGridView: ObservableObject
     // currently used only to implement the gridWrapAround functionality; if this property
     // is true then we do not enforce the wrap-around behavior since it doesn't make sense.
     //
+    internal final var cellGridWidthScaled: Int  { self.cellSizeScaled * self.gridColumns}
+    internal final var cellGridHeightScaled: Int { self.cellSizeScaled * self.gridRows }
     internal final var cellGridSmallWidth: Bool  { (self.cellSizeScaled * self.gridColumns) < self.viewWidthScaled }
     internal final var cellGridSmallHeight: Bool { (self.cellSizeScaled * self.gridRows) < self.viewHeightScaled }
     internal final var gridWrapAroundX: Bool     { self._gridWrapAround && !self.cellGridSmallWidth }
@@ -333,7 +335,7 @@ open class CellGridView: ObservableObject
         #endif
 
         // If the given scaled argument is false then the passed shiftTotalX/shiftTotalY arguments are
-        // assumed to be unscaled and so we scale them; as this function operates on scaled values.
+        // assumed to be unscaled and so we scale them, as this function operates on scaled values.
 
         var shiftX: Int = !scaled ? self.scaled(shiftTotalX) : shiftTotalX, shiftCellX: Int
         var shiftY: Int = !scaled ? self.scaled(shiftTotalY) : shiftTotalY, shiftCellY: Int
