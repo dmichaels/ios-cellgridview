@@ -129,7 +129,7 @@ public struct CellColor: Equatable, Sendable
         CellColor(CellColor.darken(self.color, by: amount))
     }
 
-    public static func darken(_ color: Color, by amount: CGFloat) -> Color {
+    private static func darken(_ color: Color, by amount: CGFloat) -> Color {
         let uiColor = UIColor(color)
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alpha: CGFloat = 0
         if uiColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
