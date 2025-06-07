@@ -5,8 +5,8 @@ import SwiftUI
 //
 public struct CellColor: Equatable, Sendable
 {
-    // These values works with Memory.fastcopy NOT using value.bigEndian;
-    // if these were the opposite (i.e. red-24, green-16, blue-8, alpha-0)
+    // These values works with Utils.Memory.fastcopy NOT using value.bigEndian;
+    // if these were the opposite (RSHIFT: 24, GSHIFT: 16, BSHIFT: 8, ALPHA: 0),
     // then we would need to use value.bigEndian there; slightly faster without.
 
     public static let RSHIFT: Int   =   0
