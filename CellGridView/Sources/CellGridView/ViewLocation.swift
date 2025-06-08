@@ -1,6 +1,9 @@
 import Foundation
 
 // Represents an integer based cell-based (i.e. cell-indexed) location within the grid-view.
+// Note that his grid-view location (not "point" - see ViewPoint) in practice is always
+// starts at (index) zero on the left/top, and contines to the right/bottom to the
+// index of the maximum number of cells able to be of displayed in the grid-view.
 // Exactly the same implementation as ViewPoint & CellLocation; differential naming as documentation.
 //
 public struct ViewLocation: Hashable
