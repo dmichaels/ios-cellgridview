@@ -3,10 +3,6 @@ import Utils
 
 extension CellGridView
 {
-    private final func scaled(_ viewPoint: CGFloat) -> CGFloat {
-        return self.screen.scaled(viewPoint, scaling: self.viewScaling)
-    }
-
     // Returns the cell-grid cell object for the given cell-grid cell location, or nil.
     // FYI note that the cells are stored in a single dimensional array and access in
     // typical row major fashion; slightly more efficient that two dimensional array.
@@ -176,5 +172,9 @@ extension CellGridView
         }
         print("viewCellLocation(G): \(gridCellX),\(gridCellY) -> \(viewCellX),\(viewCellY)")
         return ViewLocation(viewCellX, viewCellY)
+    }
+
+    private final func scaled(_ viewPoint: CGFloat) -> CGFloat {
+        return self.screen.scaled(viewPoint, scaling: self.viewScaling)
     }
 }
