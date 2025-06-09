@@ -41,6 +41,9 @@ open class CellGridView: ObservableObject
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
+        //
+        // Wraparound support is incomplete, half-baked, and of questionable utility.
+        //
         public static let gridWrapAround: Bool = false
     }
 
