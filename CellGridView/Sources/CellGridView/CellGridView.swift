@@ -295,11 +295,11 @@ open class CellGridView: ObservableObject
         set {
             if (newValue) {
                 if (!self._viewScaling) {
-                    Zoom.scale(self)
+                    self.scale()
                 }
             }
             else if (self._viewScaling) {
-                Zoom.unscale(self)
+                self.unscale()
             }
         }
     }
