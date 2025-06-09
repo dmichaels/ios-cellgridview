@@ -76,6 +76,21 @@ extension CellGridView
                                                             cellSize: cellGridView.cellSizeScaled,
                                                             cellSizeIncrement: cellSizeIncrement,
                                                             shiftTotal: cellGridView.shiftTotalScaledX)
+            /*
+            if shiftTotalAdjustedX > 0 {
+                let gridViewWidth: Int = cellGridView.cellSizeScaled * cellGridView.gridColumns
+                let shiftOpposite: Int = cellGridView.viewWidthScaled - (shiftTotalAdjustedX + gridViewWidth)
+                if (shiftOpposite > 0) {
+                    shiftTotalAdjustedX = Int(floor(Double(shiftTotalAdjustedX + shiftOpposite) / 2.0))
+                }
+                else {
+                    shiftTotalAdjustedX = 0
+                }
+                // if (gridViewWidth < cellGridView.viewWidthScaled) {
+                //     shiftTotalAdjustedX = 0
+                // }
+            }
+            */
             let shiftTotalAdjustedY: Int = adjustShiftTotal(viewSize: cellGridView.viewHeightScaled,
                                                             cellSize: cellGridView.cellSizeScaled,
                                                             cellSizeIncrement: cellSizeIncrement,

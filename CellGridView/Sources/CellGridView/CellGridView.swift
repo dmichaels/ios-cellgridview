@@ -41,7 +41,7 @@ open class CellGridView: ObservableObject
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
-        public static let gridWrapAround: Bool = true
+        public static let gridWrapAround: Bool = false
     }
 
     // Note that internally all size related properties are stored as scaled;
@@ -135,6 +135,14 @@ open class CellGridView: ObservableObject
     {
         self._screen = screen
 
+        self._gridColumns = gridColumns > 0 ? gridColumns : self._viewColumns
+        self._gridRows = gridRows > 0 ? gridRows : self._viewRows
+        self._gridCellEndX = self._gridColumns - 1
+        self._gridCellEndY = self._gridRows - 1
+        self._gridCells = self.defineGridCells(gridColumns: self._gridColumns,
+                                               gridRows: self._gridRows,
+                                               foreground: cellForeground)
+
         let preferredSize = CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight,
                                                        cellSize: cellSize, enabled: cellSizeFit)
         self.configure(cellSize: preferredSize.cellSize,
@@ -145,14 +153,6 @@ open class CellGridView: ObservableObject
                        viewBackground: viewBackground,
                        viewTransparency: viewTransparency,
                        viewScaling: viewScaling)
-
-        self._gridColumns = gridColumns > 0 ? gridColumns : self._viewColumns
-        self._gridRows = gridRows > 0 ? gridRows : self._viewRows
-        self._gridCellEndX = self._gridColumns - 1
-        self._gridCellEndY = self._gridRows - 1
-        self._gridCells = self.defineGridCells(gridColumns: self._gridColumns,
-                                               gridRows: self._gridRows,
-                                               foreground: cellForeground)
 
         #if targetEnvironment(simulator)
             self.printSizes(viewWidthInit: viewWidth, viewHeightInit: viewHeight,
@@ -185,15 +185,21 @@ open class CellGridView: ObservableObject
 
         self._viewScaling = [CellShape.square, CellShape.inset].contains(cellShape) ? false : viewScaling
 
-        // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
-
-        let cellPadding: Int = constrainCellPadding(!scaled ? self.scaled(cellPadding) : cellPadding, scaled: true)
-        let cellSize: Int = constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, cellPadding: cellPadding, scaled: true)
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
         self._viewWidth = viewWidth
         self._viewHeight = viewHeight
+
+        // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
+
+        let cellPadding: Int = constrainCellPadding(!scaled ? self.scaled(cellPadding) : cellPadding, scaled: true)
+        let cellSize: Int = constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, cellPadding: cellPadding, scaled: true)
+        // let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
+        // let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
+
+        // self._viewWidth = viewWidth
+        // self._viewHeight = viewHeight
         self._cellSize = cellSize
         self._cellSizeTimesViewWidth = self._cellSize * self._viewWidth
         self._cellPadding = cellPadding
@@ -240,7 +246,13 @@ open class CellGridView: ObservableObject
         let cellSizeInnerMin: Int = self.scaled(Defaults.cellSizeInnerMin)
         let cellSizeMax: Int = self.scaled(Defaults.cellSizeMax)
         let cellPadding: Int = !scaled ? self.scaled(cellPadding ?? self.cellPadding) : (cellPadding ?? self.cellPaddingScaled)
-        return cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
+        var constrainedCellSize: Int = cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
+        if (false && self.gridWrapAround) {
+            if (constrainedCellSize < self.viewWidthScaled / self.gridColumns) {
+                constrainedCellSize = self.viewWidthScaled / self.gridColumns
+            }
+        }
+        return constrainedCellSize
     }
 
     private final func constrainCellPadding(_ cellPadding: Int, scaled: Bool = false) -> Int {
@@ -296,6 +308,8 @@ open class CellGridView: ObservableObject
     internal final var cellGridHeightScaled: Int { self.cellSizeScaled * self.gridRows }
     internal final var cellGridSmallWidth: Bool  { (self.cellSizeScaled * self.gridColumns) < self.viewWidthScaled }
     internal final var cellGridSmallHeight: Bool { (self.cellSizeScaled * self.gridRows) < self.viewHeightScaled }
+    // internal final var cellGridSmallWidth: Bool  { false }
+    // internal final var cellGridSmallHeight: Bool { false }
 
     internal final var viewScaling: Bool {
         get { self._viewScaling }
@@ -579,7 +593,15 @@ open class CellGridView: ObservableObject
         // cell buffer block that we use can be a simplified one which just writes all background;
         // but this is probably not really a typical/common case for things we can think of for now.
         //
-        let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.foreground ?? self._viewBackground
+        // XYZZY/SAVE: let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.foreground ?? self._viewBackground
+        // XYZZY/BEGIN
+        let cell: Cell? = self.gridCell(gridCellX, gridCellY)
+        var foreground: CellColor = cell?.foreground ?? self._viewBackground
+        if let cell = cell {
+            foreground = foreground.darken(by: CGFloat(cell.x) * 0.06)
+            foreground = foreground.darken(by: CGFloat(cell.y) * 0.01)
+        }
+        // XYZZY/END
         let foregroundOnly: Bool = false
 
         // Setup the offset for the buffer blocks; offset used within writeCellBlock.
