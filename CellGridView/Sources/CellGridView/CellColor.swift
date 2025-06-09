@@ -5,8 +5,8 @@ import SwiftUI
 //
 public struct CellColor: Equatable, Sendable
 {
-    // These values works with Memory.fastcopy NOT using value.bigEndian;
-    // if these were the opposite (i.e. red-24, green-16, blue-8, alpha-0)
+    // These values works with Utils.Memory.fastcopy NOT using value.bigEndian;
+    // if these were the opposite (RSHIFT: 24, GSHIFT: 16, BSHIFT: 8, ALPHA: 0),
     // then we would need to use value.bigEndian there; slightly faster without.
 
     public static let RSHIFT: Int   =   0
@@ -129,7 +129,7 @@ public struct CellColor: Equatable, Sendable
         CellColor(CellColor.darken(self.color, by: amount))
     }
 
-    public static func darken(_ color: Color, by amount: CGFloat) -> Color {
+    private static func darken(_ color: Color, by amount: CGFloat) -> Color {
         let uiColor = UIColor(color)
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alpha: CGFloat = 0
         if uiColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
