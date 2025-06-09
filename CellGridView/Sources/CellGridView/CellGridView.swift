@@ -569,34 +569,7 @@ open class CellGridView: ObservableObject
         // cell buffer block that we use can be a simplified one which just writes all background;
         // but this is probably not really a typical/common case for things we can think of for now.
         //
-        // let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.foreground ?? self._viewBackground
-        var cell: Cell? = self.gridCell(gridCellX, gridCellY)
-        var foreground: CellColor
-        if (cell == nil) {
-            //
-            // In wraparound mode (which is a dicey proposition in any case but giving it a try),
-            // a given cell-grid location can map to more than one grid-view locations, i.e. if
-            // the cell-grid dimension is smaller than the grid-view dimension, i.e. if the cell-grid
-            // fits completely WITHIN the grid-view, which is weird (thus the dicey comment) if this
-            // is the case, as ... hm ... maybe if this is the case we don't wraparound ...
-            if (self._gridWrapAround) {
-                let wrapAroundGridCellX: Int = (gridCellX < 0) ? gridCellX + self._gridColumns - 1 : gridCellX % self._gridColumns
-                let wrapAroundGridCellY: Int = (gridCellY < 0) ? gridCellY + self._gridRows - 1 : gridCellY % self._gridRows
-                if let cell = self.gridCell(wrapAroundGridCellX, wrapAroundGridCellY) {
-                    // foreground = cell.foreground
-                    foreground = cell.foreground.darken(by: 0.5) // todo/xyzzy/debug
-                }
-                else {
-                    foreground = self._viewBackground
-                }
-            }
-            else {
-                foreground = self._viewBackground
-            }
-        }
-        else {
-            foreground = cell!.foreground
-        }
+        let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.foreground ?? self._viewBackground
         let foregroundOnly: Bool = false
 
         // Setup the offset for the buffer blocks; offset used within writeCellBlock.
