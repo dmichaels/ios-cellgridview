@@ -323,7 +323,7 @@ open class CellGridView: ObservableObject
         #endif
 
         // If the given scaled argument is false then the passed shiftTotalX/shiftTotalY arguments are
-        // assumed to be unscaled and so we scale them; as this function operates on scaled values.
+        // assumed to be unscaled and so we scale them, as this function operates on scaled values.
 
         var shiftX: Int = !scaled ? self.scaled(shiftTotalX) : shiftTotalX, shiftCellX: Int
         var shiftY: Int = !scaled ? self.scaled(shiftTotalY) : shiftTotalY, shiftCellY: Int
