@@ -110,11 +110,12 @@ open class CellGridView: ObservableObject
     //
     internal var _buffer: [UInt8] = []
 
-    // This _updateImage function property is the update function from the caller
+    // This _onChangeImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
     //
-    private var _updateImage: () -> Void = {}
+    private var _onChangeImage: () -> Void = {}
+    private var _onChangeCellSize: (Int) -> Void = {_ in}
 
     public init() {}
 
@@ -134,7 +135,8 @@ open class CellGridView: ObservableObject
                                  cellForeground: CellColor,
                                  gridColumns: Int,
                                  gridRows: Int,
-                                 updateImage: @escaping () -> Void)
+                                 onChangeImage: @escaping () -> Void,
+                                 onChangeCellSize: @escaping (Int) -> Void = {_ in})
     {
         self._screen = screen
 
@@ -169,9 +171,10 @@ open class CellGridView: ObservableObject
             self.writeCells(shiftTotalX: 0, shiftTotalY: 0, scaled: false)
         }
 
-        self._updateImage = updateImage
+        self._onChangeImage = onChangeImage
+        self._onChangeCellSize = onChangeCellSize
 
-        self.updateImage()
+        self.onChangeImage()
     }
 
     public final func configure(cellSize: Int,
@@ -246,8 +249,12 @@ open class CellGridView: ObservableObject
         }
     }
 
-    public final func updateImage() {
-        self._updateImage()
+    public final func onChangeImage() {
+        self._onChangeImage()
+    }
+
+    public final func onChangeCellSize(_ cellSize: Int) {
+        self._onChangeCellSize(cellSize)
     }
 
     private final lazy var actions: CellGridView.Actions = {
