@@ -174,15 +174,16 @@ open class CellGridView: ObservableObject
         self.updateImage()
     }
 
-    internal final func configure(cellSize: Int,
-                                  cellPadding: Int,
-                                  cellShape: CellShape,
-                                  viewWidth: Int,
-                                  viewHeight: Int,
-                                  viewBackground: CellColor,
-                                  viewTransparency: UInt8,
-                                  viewScaling: Bool,
-                                  scaled: Bool = false)
+    public final func configure(cellSize: Int,
+                                cellPadding: Int,
+                                cellShape: CellShape,
+                                viewWidth: Int,
+                                viewHeight: Int,
+                                viewBackground: CellColor,
+                                viewTransparency: UInt8,
+                                viewScaling: Bool,
+                                adjust: Bool = false,
+                                scaled: Bool = false)
     {
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
@@ -194,6 +195,13 @@ open class CellGridView: ObservableObject
         let cellSize: Int = constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, cellPadding: cellPadding, scaled: true)
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
+
+        let cellSizeIncrement: Int = (cellSize - self.scaled(self.cellSize))
+        let shiftForResizeCells = (
+            (cellSizeIncrement != 0) && adjust
+            ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
+            : nil
+        )
 
         self._viewWidth = viewWidth
         self._viewHeight = viewHeight
@@ -229,6 +237,12 @@ open class CellGridView: ObservableObject
                                                              cellPadding: self._cellPadding,
                                                              cellShape: self._cellShape,
                                                              cellTransparency: self._viewTransparency)
+        if let shiftForResizeCells = shiftForResizeCells {
+            self.writeCells(shiftTotalX: shiftForResizeCells.x, shiftTotalY: shiftForResizeCells.y, scaled: self.viewScaling)
+        }
+        else if (adjust) {
+            self.writeCells(shiftTotalX: self.shiftTotalScaledX, shiftTotalY: self.shiftTotalScaledY, scaled: true)
+        }
     }
 
     public final func updateImage() {
@@ -290,7 +304,7 @@ open class CellGridView: ObservableObject
     internal final var shiftTotalScaledX: Int    { self._shiftX + (self._shiftCellX * self._cellSize) }
     internal final var shiftTotalScaledY: Int    { self._shiftY + (self._shiftCellY * self._cellSize) }
 
-    internal final var viewScaling: Bool {
+    public internal(set) var viewScaling: Bool {
         get { self._viewScaling }
         set {
             if (newValue) {
@@ -319,7 +333,7 @@ open class CellGridView: ObservableObject
     // Sets the cell-grid within the grid-view to be shifted by the given amount,
     // from the upper-left; note that the given shiftTotalX and shiftTotalY values are unscaled.
     //
-    internal final func writeCells(shiftTotalX: Int, shiftTotalY: Int, dragging: Bool = false, scaled: Bool = false)
+    public final func writeCells(shiftTotalX: Int, shiftTotalY: Int, dragging: Bool = false, scaled: Bool = false)
     {
         #if targetEnvironment(simulator)
             let debugStart = Date()

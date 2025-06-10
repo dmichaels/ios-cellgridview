@@ -96,6 +96,17 @@ extension CellGridView
     public func scale() { self.scale(true) }
     public func unscale() { self.scale(false) }
 
+    public func shiftForResizeCells(cellSizeIncrement: Int) -> (x: Int, y: Int)
+    {
+        return CellGridView.shiftForResizeCells(cellSize: self.cellSizeScaled,
+                                                cellSizeIncrement: cellSizeIncrement,
+                                                viewWidth: self.viewWidthScaled,
+                                                viewHeight: self.viewHeightScaled,
+                                                shiftTotalX: self.shiftTotalScaledX,
+                                                shiftTotalY: self.shiftTotalScaledY,
+                                                viewAnchorFactor: Zoom.Defaults.viewAnchorFactor)
+    }
+
     private static func shiftForResizeCells(cellSize: Int,
                                             cellSizeIncrement: Int,
                                             viewWidth: Int,
