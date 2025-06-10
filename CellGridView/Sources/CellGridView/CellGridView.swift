@@ -238,10 +238,12 @@ open class CellGridView: ObservableObject
                                                              cellShape: self._cellShape,
                                                              cellTransparency: self._viewTransparency)
         if let shiftForResizeCells = shiftForResizeCells {
-            self.writeCells(shiftTotalX: shiftForResizeCells.x, shiftTotalY: shiftForResizeCells.y, scaled: self.viewScaling)
+            self.writeCells(shiftTotalX: shiftForResizeCells.x,
+                            shiftTotalY: shiftForResizeCells.y, scaled: self.viewScaling)
         }
         else if (adjust) {
-            self.writeCells(shiftTotalX: self.shiftTotalScaledX, shiftTotalY: self.shiftTotalScaledY, scaled: true)
+            self.writeCells(shiftTotalX: self.scaled(self.shiftTotalX),
+                            shiftTotalY: self.scaled(self.shiftTotalY), scaled: self.viewScaling)
         }
     }
 
