@@ -182,7 +182,8 @@ open class CellGridView: ObservableObject
                                 viewBackground: CellColor,
                                 viewTransparency: UInt8,
                                 viewScaling: Bool,
-                                adjust: Bool = false,
+                                adjustShift: Bool = false,
+                                refreshCells: Bool = false,
                                 scaled: Bool = false)
     {
         // N.B. This here first so subsequent calls to self.scaled work properly.
@@ -196,11 +197,14 @@ open class CellGridView: ObservableObject
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        let cellSizeIncrement: Int = (cellSize - self.scaled(self.cellSize))
-        let shiftForResizeCells = (
-            (cellSizeIncrement != 0) && adjust
-            ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
-            : nil
+        // Note that adjustShift implies refreshCells.
+
+        let shiftForRefresh = (
+            adjustShift && ((cellSize - self.scaled(self.cellSize)) != 0)
+            ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
+            : (refreshCells
+               ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
+               : nil)
         )
 
         self._viewWidth = viewWidth
@@ -237,13 +241,8 @@ open class CellGridView: ObservableObject
                                                              cellPadding: self._cellPadding,
                                                              cellShape: self._cellShape,
                                                              cellTransparency: self._viewTransparency)
-        if let shiftForResizeCells = shiftForResizeCells {
-            self.writeCells(shiftTotalX: shiftForResizeCells.x,
-                            shiftTotalY: shiftForResizeCells.y, scaled: self.viewScaling)
-        }
-        else if (adjust) {
-            self.writeCells(shiftTotalX: self.scaled(self.shiftTotalX),
-                            shiftTotalY: self.scaled(self.shiftTotalY), scaled: self.viewScaling)
+        if let shiftForRefresh = shiftForRefresh {
+            self.writeCells(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
         }
     }
 
