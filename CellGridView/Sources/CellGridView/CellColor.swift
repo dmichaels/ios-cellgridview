@@ -138,3 +138,15 @@ public struct CellColor: Equatable, Sendable
         return color // fallback
     }
 }
+
+extension Color {
+    //
+    // This helper can be useful in a settings view with a ColorPicker.
+    //
+    public init(_ cellColor: CellColor) {
+        self.init(.sRGB, red: Double(cellColor.red) / 255.0,
+                         green: Double(cellColor.green) / 255.0,
+                         blue: Double(cellColor.blue) / 255.0,
+                         opacity: Double(cellColor.alpha) / 255.0)
+    }
+}

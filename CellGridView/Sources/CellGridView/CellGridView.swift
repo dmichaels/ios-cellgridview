@@ -110,6 +110,10 @@ open class CellGridView: ObservableObject
     //
     internal var _buffer: [UInt8] = []
 
+    // Readonly list of preferred sizes for control in a settings view.
+    //
+    private var _preferredCellSizes: [Int] = []
+
     // This _onChangeImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
@@ -163,6 +167,9 @@ open class CellGridView: ObservableObject
             self.printSizes(viewWidthInit: viewWidth, viewHeightInit: viewHeight,
                             cellSizeInit: cellSize, cellSizeFitInit: cellSizeFit)
         #endif
+
+        self._preferredCellSizes = CellGridView.preferredSizes(viewWidth: self.viewWidth,
+                                                               viewHeight: self.viewHeight).map { $0.cellSize }
 
         if (Defaults.centerCellGrid) {
             self.center()
@@ -337,6 +344,8 @@ open class CellGridView: ObservableObject
     internal final func unscaled(_ value: Int) -> Int {
         return self.screen.unscaled(value, scaling: self._viewScaling)
     }
+
+    public final var preferredCellSizes: [Int] { self._preferredCellSizes }
 
     // Sets the cell-grid within the grid-view to be shifted by the given amount,
     // from the upper-left; note that the given shiftTotalX and shiftTotalY values are unscaled.
@@ -594,7 +603,7 @@ open class CellGridView: ObservableObject
         // cell buffer block that we use can be a simplified one which just writes all background;
         // but this is probably not really a typical/common case for things we can think of for now.
         //
-        let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.foreground ?? self._viewBackground
+        let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.color ?? self._viewBackground
         let foregroundOnly: Bool = false
 
         // Setup the offset for the buffer blocks; offset used within writeCellBlock.
@@ -701,7 +710,7 @@ open class CellGridView: ObservableObject
     open func onZoom(_ zoomFactor: CGFloat) { self.actions.onZoom(zoomFactor) }
     open func onZoomEnd(_ zoomFactor: CGFloat) { self.actions.onZoomEnd(zoomFactor) }
 
-    open func createCell<T: Cell>(x: Int, y: Int, foreground: CellColor) -> T? {
-        return Cell(cellGridView: self, x: x, y: y, foreground: foreground) as? T
+    open func createCell<T: Cell>(x: Int, y: Int, color: CellColor) -> T? {
+        return Cell(cellGridView: self, x: x, y: y, color: color) as? T
     }
 }

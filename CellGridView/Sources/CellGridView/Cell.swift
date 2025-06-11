@@ -6,7 +6,7 @@ open class Cell
     private var _cellGridView: CellGridView
     private let _x: Int
     private let _y: Int
-    private var _foreground: CellColor
+    private var _color: CellColor
 
     public var x: Int {
         self._x
@@ -20,25 +20,25 @@ open class Cell
         CellLocation(self._x, self._y)
     }
 
-    public var foreground: CellColor {
-        get { return self._foreground }
-        set { self._foreground = newValue }
+    public var color: CellColor {
+        get { return self._color }
+        set { self._color = newValue }
     }
 
     open var cellGridView: CellGridView {
         self._cellGridView
     }
 
-    public init(cellGridView: CellGridView, x: Int, y: Int, foreground: CellColor) {
+    public init(cellGridView: CellGridView, x: Int, y: Int, color: CellColor) {
         self._cellGridView = cellGridView
         self._x = x
         self._y = y
-        self._foreground = foreground
+        self._color = color
     }
 
-    public func write(foreground: CellColor, foregroundOnly: Bool = false) {
+    public func write(color: CellColor, foregroundOnly: Bool = false) {
         if let viewCellLocation = self._cellGridView.viewCellLocation(gridCellX: self._x, gridCellY: self._y) {
-            self._foreground = foreground
+            self._color = color
             self._cellGridView.writeCell(viewCellX: viewCellLocation.x, viewCellY: viewCellLocation.y)
         }
     }
