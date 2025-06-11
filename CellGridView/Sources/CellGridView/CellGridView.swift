@@ -37,7 +37,7 @@ open class CellGridView: ObservableObject
         public static let cellAntialiasFade: Float = 0.6  // smaller is smoother
         public static let cellRoundedRectangleRadius: Float = 0.25
 
-        public static let centerCellGrid: Bool = false
+        public static let gridCenter: Bool = false
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.2
@@ -82,6 +82,7 @@ open class CellGridView: ObservableObject
     private var _gridRows: Int = 0
     private var _gridCellEndX: Int = 0
     private var _gridCellEndY: Int = 0
+    private var _gridCenter: Bool = Defaults.gridCenter
     private var _gridWrapAround: Bool = Defaults.gridWrapAround
     private var _gridCells: [Cell] = []
 
@@ -139,6 +140,7 @@ open class CellGridView: ObservableObject
                                  cellForeground: CellColor,
                                  gridColumns: Int,
                                  gridRows: Int,
+                                 gridCenter: Bool,
                                  onChangeImage: @escaping () -> Void,
                                  onChangeCellSize: @escaping (Int) -> Void = {_ in})
     {
@@ -171,7 +173,8 @@ open class CellGridView: ObservableObject
         self._preferredCellSizes = CellGridView.preferredSizes(viewWidth: self.viewWidth,
                                                                viewHeight: self.viewHeight).map { $0.cellSize }
 
-        if (Defaults.centerCellGrid) {
+        self._gridCenter = gridCenter
+        if (gridCenter) {
             self.center()
         }
         else {

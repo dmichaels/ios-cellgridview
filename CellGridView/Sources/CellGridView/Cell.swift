@@ -20,7 +20,7 @@ open class Cell
         CellLocation(self._x, self._y)
     }
 
-    public var color: CellColor {
+    open var color: CellColor {
         get { return self._color }
         set { self._color = newValue }
     }
@@ -36,9 +36,11 @@ open class Cell
         self._color = color
     }
 
-    public func write(color: CellColor, foregroundOnly: Bool = false) {
+    public func write(color: CellColor? = nil, foregroundOnly: Bool = false) {
+        if let color = color {
+            self.color = color
+        }
         if let viewCellLocation = self._cellGridView.viewCellLocation(gridCellX: self._x, gridCellY: self._y) {
-            self._color = color
             self._cellGridView.writeCell(viewCellX: viewCellLocation.x, viewCellY: viewCellLocation.y)
         }
     }
