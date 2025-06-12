@@ -40,7 +40,7 @@ open class CellGridView: ObservableObject
         public static let gridCenter: Bool = false
         public static let restrictShiftStrict: Bool = false
         public static let unscaledZoom: Bool = false
-        public static let automationInterval: Double = 0.2
+        public static let automationInterval: Double = 0.5
         //
         // Wraparound support is incomplete, half-baked, and of questionable utility.
         //
@@ -119,6 +119,7 @@ open class CellGridView: ObservableObject
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
     //
+    private var _automationInterval: Double = Defaults.automationInterval
     private var _onChangeImage: () -> Void = {}
     private var _onChangeCellSize: (Int) -> Void = {_ in}
 
@@ -141,6 +142,7 @@ open class CellGridView: ObservableObject
                                  gridColumns: Int,
                                  gridRows: Int,
                                  gridCenter: Bool,
+                                 automationInterval: Double = Defaults.automationInterval,
                                  onChangeImage: @escaping () -> Void,
                                  onChangeCellSize: @escaping (Int) -> Void = {_ in})
     {
@@ -181,6 +183,7 @@ open class CellGridView: ObservableObject
             self.writeCells(shiftTotalX: 0, shiftTotalY: 0, scaled: false)
         }
 
+        self._automationInterval = automationInterval
         self._onChangeImage = onChangeImage
         self._onChangeCellSize = onChangeCellSize
 
@@ -259,6 +262,16 @@ open class CellGridView: ObservableObject
         }
     }
 
+    public final var automationInterval: Double {
+        get { return self.automationInterval }
+        set {
+            if (newValue != self._automationInterval) {
+                self._automationInterval = newValue
+                self.actions.automationInterval = newValue
+            }
+        }
+    }
+
     public final func onChangeImage() {
         self._onChangeImage()
     }
@@ -268,7 +281,7 @@ open class CellGridView: ObservableObject
     }
 
     private final lazy var actions: CellGridView.Actions = {
-        return CellGridView.Actions(self, automationInterval: Defaults.automationInterval)
+        return CellGridView.Actions(self, automationInterval: self._automationInterval)
     }()
 
     internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil, scaled: Bool = false) -> Int {

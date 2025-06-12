@@ -6,7 +6,7 @@ extension CellGridView
     internal final class Actions
     {
         private let _cellGridView: CellGridView
-        private let _automationInterval: Double
+        private var _automationInterval: Double
         private var _automation: Bool = false
         private var _automationTimer: Timer? = nil
         private var _dragger: CellGridView.Drag? = nil
@@ -17,6 +17,19 @@ extension CellGridView
         internal init(_ cellGridView: CellGridView, automationInterval: Double = Defaults.automationInterval) {
             self._cellGridView = cellGridView
             self._automationInterval = automationInterval
+        }
+
+        internal var automationInterval: Double {
+            get { return self._automationInterval }
+            set {
+                if (newValue != self._automationInterval) {
+                    self._automationInterval = newValue
+                    if (self._automation) {
+                        self.automationStop()
+                        self.automationStart()
+                    }
+                }
+            }
         }
 
         internal func automationToggle() {
