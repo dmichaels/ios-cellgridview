@@ -1,12 +1,13 @@
 import Foundation
 import SwiftUI
+import Utils
 
 open class Cell
 {
     private var _cellGridView: CellGridView
     private let _x: Int
     private let _y: Int
-    private var _color: CellColor
+    private var _color: Colour
 
     public var x: Int {
         self._x
@@ -20,7 +21,7 @@ open class Cell
         CellLocation(self._x, self._y)
     }
 
-    open var color: CellColor {
+    open var color: Colour {
         get { return self._color }
         set { self._color = newValue }
     }
@@ -29,14 +30,14 @@ open class Cell
         self._cellGridView
     }
 
-    public init(cellGridView: CellGridView, x: Int, y: Int, color: CellColor) {
+    public init(cellGridView: CellGridView, x: Int, y: Int, color: Colour) {
         self._cellGridView = cellGridView
         self._x = x
         self._y = y
         self._color = color
     }
 
-    public func write(color: CellColor? = nil, foregroundOnly: Bool = false) {
+    public func write(color: Colour? = nil, foregroundOnly: Bool = false) {
         if let color = color {
             self.color = color
         }

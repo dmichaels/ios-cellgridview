@@ -20,15 +20,15 @@ open class CellGridView: ObservableObject
 
         // The size related properties here (being outward facing) are unscaled.
 
-        public static let viewBackground: CellColor = CellColor.brown
-        public static let viewTransparency: UInt8 = CellColor.OPAQUE
+        public static let viewBackground: Colour = Colour.brown
+        public static let viewTransparency: UInt8 = Colour.OPAQUE
         public static let viewScaling: Bool = true
 
         public static let cellSize: Int = 43
         public static let cellSizeFit: Bool = true
         public static let cellPadding: Int = 1
         public static let cellShape: CellShape = CellShape.rounded
-        public static let cellForeground: CellColor = CellColor.white // CellColor.black
+        public static let cellForeground: Colour = Colour.white // Colour.black
 
         public static let cellSizeMax: Int = 200
         public static let cellSizeInnerMin: Int = 3
@@ -68,7 +68,7 @@ open class CellGridView: ObservableObject
     private var _viewRowsExtra: Int = 0
     private var _viewCellEndX: Int = 0
     private var _viewCellEndY: Int = 0
-    private var _viewBackground: CellColor = CellColor.black
+    private var _viewBackground: Colour = Colour.black
     private var _viewTransparency: UInt8 = 0
     private var _viewScaling: Bool = true
 
@@ -131,14 +131,14 @@ open class CellGridView: ObservableObject
     public final func initialize(screen: Screen,
                                  viewWidth: Int,
                                  viewHeight: Int,
-                                 viewBackground: CellColor,
+                                 viewBackground: Colour,
                                  viewTransparency: UInt8,
                                  viewScaling: Bool,
                                  cellSize: Int,
                                  cellPadding: Int,
                                  cellSizeFit: Bool,
                                  cellShape: CellShape,
-                                 cellForeground: CellColor,
+                                 cellForeground: Colour,
                                  gridColumns: Int,
                                  gridRows: Int,
                                  gridCenter: Bool,
@@ -195,7 +195,7 @@ open class CellGridView: ObservableObject
                                 cellShape: CellShape,
                                 viewWidth: Int,
                                 viewHeight: Int,
-                                viewBackground: CellColor,
+                                viewBackground: Colour,
                                 viewTransparency: UInt8,
                                 viewScaling: Bool,
                                 adjustShift: Bool = false,
@@ -304,7 +304,7 @@ open class CellGridView: ObservableObject
     public   final var viewHeight: Int           { self._unscaled_viewHeight }
     public   final var viewColumns: Int          { self._viewColumns }
     public   final var viewRows: Int             { self._viewRows }
-    public   final var viewBackground: CellColor { self._viewBackground }
+    public   final var viewBackground: Colour { self._viewBackground }
     public   final var viewTransparency: UInt8   { self._viewTransparency }
     public   final var cellSize: Int             { self._unscaled_cellSize }
     public   final var cellPadding: Int          { self._unscaled_cellPadding }
@@ -619,7 +619,7 @@ open class CellGridView: ObservableObject
         // cell buffer block that we use can be a simplified one which just writes all background;
         // but this is probably not really a typical/common case for things we can think of for now.
         //
-        let foreground: CellColor = self.gridCell(gridCellX, gridCellY)?.color ?? self._viewBackground
+        let foreground: Colour = self.gridCell(gridCellX, gridCellY)?.color ?? self._viewBackground
         let foregroundOnly: Bool = false
 
         // Setup the offset for the buffer blocks; offset used within writeCellBlock.
@@ -637,7 +637,7 @@ open class CellGridView: ObservableObject
         let fgr: Float = Float(foreground.red)
         let fgg: Float = Float(foreground.green)
         let fgb: Float = Float(foreground.blue)
-        let fga: UInt32 = UInt32(foreground.alpha) << CellColor.ASHIFT
+        let fga: UInt32 = UInt32(foreground.alpha) << Colour.ASHIFT
 
         let bg: UInt32 = self._viewBackground.value
         let bgr: Float = Float(self._viewBackground.red)
@@ -678,9 +678,9 @@ open class CellGridView: ObservableObject
                         let blend: Float = block.blend
                         let blendr: Float = 1.0 - blend
                         Memory.fastcopy(to: buffer.advanced(by: start), count: count,
-                                        value: (UInt32(UInt8(fgr * blend + bgr * blendr)) << CellColor.RSHIFT) |
-                                               (UInt32(UInt8(fgg * blend + bgg * blendr)) << CellColor.GSHIFT) |
-                                               (UInt32(UInt8(fgb * blend + bgb * blendr)) << CellColor.BSHIFT) | fga)
+                                        value: (UInt32(UInt8(fgr * blend + bgr * blendr)) << Colour.RSHIFT) |
+                                               (UInt32(UInt8(fgg * blend + bgg * blendr)) << Colour.GSHIFT) |
+                                               (UInt32(UInt8(fgb * blend + bgb * blendr)) << Colour.BSHIFT) | fga)
                     }
                     else {
                         Memory.fastcopy(to: buffer.advanced(by: start), count: count, value: fg)
@@ -726,7 +726,7 @@ open class CellGridView: ObservableObject
     open func onZoom(_ zoomFactor: CGFloat) { self.actions.onZoom(zoomFactor) }
     open func onZoomEnd(_ zoomFactor: CGFloat) { self.actions.onZoomEnd(zoomFactor) }
 
-    open func createCell<T: Cell>(x: Int, y: Int, color: CellColor) -> T? {
+    open func createCell<T: Cell>(x: Int, y: Int, color: Colour) -> T? {
         return Cell(cellGridView: self, x: x, y: y, color: color) as? T
     }
 }
