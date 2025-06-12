@@ -9,11 +9,16 @@ public struct CellColor: Equatable, Sendable
     // if these were the opposite (RSHIFT: 24, GSHIFT: 16, BSHIFT: 8, ALPHA: 0),
     // then we would need to use value.bigEndian there; slightly faster without.
 
-    public static let RSHIFT: Int   =   0
-    public static let GSHIFT: Int   =   8
-    public static let BSHIFT: Int   =  16
-    public static let ASHIFT: Int   =  24
-    public static let OPAQUE: UInt8 = 255
+    public static let RSHIFT: Int        =   0
+    public static let GSHIFT: Int        =   8
+    public static let BSHIFT: Int        =  16
+    public static let ASHIFT: Int        =  24
+    public static let OPAQUE: UInt8      = 255
+    public static let TRANSPARENT: UInt8 = 0
+
+    public static let RED: UInt32   =   (0xFF << CellColor.RSHIFT) // 0x000000FF
+    public static let GREEN: UInt32 =   (0xFF << CellColor.GSHIFT)
+    public static let BLUE: UInt32  =   (0xFF << CellColor.BSHIFT)
 
     // Private immutable individual RGBA color values.
 
@@ -36,6 +41,13 @@ public struct CellColor: Equatable, Sendable
         self._green = UInt8(green)
         self._blue  = UInt8(blue)
         self._alpha = UInt8(alpha)
+    }
+
+    public init(_ rgb: UInt32, alpha: UInt8 = CellColor.OPAQUE) {
+        self._red   = UInt8((rgb >> CellColor.RSHIFT) & 0xFF)
+        self._green = UInt8((rgb >> CellColor.GSHIFT) & 0xFF)
+        self._blue  = UInt8((rgb >> CellColor.BSHIFT) & 0xFF)
+        self._alpha = alpha
     }
 
     public init(_ color: Color) {
@@ -110,19 +122,21 @@ public struct CellColor: Equatable, Sendable
 
     // For future use.
 
-    public static func random(mode: CellColorMode = CellColorMode.color) -> CellColor {
+    public static func random(mode: CellColorMode = CellColorMode.color, filter: ((UInt32) -> UInt32)? = nil) -> CellColor {
+        let color: CellColor
         if (mode == CellColorMode.monochrome) {
             let value: UInt8 = UInt8.random(in: 0...1) * 255
-            return CellColor(value, value, value)
+            color = CellColor(value, value, value)
         }
         else if (mode == CellColorMode.grayscale) {
             let value = UInt8.random(in: 0...255)
-            return CellColor(value, value, value)
+            color = CellColor(value, value, value)
         }
         else {
             let rgb = UInt32.random(in: 0...0xFFFFFF)
-            return CellColor(UInt8((rgb >> 16) & 0xFF), UInt8((rgb >> 8) & 0xFF), UInt8(rgb & 0xFF))
+            color = CellColor(UInt8((rgb >> 16) & 0xFF), UInt8((rgb >> 8) & 0xFF), UInt8(rgb & 0xFF))
         }
+        return (filter != nil) ? CellColor(filter!(color.value)) : color
     }
 
     public func darken(by amount: CGFloat = 0.3) -> CellColor {

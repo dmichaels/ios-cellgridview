@@ -719,7 +719,6 @@ open class CellGridView: ObservableObject
 
     open func automationStep() {}
     open func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
-    open func onLongTap(_ viewPoint: CGPoint) { self.actions.onLongTap(viewPoint) }
     open func togglePaintMode() { self.actions.togglePaintMode() }
     open func togglePlayMode() { self.actions.togglePlayMode() }
     open func onDrag(_ viewPoint: CGPoint) { self.actions.onDrag(viewPoint) }

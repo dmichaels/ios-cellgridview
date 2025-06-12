@@ -64,9 +64,6 @@ extension CellGridView
             }
         }
 
-        internal func onLongTap(_ viewPoint: CGPoint) {
-        }
-
         internal func togglePaintMode() {
             self._paintMode = !self._paintMode
         }
