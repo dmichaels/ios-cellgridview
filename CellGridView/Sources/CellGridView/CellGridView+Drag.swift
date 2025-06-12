@@ -12,13 +12,13 @@ extension CellGridView
         private let _startShiftedY: Int
         private let _startCell: Cell?
 
-        internal init(_ cellGridView: CellGridView, _ viewPoint: CGPoint, picker: Bool = false) {
+        internal init(_ cellGridView: CellGridView, _ viewPoint: CGPoint, paintMode: Bool = false) {
             self._cellGridView = cellGridView
             self._startX = Int(round(viewPoint.x))
             self._startY = Int(round(viewPoint.y))
             self._startShiftedX = cellGridView.shiftTotalX
             self._startShiftedY = cellGridView.shiftTotalY
-            self._startCell = picker ? cellGridView.gridCell(viewPoint: viewPoint) : nil
+            self._startCell = paintMode ? cellGridView.gridCell(viewPoint: viewPoint) : nil
         }
 
         internal func drag(_ viewPoint: CGPoint, end: Bool = false) {

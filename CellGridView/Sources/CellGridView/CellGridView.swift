@@ -707,7 +707,8 @@ open class CellGridView: ObservableObject
     open func automationStep() {}
     open func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
     open func onLongTap(_ viewPoint: CGPoint) { self.actions.onLongTap(viewPoint) }
-    open func onDoubleTap() { self.actions.onDoubleTap() }
+    open func togglePaintMode() { self.actions.togglePaintMode() }
+    open func togglePlayMode() { self.actions.togglePlayMode() }
     open func onDrag(_ viewPoint: CGPoint) { self.actions.onDrag(viewPoint) }
     open func onDragEnd(_ viewPoint: CGPoint) { self.actions.onDragEnd(viewPoint) }
     open func onZoom(_ zoomFactor: CGFloat) { self.actions.onZoom(zoomFactor) }
