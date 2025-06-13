@@ -195,10 +195,15 @@ open class CellGridView: ObservableObject
                                 viewBackground: Colour,
                                 viewTransparency: UInt8,
                                 viewScaling: Bool,
+                                screen: Screen? = nil,
                                 adjustShift: Bool = false,
                                 refreshCells: Bool = false,
                                 scaled: Bool = false)
     {
+        if (screen != nil) {
+            self._screen = screen
+        }
+
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
         self._viewScaling = [CellShape.square, CellShape.inset].contains(cellShape) ? false : viewScaling
@@ -320,8 +325,8 @@ open class CellGridView: ObservableObject
 
     internal final var viewWidthScaled: Int      { self._viewWidth }
     internal final var viewHeightScaled: Int     { self._viewHeight }
-    public final var viewCellEndX: Int         { self._viewCellEndX } // xyzzy
-    public final var viewCellEndY: Int         { self._viewCellEndY } // xyzzy
+    internal final var viewCellEndX: Int         { self._viewCellEndX } // xyzzy
+    internal final var viewCellEndY: Int         { self._viewCellEndY } // xyzzy
     internal final var viewWidthExtraScaled: Int { self._viewWidthExtra }
     internal final var cellSizeScaled: Int       { self._cellSize }
     internal final var cellPaddingScaled: Int    { self._cellPadding }
@@ -701,8 +706,10 @@ open class CellGridView: ObservableObject
 
     public func writeCells()
     {
-        for vx in 0...self.viewCellEndX {
-            for vy in 0...self.viewCellEndY {
+        // Write just/all the visible cells.
+        //
+        for vx in 0...self._viewCellEndX {
+            for vy in 0...self._viewCellEndY {
                 if let cell: Cell = self.gridCell(viewCellX: vx, viewCellY: vy) {
                     cell.write()
                 }
