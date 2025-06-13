@@ -24,7 +24,7 @@ open class CellGridView: ObservableObject
         public static let viewTransparency: UInt8 = Colour.OPAQUE
         public static let viewScaling: Bool = true
 
-        public static let cellSize: Int = 43
+        public static let cellSize: Int = 25
         public static let cellSizeFit: Bool = true
         public static let cellPadding: Int = 1
         public static let cellShape: CellShape = CellShape.rounded
@@ -111,10 +111,6 @@ open class CellGridView: ObservableObject
     //
     internal var _buffer: [UInt8] = []
 
-    // Readonly list of preferred sizes for control in a settings view.
-    //
-    private var _preferredCellSizes: [Int] = []
-
     // This _onChangeImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
@@ -148,8 +144,12 @@ open class CellGridView: ObservableObject
     {
         self._screen = screen
 
-        let preferredSize = CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight,
-                                                       cellSize: cellSize, enabled: cellSizeFit)
+        let preferredSize: PreferredSize = (
+            cellSizeFit
+            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize)
+            : nil
+        ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
+
         self.configure(cellSize: preferredSize.cellSize,
                        cellPadding: cellPadding,
                        cellShape: cellShape,
@@ -169,11 +169,8 @@ open class CellGridView: ObservableObject
 
         #if targetEnvironment(simulator)
             self.printSizes(viewWidthInit: viewWidth, viewHeightInit: viewHeight,
-                            cellSizeInit: cellSize, cellSizeFitInit: cellSizeFit)
+                            cellSizeInit: cellSize /* , cellSizeFitInit: cellSizeFit */ )
         #endif
-
-        self._preferredCellSizes = CellGridView.preferredSizes(viewWidth: self.viewWidth,
-                                                               viewHeight: self.viewHeight).map { $0.cellSize }
 
         self._gridCenter = gridCenter
         if (gridCenter) {
@@ -360,8 +357,6 @@ open class CellGridView: ObservableObject
     internal final func unscaled(_ value: Int) -> Int {
         return self.screen.unscaled(value, scaling: self._viewScaling)
     }
-
-    public final var preferredCellSizes: [Int] { self._preferredCellSizes }
 
     // Sets the cell-grid within the grid-view to be shifted by the given amount,
     // from the upper-left; note that the given shiftTotalX and shiftTotalY values are unscaled.

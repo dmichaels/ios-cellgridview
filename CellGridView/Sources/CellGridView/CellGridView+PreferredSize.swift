@@ -6,17 +6,11 @@ extension CellGridView
     // out past the end of the view; the given and returned dimensions are assumed to be unscaled values.
     //
     internal static func preferredSize(viewWidth: Int, viewHeight: Int, cellSize: Int,
-                                       cellPreferredSizeMarginMax: Int = Defaults.cellPreferredSizeMarginMax,
-                                       enabled: Bool = true) -> PreferredSize
+                                       cellPreferredSizeMarginMax: Int = Defaults.cellPreferredSizeMarginMax) -> PreferredSize?
     {
-        if (enabled) {
-            let sizes = CellGridView.preferredSizes(viewWidth: viewWidth, viewHeight: viewHeight,
-                                                    cellPreferredSizeMarginMax: cellPreferredSizeMarginMax)
-            if let size = CellGridView.closestPreferredCellSize(in: sizes, to: cellSize) {
-                return size
-            }
-        }
-        return (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
+        let sizes = CellGridView.preferredSizes(viewWidth: viewWidth, viewHeight: viewHeight,
+                                                cellPreferredSizeMarginMax: cellPreferredSizeMarginMax)
+        return CellGridView.closestPreferredCellSize(in: sizes, to: cellSize)
     }
 
     internal static func preferredSizes(viewWidth: Int, viewHeight: Int,
