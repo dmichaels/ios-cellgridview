@@ -75,7 +75,7 @@ extension CellGridView
                        viewScaling: self.viewScaling,
                        scaled: true)
 
-        self.writeCells(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: true)
+        self.shiftCells(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: true)
 
         self.onChangeCellSize(self.unscaled(cellSize))
     }
@@ -92,7 +92,7 @@ extension CellGridView
                        viewBackground: self.viewBackground,
                        viewTransparency: self.viewTransparency,
                        viewScaling: scaling)
-        self.writeCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
+        self.shiftCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
     }
 
     public func scale() { self.scale(true) }

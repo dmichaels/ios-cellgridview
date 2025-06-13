@@ -180,7 +180,7 @@ open class CellGridView: ObservableObject
             self.center()
         }
         else {
-            self.writeCells(shiftTotalX: 0, shiftTotalY: 0, scaled: false)
+            self.shiftCells(shiftTotalX: 0, shiftTotalY: 0, scaled: false)
         }
 
         self._automationInterval = automationInterval
@@ -258,7 +258,7 @@ open class CellGridView: ObservableObject
                                                              cellShape: self._cellShape,
                                                              cellTransparency: self._viewTransparency)
         if let shiftForRefresh = shiftForRefresh {
-            self.writeCells(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
+            self.shiftCells(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
         }
     }
 
@@ -323,8 +323,8 @@ open class CellGridView: ObservableObject
 
     internal final var viewWidthScaled: Int      { self._viewWidth }
     internal final var viewHeightScaled: Int     { self._viewHeight }
-    internal final var viewCellEndX: Int         { self._viewCellEndX }
-    internal final var viewCellEndY: Int         { self._viewCellEndY }
+    public final var viewCellEndX: Int         { self._viewCellEndX } // xyzzy
+    public final var viewCellEndY: Int         { self._viewCellEndY } // xyzzy
     internal final var viewWidthExtraScaled: Int { self._viewWidthExtra }
     internal final var cellSizeScaled: Int       { self._cellSize }
     internal final var cellPaddingScaled: Int    { self._cellPadding }
@@ -366,7 +366,7 @@ open class CellGridView: ObservableObject
     // Sets the cell-grid within the grid-view to be shifted by the given amount,
     // from the upper-left; note that the given shiftTotalX and shiftTotalY values are unscaled.
     //
-    public final func writeCells(shiftTotalX: Int, shiftTotalY: Int, dragging: Bool = false, scaled: Bool = false)
+    public final func shiftCells(shiftTotalX: Int, shiftTotalY: Int, dragging: Bool = false, scaled: Bool = false)
     {
         #if targetEnvironment(simulator)
             let debugStart = Date()
@@ -704,13 +704,24 @@ open class CellGridView: ObservableObject
         }
     }
 
+    public func writeCells()
+    {
+        for vx in 0...self.viewCellEndX {
+            for vy in 0...self.viewCellEndY {
+                if let cell: Cell = self.gridCell(viewCellX: vx, viewCellY: vy) {
+                    cell.write()
+                }
+            }
+        }
+    }
+
     public final func center()
     {
         let gridWidth: Int = self.gridColumns * self.cellSize
         let gridHeight: Int = self.gridRows * self.cellSize
         let shiftTotalX: Int = -Int(round(Double(gridWidth) / 2.0))
         let shiftTotalY: Int = -Int(round(Double(gridHeight) / 2.0))
-        self.writeCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY)
+        self.shiftCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY)
     }
 
     public final func automationToggle() { self.actions.automationToggle() }
