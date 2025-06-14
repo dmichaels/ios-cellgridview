@@ -38,7 +38,7 @@ open class CellGridView: ObservableObject
         public static let cellRoundedRectangleRadius: Float = 0.25
 
         public static let gridCenter: Bool = false
-        public static let restrictShiftStrict: Bool = false
+        public static let restrictShiftStrict: Bool = true
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.5
         //
