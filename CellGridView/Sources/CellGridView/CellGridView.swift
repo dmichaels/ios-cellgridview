@@ -210,8 +210,8 @@ open class CellGridView: ObservableObject
 
         // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
 
-        let cellPadding: Int = constrainCellPadding(!scaled ? self.scaled(cellPadding) : cellPadding, scaled: true)
-        let cellSize: Int = constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, cellPadding: cellPadding, scaled: true)
+        let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(cellPadding) : cellPadding, scaled: true)
+        let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, cellPadding: cellPadding, scaled: true)
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
@@ -262,40 +262,6 @@ open class CellGridView: ObservableObject
         if let shiftForRefresh = shiftForRefresh {
             self.shiftCells(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
         }
-    }
-
-    public final var minimumCellSize: Int {
-        self.minimumCellSize(cellPadding: self._cellPadding)
-    }
-
-    public final func minimumCellSize(cellPadding: Int? = nil) -> Int {
-        let cellPadding: Int = max(0, cellPadding ?? self._cellPadding)
-        return constrainCellSize(Defaults.cellSizeInnerMin, cellPadding: cellPadding)
-    }
-
-    public final var maximumCellSize: Int {
-        Defaults.cellSizeMax
-    }
-
-    public final var minimumCellPadding: Int {
-        0
-    }
-
-    public final var maximumCellPadding: Int {
-        Defaults.cellPaddingMax
-    }
-
-    internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil, scaled: Bool = false) -> Int {
-        let cellSizeInnerMin: Int = self.scaled(Defaults.cellSizeInnerMin)
-        let cellSizeMax: Int = self.scaled(Defaults.cellSizeMax)
-        let cellPadding: Int = !scaled ? self.scaled(cellPadding ?? self.cellPadding) : (cellPadding ?? self.cellPaddingScaled)
-        return cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
-    }
-
-    private final func constrainCellPadding(_ cellPadding: Int, scaled: Bool = false) -> Int {
-        let cellPaddingMax: Int = self.scaled(Defaults.cellPaddingMax)
-        let cellPadding: Int = !scaled ? self.scaled(cellPadding) : cellPadding
-        return cellPadding.clamped(0...cellPaddingMax)
     }
 
     public   final var initialized: Bool         { self._screen != nil }
