@@ -8,9 +8,11 @@ extension CellGridView
         private var _viewBackground: Colour?
         private var _viewTransparency: UInt8?
         private var _viewScaling: Bool?
+
         private var _cellSize: Int?
         private var _cellSizeFit: Bool?
         private var _cellPadding: Int?
+        private var _cellShape: CellShape?
         private var _cellForeground: Colour?
 
         public init(
@@ -20,6 +22,7 @@ extension CellGridView
             cellSize: Int? = nil,
             cellSizeFit: Bool? = nil,
             cellPadding: Int? = nil,
+            cellShape: CellShape? = nil,
             cellForeground: Colour? = nil
         ) {
             self._viewBackground = viewBackground
@@ -28,6 +31,7 @@ extension CellGridView
             self._cellSize = cellSize
             self._cellSizeFit = cellSizeFit
             self._cellPadding = cellPadding
+            self._cellShape = cellShape
             self._cellForeground = cellForeground
         }
 
@@ -55,6 +59,10 @@ extension CellGridView
             var copy = self ; copy._cellPadding = cellPadding ; return copy
         }
 
+        public func with(cellShape: CellShape?) -> Configuration {
+            var copy = self ; copy._cellShape = cellShape ; return copy
+        }
+
         public func with(cellForeground: Colour?) -> Configuration {
             var copy = self ; copy._cellForeground = cellForeground ; return copy
         }
@@ -65,6 +73,7 @@ extension CellGridView
         public var cellSize: Int? { self._cellSize }
         public var cellSizeFit: Bool? { self._cellSizeFit }
         public var cellPadding: Int? { self._cellPadding }
+        public var cellShape: CellShape? { self._cellShape }
         public var cellForeground: Colour? { self._cellForeground }
     }
 }
