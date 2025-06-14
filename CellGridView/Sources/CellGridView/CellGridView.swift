@@ -31,7 +31,7 @@ open class CellGridView: ObservableObject
         public static let cellForeground: Colour = Colour.white // Colour.black
 
         public static let cellSizeMax: Int = 200
-        public static let cellSizeInnerMin: Int = 1
+        public static let cellSizeInnerMin: Int = 3
         public static let cellPaddingMax: Int = 8
         public static let cellPreferredSizeMarginMax: Int = 30
         public static let cellAntialiasFade: Float = 0.6  // smaller is smoother
@@ -264,27 +264,26 @@ open class CellGridView: ObservableObject
         }
     }
 
-    public final var automationInterval: Double {
-        get { return self.automationInterval }
-        set {
-            if (newValue != self._automationInterval) {
-                self._automationInterval = newValue
-                self.actions.automationInterval = newValue
-            }
-        }
+    public final var minimumCellSize: Int {
+        self.minimumCellSize(cellPadding: self._cellPadding)
     }
 
-    public final func onChangeImage() {
-        self._onChangeImage()
+    public final func minimumCellSize(cellPadding: Int? = nil) -> Int {
+        let cellPadding: Int = max(0, cellPadding ?? self._cellPadding)
+        return constrainCellSize(Defaults.cellSizeInnerMin, cellPadding: cellPadding)
     }
 
-    public final func onChangeCellSize(_ cellSize: Int) {
-        self._onChangeCellSize(cellSize)
+    public final var maximumCellSize: Int {
+        Defaults.cellSizeMax
     }
 
-    private final lazy var actions: CellGridView.Actions = {
-        return CellGridView.Actions(self, automationInterval: self._automationInterval)
-    }()
+    public final var minimumCellPadding: Int {
+        0
+    }
+
+    public final var maximumCellPadding: Int {
+        Defaults.cellPaddingMax
+    }
 
     internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil, scaled: Bool = false) -> Int {
         let cellSizeInnerMin: Int = self.scaled(Defaults.cellSizeInnerMin)
@@ -726,9 +725,31 @@ open class CellGridView: ObservableObject
         self.shiftCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY)
     }
 
+    public final func onChangeImage() {
+        self._onChangeImage()
+    }
+
+    public final func onChangeCellSize(_ cellSize: Int) {
+        self._onChangeCellSize(cellSize)
+    }
+
+    private final lazy var actions: CellGridView.Actions = {
+        return CellGridView.Actions(self, automationInterval: self._automationInterval)
+    }()
+
     public final func automationToggle() { self.actions.automationToggle() }
     public final func automationStart() { self.actions.automationStart() }
     public final func automationStop() { self.actions.automationStop() }
+
+    public final var automationInterval: Double {
+        get { return self.automationInterval }
+        set {
+            if (newValue != self._automationInterval) {
+                self._automationInterval = newValue
+                self.actions.automationInterval = newValue
+            }
+        }
+    }
 
     open func automationStep() {}
     open func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
