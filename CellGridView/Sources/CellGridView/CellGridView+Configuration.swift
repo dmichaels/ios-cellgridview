@@ -35,35 +35,35 @@ extension CellGridView
             self._cellForeground = cellForeground
         }
 
-        public func with(viewBackground: Colour?) -> Configuration {
+        public func with(viewBackground: Colour) -> Configuration {
             var copy = self ; copy._viewBackground = viewBackground ; return copy
         }
 
-        public func with(viewTransparency: UInt8?) -> Configuration {
+        public func with(viewTransparency: UInt8) -> Configuration {
             var copy = self ; copy._viewTransparency = viewTransparency ; return copy
         }
 
-        public func with(viewScaling: Bool?) -> Configuration {
+        public func with(viewScaling: Bool) -> Configuration {
             var copy = self ; copy._viewScaling = viewScaling ; return copy
         }
 
-        public func with(cellSize: Int?) -> Configuration {
-            var copy = self ; copy._cellSize = cellSize ; return copy
+        public func with(cellSize: Int) -> Configuration {
+            var copy = self ; copy._cellSize = max(cellSize, 1) ; return copy
         }
 
-        public func with(cellSizeFit: Bool?) -> Configuration {
+        public func with(cellSizeFit: Bool) -> Configuration {
             var copy = self ; copy._cellSizeFit = cellSizeFit ; return copy
         }
 
-        public func with(cellPadding: Int?) -> Configuration {
-            var copy = self ; copy._cellPadding = cellPadding ; return copy
+        public func with(cellPadding: Int) -> Configuration {
+            var copy = self ; copy._cellPadding = max(cellPadding, 0) ; return copy
         }
 
-        public func with(cellShape: CellShape?) -> Configuration {
+        public func with(cellShape: CellShape) -> Configuration {
             var copy = self ; copy._cellShape = cellShape ; return copy
         }
 
-        public func with(cellForeground: Colour?) -> Configuration {
+        public func with(cellForeground: Colour) -> Configuration {
             var copy = self ; copy._cellForeground = cellForeground ; return copy
         }
 

@@ -25,7 +25,7 @@ open class CellGridView: ObservableObject
         public static let viewScaling: Bool = true
 
         public static let cellSize: Int = 25
-        public static let cellSizeFit: Bool = true
+        public static let cellSizeFit: Bool = false
         public static let cellPadding: Int = 1
         public static let cellShape: CellShape = CellShape.rounded
         public static let cellForeground: Colour = Colour.white // Colour.black
