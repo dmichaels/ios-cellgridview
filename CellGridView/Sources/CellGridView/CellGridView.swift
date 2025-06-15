@@ -169,7 +169,7 @@ open class CellGridView: ObservableObject
 
         #if targetEnvironment(simulator)
             self.printSizes(viewWidthInit: viewWidth, viewHeightInit: viewHeight,
-                            cellSizeInit: cellSize /* , cellSizeFitInit: cellSizeFit */ )
+                            cellSizeInit: cellSize , cellSizeFitInit: cellSizeFit)
         #endif
 
         self._gridCenter = gridCenter
