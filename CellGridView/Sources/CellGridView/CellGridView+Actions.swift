@@ -11,8 +11,8 @@ extension CellGridView
         private var _automationTimer: Timer? = nil
         private var _dragger: CellGridView.Drag? = nil
         private var _zoomer: CellGridView.Zoom? = nil
-        private var _paintMode: Bool = false
-        private var _playMode: Bool = false
+        private var _selectMode: Bool = false
+        private var _automationMode: Bool = false
 
         internal init(_ cellGridView: CellGridView, automationInterval: Double = Defaults.automationInterval) {
             self._cellGridView = cellGridView
@@ -63,18 +63,18 @@ extension CellGridView
             }
         }
 
-        internal func togglePaintMode() {
-            self._paintMode = !self._paintMode
+        internal func toggleSelectMode() {
+            self._selectMode = !self._selectMode
         }
 
-        internal func togglePlayMode() {
-            self._playMode = !self._playMode
+        internal func toggleAutomationMode() {
+            self._automationMode = !self._automationMode
             self.automationToggle()
         }
 
         internal func onDrag(_ viewPoint: CGPoint) {
             guard let dragger: CellGridView.Drag = self._dragger else {
-                self._dragger = CellGridView.Drag(self._cellGridView, viewPoint, paintMode: self._paintMode)
+                self._dragger = CellGridView.Drag(self._cellGridView, viewPoint, selectMode: self._selectMode)
                 return
             }
             dragger.drag(viewPoint)
