@@ -83,7 +83,7 @@ extension CellGridView
 
     public final func minimumCellSize(cellPadding: Int? = nil) -> Int {
         let cellPadding: Int = max(0, cellPadding ?? self.cellPadding)
-        return constrainCellSize(Defaults.cellSizeInnerMin, cellPadding: cellPadding)
+        return self.constrainCellSize(Defaults.cellSizeInnerMin, cellPadding: cellPadding, scaled: false)
     }
 
     public final var maximumCellSize: Int {
@@ -102,12 +102,14 @@ extension CellGridView
         let cellSizeInnerMin: Int = self.scaled(Defaults.cellSizeInnerMin)
         let cellSizeMax: Int = self.scaled(Defaults.cellSizeMax)
         let cellPadding: Int = !scaled ? self.scaled(cellPadding ?? self.cellPadding) : (cellPadding ?? self.cellPaddingScaled)
-        return cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
+        let constrainedCellSize: Int = cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
+        return !scaled ? self.unscaled(constrainedCellSize) : constrainedCellSize
     }
 
     internal final func constrainCellPadding(_ cellPadding: Int, scaled: Bool = false) -> Int {
         let cellPaddingMax: Int = self.scaled(Defaults.cellPaddingMax)
         let cellPadding: Int = !scaled ? self.scaled(cellPadding) : cellPadding
-        return cellPadding.clamped(0...cellPaddingMax)
+        let constrainedCellPadding: Int = cellPadding.clamped(0...cellPaddingMax)
+        return !scaled ? self.unscaled(constrainedCellPadding) : constrainedCellPadding
     }
 }
