@@ -31,7 +31,7 @@ open class CellGridView: ObservableObject
         public static let cellForeground: Colour = Colour.white // Colour.black
 
         public static let cellSizeMax: Int = 200
-        public static let cellSizeInnerMin: Int = 3
+        public static let cellSizeInnerMin: Int = 1
         public static let cellPaddingMax: Int = 8
         public static let cellPreferredSizeMarginMax: Int = 30
         public static let cellAntialiasFade: Float = 0.6  // smaller is smoother
