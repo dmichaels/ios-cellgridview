@@ -6,13 +6,12 @@ extension CellGridView
     internal final class Actions
     {
         private let _cellGridView: CellGridView
-        private var _automationInterval: Double
-        private var _automation: Bool = false
-        private var _automationTimer: Timer? = nil
         private var _dragger: CellGridView.Drag? = nil
         private var _zoomer: CellGridView.Zoom? = nil
         private var _selectMode: Bool = true
-        private var _automationMode: Bool = false
+        private var _automationMode: Bool = true
+        private var _automationInterval: Double
+        private var _automationTimer: Timer? = nil
 
         internal init(_ cellGridView: CellGridView, automationInterval: Double = Defaults.automationInterval) {
             self._cellGridView = cellGridView
@@ -24,22 +23,11 @@ extension CellGridView
             set {
                 if (newValue != self._automationInterval) {
                     self._automationInterval = newValue
-                    if (self._automation) {
+                    if (self._automationMode) {
                         self.automationStop()
                         self.automationStart()
                     }
                 }
-            }
-        }
-
-        internal func automationToggle() {
-            if (self._automation) {
-                self.automationStop()
-                self._automation = false
-            }
-            else {
-                self.automationStart()
-                self._automation = true
             }
         }
 
@@ -63,13 +51,27 @@ extension CellGridView
             }
         }
 
-        internal func toggleSelectMode() {
+        internal var selectMode: Bool {
+            self._selectMode
+        }
+
+        internal func selectModeToggle() {
             self._selectMode = !self._selectMode
         }
 
-        internal func toggleAutomationMode() {
-            self._automationMode = !self._automationMode
-            self.automationToggle()
+        internal var automationMode: Bool {
+            self._automationMode
+        }
+
+        internal func automationModeToggle() {
+            if (self._automationMode) {
+                self._automationMode = false
+                self.automationStop()
+            }
+            else {
+                self._automationMode = true
+                self.automationStart()
+            }
         }
 
         internal func onDrag(_ viewPoint: CGPoint) {

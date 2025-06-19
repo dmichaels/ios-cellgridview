@@ -703,10 +703,6 @@ open class CellGridView: ObservableObject
         return CellGridView.Actions(self, automationInterval: self._automationInterval)
     }()
 
-    public final func automationToggle() { self.actions.automationToggle() }
-    public final func automationStart() { self.actions.automationStart() }
-    public final func automationStop() { self.actions.automationStop() }
-
     public final var automationInterval: Double {
         get { return self.automationInterval }
         set {
@@ -717,10 +713,16 @@ open class CellGridView: ObservableObject
         }
     }
 
+    open var  selectMode: Bool { self.actions.selectMode }
+    open func selectModeToggle() { self.actions.selectModeToggle() }
+
+    open var  automationMode: Bool { self.actions.automationMode }
+    open func automationModeToggle() { self.actions.automationModeToggle() }
+    open func automationStart() { self.actions.automationStart() }
+    open func automationStop() { self.actions.automationStop() }
     open func automationStep() {}
+
     open func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
-    open func toggleSelectMode() { self.actions.toggleSelectMode() }
-    open func toggleAutomationMode() { self.actions.toggleAutomationMode() }
     open func onDrag(_ viewPoint: CGPoint) { self.actions.onDrag(viewPoint) }
     open func onDragEnd(_ viewPoint: CGPoint) { self.actions.onDragEnd(viewPoint) }
     open func onZoom(_ zoomFactor: CGFloat) { self.actions.onZoom(zoomFactor) }
