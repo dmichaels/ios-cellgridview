@@ -41,6 +41,9 @@ open class CellGridView: ObservableObject
         public static let restrictShiftStrict: Bool = true
         public static let unscaledZoom: Bool = false
         public static let automationInterval: Double = 0.5
+
+        public static let selectMode: Bool = true
+        public static let automationMode: Bool = true
         //
         // Wraparound support is incomplete, half-baked, and of questionable utility.
         //

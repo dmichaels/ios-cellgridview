@@ -8,8 +8,8 @@ extension CellGridView
         private let _cellGridView: CellGridView
         private var _dragger: CellGridView.Drag? = nil
         private var _zoomer: CellGridView.Zoom? = nil
-        private var _selectMode: Bool = true
-        private var _automationMode: Bool = true
+        private var _selectMode: Bool = CellGridView.Defaults.selectMode
+        private var _automationMode: Bool = CellGridView.Defaults.automationMode
         private var _automationInterval: Double
         private var _automationTimer: Timer? = nil
 
