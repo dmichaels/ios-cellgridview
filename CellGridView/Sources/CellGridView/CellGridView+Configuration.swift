@@ -15,6 +15,14 @@ extension CellGridView
         private var _cellShape: CellShape?
         private var _cellForeground: Colour?
 
+        private var _gridColumns: Int?
+        private var _gridRows: Int?
+        private var _gridCenter: Bool?
+
+        private var _selectMode: Bool?
+        private var _automationMode: Bool?
+        private var _automationInterval: Double?
+
         public init(
             viewBackground: Colour? = nil,
             viewTransparency: UInt8? = nil,
@@ -23,7 +31,13 @@ extension CellGridView
             cellSizeFit: Bool? = nil,
             cellPadding: Int? = nil,
             cellShape: CellShape? = nil,
-            cellForeground: Colour? = nil
+            cellForeground: Colour? = nil,
+            gridColumns: Int? = nil,
+            gridRows: Int? = nil,
+            gridCenter: Bool? = nil,
+            selectMode: Bool? = nil,
+            automationMode: Bool? = nil,
+            automationInterval: Double? = nil
         ) {
             self._viewBackground = viewBackground
             self._viewTransparency = viewTransparency
@@ -33,6 +47,12 @@ extension CellGridView
             self._cellPadding = cellPadding
             self._cellShape = cellShape
             self._cellForeground = cellForeground
+            self._gridColumns = gridColumns
+            self._gridRows = gridRows
+            self._gridCenter = gridCenter
+            self._selectMode = selectMode
+            self._automationMode = automationMode
+            self._automationInterval = automationInterval
         }
 
         public func with(viewBackground: Colour) -> Configuration {
@@ -65,6 +85,30 @@ extension CellGridView
 
         public func with(cellForeground: Colour) -> Configuration {
             var copy = self ; copy._cellForeground = cellForeground ; return copy
+        }
+
+        public func with(gridColumns: Int) -> Configuration {
+            var copy = self ; copy._gridColumns = gridColumns ; return copy
+        }
+
+        public func with(gridRows: Int) -> Configuration {
+            var copy = self ; copy._gridRows = gridRows ; return copy
+        }
+
+        public func with(gridCenter: Bool) -> Configuration {
+            var copy = self ; copy._gridCenter = gridCenter ; return copy
+        }
+
+        public func with(selectMode: Bool) -> Configuration {
+            var copy = self ; copy._selectMode = selectMode ; return copy
+        }
+
+        public func with(automationMode: Bool) -> Configuration {
+            var copy = self ; copy._automationMode = automationMode ; return copy
+        }
+
+        public func with(automationInterval: Double) -> Configuration {
+            var copy = self ; copy._automationInterval = automationInterval ; return copy
         }
 
         public var viewBackground: Colour? { self._viewBackground }
