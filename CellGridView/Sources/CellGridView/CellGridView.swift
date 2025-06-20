@@ -671,10 +671,6 @@ open class CellGridView: ObservableObject
         self._onChangeCellSize(cellSize)
     }
 
-    private final var actions: CellGridView.Actions {
-        return self._actions
-    }
-
     public var selectMode: Bool {
         self._selectMode
     }
@@ -698,8 +694,8 @@ open class CellGridView: ObservableObject
         }
     }
 
-    open func automationStart() { self.actions.automationStart() }
-    open func automationStop() { self.actions.automationStop() }
+    open func automationStart() { self._actions.automationStart() }
+    open func automationStop() { self._actions.automationStop() }
     open func automationStep() {}
 
     public final var automationInterval: Double {
@@ -708,18 +704,18 @@ open class CellGridView: ObservableObject
             if (newValue != self._automationInterval) {
                 self._automationInterval = newValue
                 if (self._automationMode) {
-                    self.actions.automationStop()
-                    self.actions.automationStart()
+                    self._actions.automationStop()
+                    self._actions.automationStart()
                 }
             }
         }
     }
 
-    open func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
-    open func onDrag(_ viewPoint: CGPoint) { self.actions.onDrag(viewPoint) }
-    open func onDragEnd(_ viewPoint: CGPoint) { self.actions.onDragEnd(viewPoint) }
-    open func onZoom(_ zoomFactor: CGFloat) { self.actions.onZoom(zoomFactor) }
-    open func onZoomEnd(_ zoomFactor: CGFloat) { self.actions.onZoomEnd(zoomFactor) }
+    open func onTap(_ viewPoint: CGPoint) { self._actions.onTap(viewPoint) }
+    open func onDrag(_ viewPoint: CGPoint) { self._actions.onDrag(viewPoint) }
+    open func onDragEnd(_ viewPoint: CGPoint) { self._actions.onDragEnd(viewPoint) }
+    open func onZoom(_ zoomFactor: CGFloat) { self._actions.onZoom(zoomFactor) }
+    open func onZoomEnd(_ zoomFactor: CGFloat) { self._actions.onZoomEnd(zoomFactor) }
 
     open func createCell<T: Cell>(x: Int, y: Int, color: Colour) -> T? {
         return Cell(cellGridView: self, x: x, y: y, color: color) as? T
