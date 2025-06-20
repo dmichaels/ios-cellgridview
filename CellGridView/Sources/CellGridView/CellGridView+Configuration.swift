@@ -14,6 +14,8 @@ extension CellGridView
         private var _cellPadding: Int?
         private var _cellShape: CellShape?
         private var _cellForeground: Colour?
+        private var _cellAntialiasFade: Float?
+        private var _cellRoundedRectangleRadius: Float?
 
         private var _gridColumns: Int?
         private var _gridRows: Int?
@@ -35,6 +37,8 @@ extension CellGridView
             cellPadding: Int? = nil,
             cellShape: CellShape? = nil,
             cellForeground: Colour? = nil,
+            cellAntialiasFade: Float? = nil,
+            cellRoundedRectangleRadius: Float? = nil,
             gridColumns: Int? = nil,
             gridRows: Int? = nil,
             gridCenter: Bool? = nil,
@@ -94,6 +98,14 @@ extension CellGridView
             var copy = self ; copy._cellForeground = cellForeground ; return copy
         }
 
+        public func with(cellAntialiasFade: Float) -> Configuration {
+            var copy = self ; copy._cellAntialiasFade = cellAntialiasFade ; return copy
+        }
+
+        public func with(cellRoundedRectangleRadius: Float) -> Configuration {
+            var copy = self ; copy._cellRoundedRectangleRadius = cellRoundedRectangleRadius ; return copy
+        }
+
         public func with(gridColumns: Int) -> Configuration {
             var copy = self ; copy._gridColumns = gridColumns ; return copy
         }
@@ -134,6 +146,8 @@ extension CellGridView
         public var cellPadding: Int? { self._cellPadding }
         public var cellShape: CellShape? { self._cellShape }
         public var cellForeground: Colour? { self._cellForeground }
+        public var cellAntialiasFade: Float? { self._cellAntialiasFade }
+        public var cellRoundedRectangleRadius: Float? { self._cellRoundedRectangleRadius }
         public var gridColumns: Int? { self._gridColumns }
         public var gridRows: Int? { self._gridRows }
         public var gridCenter: Bool? { self._gridCenter }
