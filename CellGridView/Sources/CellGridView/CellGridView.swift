@@ -153,14 +153,14 @@ open class CellGridView: ObservableObject
             : nil
         ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
 
-        self.configure(cellSize: preferredSize.cellSize,
-                       cellPadding: cellPadding,
-                       cellShape: cellShape,
-                       viewWidth: preferredSize.viewWidth,
+        self.configure(viewWidth: preferredSize.viewWidth,
                        viewHeight: preferredSize.viewHeight,
                        viewBackground: viewBackground,
                        viewTransparency: viewTransparency,
-                       viewScaling: viewScaling)
+                       viewScaling: viewScaling,
+                       cellSize: preferredSize.cellSize,
+                       cellPadding: cellPadding,
+                       cellShape: cellShape)
 
         self._gridColumns = gridColumns > 0 ? gridColumns : self._viewColumns
         self._gridRows = gridRows > 0 ? gridRows : self._viewRows
@@ -190,15 +190,15 @@ open class CellGridView: ObservableObject
         self.onChangeImage()
     }
 
-    public final func configure(cellSize: Int,
-                                cellPadding: Int,
-                                cellShape: CellShape,
+    public final func configure(screen: Screen? = nil,
                                 viewWidth: Int,
                                 viewHeight: Int,
                                 viewBackground: Colour,
                                 viewTransparency: UInt8,
                                 viewScaling: Bool,
-                                screen: Screen? = nil,
+                                cellSize: Int,
+                                cellPadding: Int,
+                                cellShape: CellShape,
                                 adjustShift: Bool = false,
                                 refreshCells: Bool = false,
                                 scaled: Bool = false)

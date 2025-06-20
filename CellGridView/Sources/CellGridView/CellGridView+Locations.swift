@@ -34,6 +34,12 @@ extension CellGridView
         return self.gridCells[gridCellY * self.gridColumns + gridCellX] as? T
     }
 
+    // Returns the cell-grid cell object for the given cell-grid cell location, or nil.
+    //
+    public final func gridCell<T: Cell>(_ cellLocation: CellLocation) -> T? {
+        return self.gridCell(cellLocation.x, cellLocation.y)
+    }
+
     // Returns the cell-grid cell object for the given grid-view input point, or nil;
     // note that the display input point is always in unscaled units.
     //

@@ -1,8 +1,8 @@
 import Foundation
 
-// TODO: Maybe rename to GridLocation (to match the new ViewLocation).
 // Represents an integer based cell-based (i.e. cell-indexed) location within the cell-grid.
 // Exactly the same implementation as ViewPoint and ViewLocation; differential naming as documentation.
+// TODO: Maybe rename to GridLocation (to match the new ViewLocation).
 //
 public struct CellLocation: Hashable
 {

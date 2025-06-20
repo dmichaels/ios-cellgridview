@@ -65,14 +65,14 @@ extension CellGridView
                                                                    viewAnchorFactor: Zoom.Defaults.viewAnchorFactor)
                                 : (x: self.shiftTotalScaledX, y: self.shiftTotalScaledY)
 
-        self.configure(cellSize: cellSize,
-                       cellPadding: self.cellPaddingScaled,
-                       cellShape: self.cellShape,
-                       viewWidth: self.viewWidthScaled,
+        self.configure(viewWidth: self.viewWidthScaled,
                        viewHeight: self.viewHeightScaled,
                        viewBackground: self.viewBackground,
                        viewTransparency: self.viewTransparency,
                        viewScaling: self.viewScaling,
+                       cellSize: cellSize,
+                       cellPadding: self.cellPaddingScaled,
+                       cellShape: self.cellShape,
                        scaled: true)
 
         self.shiftCells(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: true)
@@ -84,14 +84,14 @@ extension CellGridView
         guard self.viewScaling != scaling else { return }
         let shiftTotalX: Int = scaling ? self.screen.scaled(self.shiftTotalX) : self.screen.unscaled(self.shiftTotalX)
         let shiftTotalY: Int = scaling ? self.screen.scaled(self.shiftTotalY) : self.screen.unscaled(self.shiftTotalY)
-        self.configure(cellSize: self.cellSize,
-                       cellPadding: self.cellPadding,
-                       cellShape: self.cellShape,
-                       viewWidth: self.viewWidth,
+        self.configure(viewWidth: self.viewWidth,
                        viewHeight: self.viewHeight,
                        viewBackground: self.viewBackground,
                        viewTransparency: self.viewTransparency,
-                       viewScaling: scaling)
+                       viewScaling: scaling,
+                       cellSize: self.cellSize,
+                       cellPadding: self.cellPadding,
+                       cellShape: self.cellShape)
         self.shiftCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
     }
 
