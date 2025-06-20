@@ -23,6 +23,9 @@ extension CellGridView
         private var _automationMode: Bool?
         private var _automationInterval: Double?
 
+        private var _restrictShiftStrict: Bool?
+        private var _unscaledZoom: Bool?
+
         public init(
             viewBackground: Colour? = nil,
             viewTransparency: UInt8? = nil,
@@ -37,7 +40,9 @@ extension CellGridView
             gridCenter: Bool? = nil,
             selectMode: Bool? = nil,
             automationMode: Bool? = nil,
-            automationInterval: Double? = nil
+            automationInterval: Double? = nil,
+            restrictShiftStrict: Bool? = nil,
+            unscaledZoom: Bool? = nil
         ) {
             self._viewBackground = viewBackground
             self._viewTransparency = viewTransparency
@@ -53,6 +58,8 @@ extension CellGridView
             self._selectMode = selectMode
             self._automationMode = automationMode
             self._automationInterval = automationInterval
+            self._restrictShiftStrict = restrictShiftStrict
+            self._unscaledZoom = unscaledZoom
         }
 
         public func with(viewBackground: Colour) -> Configuration {
@@ -111,6 +118,14 @@ extension CellGridView
             var copy = self ; copy._automationInterval = automationInterval ; return copy
         }
 
+        public func with(restrictShiftStrict: Bool) -> Configuration {
+            var copy = self ; copy._restrictShiftStrict = restrictShiftStrict ; return copy
+        }
+
+        public func with(unscaledZoom: Bool) -> Configuration {
+            var copy = self ; copy._unscaledZoom = unscaledZoom ; return copy
+        }
+
         public var viewBackground: Colour? { self._viewBackground }
         public var viewTransparency: UInt8? { self._viewTransparency }
         public var viewScaling: Bool? { self._viewScaling }
@@ -119,6 +134,14 @@ extension CellGridView
         public var cellPadding: Int? { self._cellPadding }
         public var cellShape: CellShape? { self._cellShape }
         public var cellForeground: Colour? { self._cellForeground }
+        public var gridColumns: Int? { self._gridColumns }
+        public var gridRows: Int? { self._gridRows }
+        public var gridCenter: Bool? { self._gridCenter }
+        public var selectMode: Bool? { self._selectMode }
+        public var automationMode: Bool? { self._automationMode }
+        public var automationInterval: Double? { self._automationInterval }
+        public var restrictShiftStrict: Bool? { self._restrictShiftStrict }
+        public var unscaledZoom: Bool? { self._unscaledZoom }
     }
 
     public final var minimumCellSize: Int {
