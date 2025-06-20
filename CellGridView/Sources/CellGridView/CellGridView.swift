@@ -110,12 +110,13 @@ open class CellGridView: ObservableObject
                                  gridColumns: Int,
                                  gridRows: Int,
                                  gridCenter: Bool,
+                                 selectMode: Bool = Defaults.selectMode,
+                                 automationMode: Bool = Defaults.automationMode,
                                  automationInterval: Double = Defaults.automationInterval,
                                  onChangeImage: @escaping () -> Void,
                                  onChangeCellSize: @escaping (Int) -> Void = {_ in})
     {
         self._screen = screen
-        
 
         let preferredSize: PreferredSize = (
             cellSizeFit
@@ -145,16 +146,13 @@ open class CellGridView: ObservableObject
                             cellSizeInit: cellSize , cellSizeFitInit: cellSizeFit)
         #endif
 
-        if (gridCenter) {
-            self.center()
-        }
-        else {
-            self.shiftCells(shiftTotalX: 0, shiftTotalY: 0, scaled: false)
-        }
-
+        self._selectMode = selectMode
+        self._automationMode = automationMode
         self._automationInterval = automationInterval
         self._onChangeImage = onChangeImage
         self._onChangeCellSize = onChangeCellSize
+
+        gridCenter ? self.center() : self.shiftCells(shiftTotalX: 0, shiftTotalY: 0, scaled: false)
 
         self.onChangeImage()
     }
@@ -168,6 +166,9 @@ open class CellGridView: ObservableObject
                                 cellSize: Int,
                                 cellPadding: Int,
                                 cellShape: CellShape,
+                                selectMode: Bool? = nil,
+                                automationMode: Bool? = nil,
+                                automationInterval: Double? = nil,
                                 adjustShift: Bool = false,
                                 refreshCells: Bool = false,
                                 scaled: Bool = false)
@@ -231,6 +232,11 @@ open class CellGridView: ObservableObject
                                                              cellPadding: self._cellPadding,
                                                              cellShape: self._cellShape,
                                                              cellTransparency: self._viewTransparency)
+
+        if let selectMode = selectMode { self._selectMode = selectMode }
+        if let automationMode = automationMode { self._automationMode = automationMode }
+        if let automationInterval = automationInterval { self._automationInterval = automationInterval }
+
         if let shiftForRefresh = shiftForRefresh {
             self.shiftCells(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
         }
