@@ -3,6 +3,43 @@ import Utils
 
 extension CellGridView
 {
+    public struct Defaults
+    {
+        // The size related properties here (being outward facing) are unscaled.
+
+        public static let viewBackground: Colour = Colour.brown
+        public static let viewTransparency: UInt8 = Colour.OPAQUE
+        public static let viewScaling: Bool = true
+
+        public static let cellSize: Int = 25
+        public static let cellSizeFit: Bool = false
+        public static let cellPadding: Int = 1
+        public static let cellShape: CellShape = CellShape.rounded
+        public static let cellForeground: Colour = Colour.white // Colour.black
+
+        public static let cellAntialiasFade: Float = 0.6  // smaller is smoother
+        public static let cellRoundedRectangleRadius: Float = 0.25
+
+        public static let cellSizeMax: Int = 200
+        public static let cellSizeInnerMin: Int = 1
+        public static let cellPaddingMax: Int = 8
+        public static let cellPreferredSizeMarginMax: Int = 30
+
+        public static let gridColumns: Int = 0
+        public static let gridRows: Int = 0
+        public static let gridCenter: Bool = false
+        public static let restrictShiftStrict: Bool = true
+        public static let unscaledZoom: Bool = false
+        public static let automationInterval: Double = 0.5
+
+        public static let selectMode: Bool = true
+        public static let automationMode: Bool = true
+        //
+        // Wraparound support is incomplete, half-baked, and of questionable utility.
+        //
+        public static let gridWrapAround: Bool = false
+    }
+
     public struct Configuration
     {
         private var _viewBackground: Colour?

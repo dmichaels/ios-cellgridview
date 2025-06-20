@@ -16,40 +16,6 @@ import Utils
 
 open class CellGridView: ObservableObject
 {
-    public struct Defaults {
-
-        // The size related properties here (being outward facing) are unscaled.
-
-        public static let viewBackground: Colour = Colour.brown
-        public static let viewTransparency: UInt8 = Colour.OPAQUE
-        public static let viewScaling: Bool = true
-
-        public static let cellSize: Int = 25
-        public static let cellSizeFit: Bool = false
-        public static let cellPadding: Int = 1
-        public static let cellShape: CellShape = CellShape.rounded
-        public static let cellForeground: Colour = Colour.white // Colour.black
-
-        public static let cellSizeMax: Int = 200
-        public static let cellSizeInnerMin: Int = 1
-        public static let cellPaddingMax: Int = 8
-        public static let cellPreferredSizeMarginMax: Int = 30
-        public static let cellAntialiasFade: Float = 0.6  // smaller is smoother
-        public static let cellRoundedRectangleRadius: Float = 0.25
-
-        public static let gridCenter: Bool = false
-        public static let restrictShiftStrict: Bool = true
-        public static let unscaledZoom: Bool = false
-        public static let automationInterval: Double = 0.5
-
-        public static let selectMode: Bool = true
-        public static let automationMode: Bool = true
-        //
-        // Wraparound support is incomplete, half-baked, and of questionable utility.
-        //
-        public static let gridWrapAround: Bool = false
-    }
-
     // Note that internally all size related properties are stored as scaled;
     // but that all outward facing references to such properties and unscaled,
     // unless otherwise specifed in the property name, e.g. cellSizeScaled.
@@ -81,11 +47,10 @@ open class CellGridView: ObservableObject
     private var _cellShape: CellShape = CellShape.rounded
     private var _cellForeground: CellShape = CellShape.rounded
 
-    private var _gridColumns: Int = 0
-    private var _gridRows: Int = 0
+    private var _gridColumns: Int = Defaults.gridColumns
+    private var _gridRows: Int = Defaults.gridRows
     private var _gridCellEndX: Int = 0
     private var _gridCellEndY: Int = 0
-    private var _gridCenter: Bool = Defaults.gridCenter
     private var _gridWrapAround: Bool = Defaults.gridWrapAround
     private var _gridCells: [Cell] = []
 
@@ -175,7 +140,6 @@ open class CellGridView: ObservableObject
                             cellSizeInit: cellSize , cellSizeFitInit: cellSizeFit)
         #endif
 
-        self._gridCenter = gridCenter
         if (gridCenter) {
             self.center()
         }
