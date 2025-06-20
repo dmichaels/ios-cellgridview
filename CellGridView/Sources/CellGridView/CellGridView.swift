@@ -83,7 +83,11 @@ open class CellGridView: ObservableObject
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
     //
+    private var _automationMode: Bool = Defaults.automationMode
+    private var _selectMode: Bool = Defaults.selectMode
     private var _automationInterval: Double = Defaults.automationInterval
+    private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
+
     private var _onChangeImage: () -> Void = {}
     private var _onChangeCellSize: (Int) -> Void = {_ in}
 
@@ -111,6 +115,7 @@ open class CellGridView: ObservableObject
                                  onChangeCellSize: @escaping (Int) -> Void = {_ in})
     {
         self._screen = screen
+        
 
         let preferredSize: PreferredSize = (
             cellSizeFit
@@ -666,28 +671,49 @@ open class CellGridView: ObservableObject
         self._onChangeCellSize(cellSize)
     }
 
-    private final lazy var actions: CellGridView.Actions = {
-        return CellGridView.Actions(self, automationInterval: self._automationInterval)
-    }()
+    private final var actions: CellGridView.Actions {
+        return self._actions
+    }
 
-    public final var automationInterval: Double {
-        get { return self.automationInterval }
-        set {
-            if (newValue != self._automationInterval) {
-                self._automationInterval = newValue
-                self.actions.automationInterval = newValue
-            }
+    public var selectMode: Bool {
+        self._selectMode
+    }
+
+    public func selectModeToggle() {
+        self._selectMode = !self._selectMode
+    }
+
+    public var automationMode: Bool {
+        self._automationMode
+    }
+
+    public func automationModeToggle() {
+        if (self._automationMode) {
+            self._automationMode = false
+            self.automationStop()
+        }
+        else {
+            self._automationMode = true
+            self.automationStart()
         }
     }
 
-    open var  selectMode: Bool { self.actions.selectMode }
-    open func selectModeToggle() { self.actions.selectModeToggle() }
-
-    open var  automationMode: Bool { self.actions.automationMode }
-    open func automationModeToggle() { self.actions.automationModeToggle() }
     open func automationStart() { self.actions.automationStart() }
     open func automationStop() { self.actions.automationStop() }
     open func automationStep() {}
+
+    public final var automationInterval: Double {
+        get { return self._automationInterval }
+        set {
+            if (newValue != self._automationInterval) {
+                self._automationInterval = newValue
+                if (self._automationMode) {
+                    self.actions.automationStop()
+                    self.actions.automationStart()
+                }
+            }
+        }
+    }
 
     open func onTap(_ viewPoint: CGPoint) { self.actions.onTap(viewPoint) }
     open func onDrag(_ viewPoint: CGPoint) { self.actions.onDrag(viewPoint) }

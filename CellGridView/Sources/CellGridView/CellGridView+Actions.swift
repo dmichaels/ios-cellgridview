@@ -8,31 +8,14 @@ extension CellGridView
         private let _cellGridView: CellGridView
         private var _dragger: CellGridView.Drag? = nil
         private var _zoomer: CellGridView.Zoom? = nil
-        private var _selectMode: Bool = CellGridView.Defaults.selectMode
-        private var _automationMode: Bool = CellGridView.Defaults.automationMode
-        private var _automationInterval: Double
         private var _automationTimer: Timer? = nil
 
-        internal init(_ cellGridView: CellGridView, automationInterval: Double = Defaults.automationInterval) {
+        internal init(_ cellGridView: CellGridView) {
             self._cellGridView = cellGridView
-            self._automationInterval = automationInterval
-        }
-
-        internal var automationInterval: Double {
-            get { return self._automationInterval }
-            set {
-                if (newValue != self._automationInterval) {
-                    self._automationInterval = newValue
-                    if (self._automationMode) {
-                        self.automationStop()
-                        self.automationStart()
-                    }
-                }
-            }
         }
 
         internal func automationStart() {
-            self._automationTimer = Timer.scheduledTimer(withTimeInterval: self._automationInterval, repeats: true) { _ in
+            self._automationTimer = Timer.scheduledTimer(withTimeInterval: self._cellGridView.automationInterval, repeats: true) { _ in
                 self._cellGridView.automationStep()
             }
         }
@@ -51,32 +34,9 @@ extension CellGridView
             }
         }
 
-        internal var selectMode: Bool {
-            self._selectMode
-        }
-
-        internal func selectModeToggle() {
-            self._selectMode = !self._selectMode
-        }
-
-        internal var automationMode: Bool {
-            self._automationMode
-        }
-
-        internal func automationModeToggle() {
-            if (self._automationMode) {
-                self._automationMode = false
-                self.automationStop()
-            }
-            else {
-                self._automationMode = true
-                self.automationStart()
-            }
-        }
-
         internal func onDrag(_ viewPoint: CGPoint) {
             guard let dragger: CellGridView.Drag = self._dragger else {
-                self._dragger = CellGridView.Drag(self._cellGridView, viewPoint, selectMode: self._selectMode)
+                self._dragger = CellGridView.Drag(self._cellGridView, viewPoint, selectMode: self._cellGridView.selectMode)
                 return
             }
             dragger.drag(viewPoint)
