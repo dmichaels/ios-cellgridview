@@ -79,17 +79,21 @@ open class CellGridView: ObservableObject
     //
     internal var _buffer: [UInt8] = []
 
+    // Various other sundry operational parameters.
+    //
+    private var _cellAntialiasFade: Float = Defaults.cellAntialiasFade
+    private var _cellRoundedRectangleRadius: Float = Defaults.cellRoundedRectangleRadius
+    private var _automationMode: Bool = Defaults.automationMode
+    private var _selectMode: Bool = Defaults.selectMode
+    private var _automationInterval: Double = Defaults.automationInterval
+
     // This _onChangeImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
     //
-    private var _automationMode: Bool = Defaults.automationMode
-    private var _selectMode: Bool = Defaults.selectMode
-    private var _automationInterval: Double = Defaults.automationInterval
-    private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
-
     private var _onChangeImage: () -> Void = {}
     private var _onChangeCellSize: (Int) -> Void = {_ in}
+    private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     public init() {}
 
@@ -110,9 +114,11 @@ open class CellGridView: ObservableObject
                                  gridColumns: Int,
                                  gridRows: Int,
                                  gridCenter: Bool,
-                                 selectMode: Bool = Defaults.selectMode,
-                                 automationMode: Bool = Defaults.automationMode,
-                                 automationInterval: Double = Defaults.automationInterval,
+                                 selectMode: Bool? = nil,
+                                 automationMode: Bool? = nil,
+                                 automationInterval: Double? = nil,
+                                 cellAntialiasFade: Float? = nil,
+                                 cellRoundedRectangleRadius: Float? = nil,
                                  onChangeImage: @escaping () -> Void,
                                  onChangeCellSize: @escaping (Int) -> Void = {_ in})
     {
@@ -131,7 +137,17 @@ open class CellGridView: ObservableObject
                        viewScaling: viewScaling,
                        cellSize: preferredSize.cellSize,
                        cellPadding: cellPadding,
-                       cellShape: cellShape)
+                       cellShape: cellShape,
+                       gridColumns: gridColumns,
+                       gridRows: gridRows,
+                       gridCenter: gridCenter,
+                       selectMode: selectMode,
+                       automationMode: automationMode,
+                       automationInterval: automationInterval,
+                       cellAntialiasFade: cellAntialiasFade,
+                       cellRoundedRectangleRadius: cellRoundedRectangleRadius,
+                       adjustShift: false,
+                       refreshCells: false)
 
         self._gridColumns = gridColumns > 0 ? gridColumns : self._viewColumns
         self._gridRows = gridRows > 0 ? gridRows : self._viewRows
@@ -146,9 +162,6 @@ open class CellGridView: ObservableObject
                             cellSizeInit: cellSize , cellSizeFitInit: cellSizeFit)
         #endif
 
-        self._selectMode = selectMode
-        self._automationMode = automationMode
-        self._automationInterval = automationInterval
         self._onChangeImage = onChangeImage
         self._onChangeCellSize = onChangeCellSize
 
@@ -166,9 +179,14 @@ open class CellGridView: ObservableObject
                                 cellSize: Int,
                                 cellPadding: Int,
                                 cellShape: CellShape,
+                                gridColumns: Int? = nil,
+                                gridRows: Int? = nil,
+                                gridCenter: Bool? = nil,
                                 selectMode: Bool? = nil,
                                 automationMode: Bool? = nil,
                                 automationInterval: Double? = nil,
+                                cellAntialiasFade: Float? = nil,
+                                cellRoundedRectangleRadius: Float? = nil,
                                 adjustShift: Bool = false,
                                 refreshCells: Bool = false,
                                 scaled: Bool = false)
@@ -236,6 +254,8 @@ open class CellGridView: ObservableObject
         if let selectMode = selectMode { self._selectMode = selectMode }
         if let automationMode = automationMode { self._automationMode = automationMode }
         if let automationInterval = automationInterval { self._automationInterval = automationInterval }
+        if let cellAntialiasFade = cellAntialiasFade { self._cellAntialiasFade = cellAntialiasFade }
+        if let cellRoundedRectangleRadius = cellRoundedRectangleRadius { self._cellRoundedRectangleRadius = cellRoundedRectangleRadius }
 
         if let shiftForRefresh = shiftForRefresh {
             self.shiftCells(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
@@ -249,7 +269,7 @@ open class CellGridView: ObservableObject
     public   final var viewHeight: Int           { self._unscaled_viewHeight }
     public   final var viewColumns: Int          { self._viewColumns }
     public   final var viewRows: Int             { self._viewRows }
-    public   final var viewBackground: Colour { self._viewBackground }
+    public   final var viewBackground: Colour    { self._viewBackground }
     public   final var viewTransparency: UInt8   { self._viewTransparency }
     public   final var cellSize: Int             { self._unscaled_cellSize }
     public   final var cellPadding: Int          { self._unscaled_cellPadding }

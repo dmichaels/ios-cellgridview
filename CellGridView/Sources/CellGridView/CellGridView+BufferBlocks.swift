@@ -141,13 +141,16 @@ extension CellGridView
             }
         }
 
-        internal static func createBufferBlocks(bufferSize: Int,
-                                                viewWidth: Int,
-                                                viewHeight: Int,
-                                                cellSize: Int,
-                                                cellPadding: Int,
-                                                cellShape: CellShape,
-                                                cellTransparency: UInt8) -> BufferBlocks
+        internal static func createBufferBlocks(
+            bufferSize: Int,
+            viewWidth: Int,
+            viewHeight: Int,
+            cellSize: Int,
+            cellPadding: Int,
+            cellShape: CellShape,
+            cellTransparency: UInt8,
+            cellAntialiasFade: Float = Defaults.cellAntialiasFade,
+            cellRoundedRectangleRadius: Float = Defaults.cellRoundedRectangleRadius) -> BufferBlocks
         {
             // Note that all size related arguments here are assume to be scaled.
 
@@ -159,7 +162,7 @@ extension CellGridView
             let cellSizeMinusPadding: Int = cellSize - padding
             let cellSizeMinusPaddingTimesTwo: Int = cellSize - (2 * padding)
             let shape: CellShape = (cellSizeMinusPaddingTimesTwo < 3) ? .inset : cellShape
-            let fade: Float = Defaults.cellAntialiasFade
+            let fade: Float = cellAntialiasFade
 
             for dy in 0..<cellSize {
                 for dx in 0..<cellSize {
@@ -190,7 +193,7 @@ extension CellGridView
                     case .rounded:
                         let fx: Float = Float(dx) + 0.5
                         let fy: Float = Float(dy) + 0.5
-                        let cornerRadius: Float = Float(cellSizeMinusPaddingTimesTwo) * Defaults.cellRoundedRectangleRadius
+                        let cornerRadius: Float = Float(cellSizeMinusPaddingTimesTwo) * cellRoundedRectangleRadius
                         let minX: Float = Float(padding)
                         let minY: Float = Float(padding)
                         let maxX: Float = Float(cellSizeMinusPadding)
