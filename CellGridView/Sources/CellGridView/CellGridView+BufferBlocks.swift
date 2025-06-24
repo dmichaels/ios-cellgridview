@@ -150,7 +150,7 @@ extension CellGridView
             cellShape: CellShape,
             cellTransparency: UInt8,
             cellAntialiasFade: Float = Defaults.cellAntialiasFade,
-            cellRoundedRectangleRadius: Float = Defaults.cellRoundedRectangleRadius) -> BufferBlocks
+            cellRoundedRadius: Float = Defaults.cellRoundedRadius) -> BufferBlocks
         {
             // Note that all size related arguments here are assume to be scaled.
 
@@ -193,7 +193,7 @@ extension CellGridView
                     case .rounded:
                         let fx: Float = Float(dx) + 0.5
                         let fy: Float = Float(dy) + 0.5
-                        let cornerRadius: Float = Float(cellSizeMinusPaddingTimesTwo) * cellRoundedRectangleRadius
+                        let cornerRadius: Float = Float(cellSizeMinusPaddingTimesTwo) * cellRoundedRadius
                         let minX: Float = Float(padding)
                         let minY: Float = Float(padding)
                         let maxX: Float = Float(cellSizeMinusPadding)

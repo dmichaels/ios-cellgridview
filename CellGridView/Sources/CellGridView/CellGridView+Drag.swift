@@ -33,7 +33,7 @@ extension CellGridView
             let dragDeltaY = self._startY - dragY
             let shiftX =  self._startShiftedX - dragDeltaX
             let shiftY = self._startShiftedY - dragDeltaY
-            self._cellGridView.shiftCells(shiftTotalX: shiftX, shiftTotalY: shiftY, dragging: !end)
+            self._cellGridView.shift(shiftTotalX: shiftX, shiftTotalY: shiftY, dragging: !end)
         }
 
         internal func end(_ viewPoint: CGPoint) {

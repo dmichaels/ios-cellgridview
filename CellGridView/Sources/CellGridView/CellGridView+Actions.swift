@@ -15,7 +15,8 @@ extension CellGridView
         }
 
         internal func automationStart() {
-            self._automationTimer = Timer.scheduledTimer(withTimeInterval: self._cellGridView.automationInterval, repeats: true) { _ in
+            self._automationTimer = Timer.scheduledTimer(withTimeInterval: self._cellGridView.automationInterval,
+                                                         repeats: true) { _ in
                 self._cellGridView.automationStep()
             }
         }

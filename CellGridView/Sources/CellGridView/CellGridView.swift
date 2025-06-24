@@ -45,14 +45,11 @@ open class CellGridView: ObservableObject
     private var _cellSizeTimesViewWidth: Int = 0
     private var _cellPadding: Int = 0
     private var _cellShape: CellShape = CellShape.rounded
-    private var _cellForeground: CellShape = CellShape.rounded
 
-    private var _gridColumns: Int = Defaults.gridColumns
-    private var _gridRows: Int = Defaults.gridRows
-    private var _gridCellEndX: Int = 0
-    private var _gridCellEndY: Int = 0
+    private var _gridColumns: Int = 0 // Defaults.gridColumns
+    private var _gridRows: Int = 0 // Defaults.gridRows
     private var _gridWrapAround: Bool = Defaults.gridWrapAround
-    private var _gridCells: [Cell] = []
+    private var _cells: [Cell] = []
 
     // These change based on moving/shifting the cell-grid around the grid-view.
     //
@@ -81,8 +78,30 @@ open class CellGridView: ObservableObject
 
     // Various other sundry operational parameters.
     //
+    private var _cellColor: Colour = Defaults.cellColor
+    internal var cellColor: Colour { self._cellColor }
+
+    private var _restrictShift: Bool = Defaults.restrictShift
+    internal var restrictShift: Bool { self._restrictShift }
+
+    private var _unscaledZoom: Bool = Defaults.unscaledZoom
+    internal var unscaledZoom: Bool { self._unscaledZoom }
+
     private var _cellAntialiasFade: Float = Defaults.cellAntialiasFade
-    private var _cellRoundedRectangleRadius: Float = Defaults.cellRoundedRectangleRadius
+    internal var cellAntialiasFade: Float { self._cellAntialiasFade }
+
+    private var _cellRoundedRadius: Float = Defaults.cellRoundedRadius
+    internal var cellRoundedRadius: Float { self._cellRoundedRadius }
+
+    private var _cellSizeMax: Int = Defaults.cellSizeMax
+    internal var cellSizeMax: Int { self._cellSizeMax }
+
+    private var _cellSizeInnerMin: Int = Defaults.cellSizeInnerMin
+    internal var cellSizeInnerMin: Int { self._cellSizeInnerMin }
+
+    private var _cellPaddingMax: Int = Defaults.cellPaddingMax
+    internal var cellPaddingMax: Int { self._cellPaddingMax }
+
     private var _automationMode: Bool = Defaults.automationMode
     private var _selectMode: Bool = Defaults.selectMode
     private var _automationInterval: Double = Defaults.automationInterval
@@ -110,15 +129,17 @@ open class CellGridView: ObservableObject
                                  cellPadding: Int,
                                  cellSizeFit: Bool,
                                  cellShape: CellShape,
-                                 cellForeground: Colour,
+                                 cellColor: Colour,
                                  gridColumns: Int,
                                  gridRows: Int,
-                                 gridCenter: Bool,
+                                 centerCells: Bool? = nil,
+                                 restrictShift: Bool? = nil,
+                                 unscaledZoom: Bool? = nil,
+                                 cellAntialiasFade: Float? = nil,
+                                 cellRoundedRadius: Float? = nil,
                                  selectMode: Bool? = nil,
                                  automationMode: Bool? = nil,
                                  automationInterval: Double? = nil,
-                                 cellAntialiasFade: Float? = nil,
-                                 cellRoundedRectangleRadius: Float? = nil,
                                  onChangeImage: @escaping () -> Void,
                                  onChangeCellSize: @escaping (Int) -> Void = {_ in})
     {
@@ -126,7 +147,8 @@ open class CellGridView: ObservableObject
 
         let preferredSize: PreferredSize = (
             cellSizeFit
-            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize)
+            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
+                                         cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
             : nil
         ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
 
@@ -138,36 +160,54 @@ open class CellGridView: ObservableObject
                        cellSize: preferredSize.cellSize,
                        cellPadding: cellPadding,
                        cellShape: cellShape,
+                       cellColor: cellColor,
                        gridColumns: gridColumns,
                        gridRows: gridRows,
-                       gridCenter: gridCenter,
+                       restrictShift: restrictShift,
+                       unscaledZoom: unscaledZoom,
+                       cellAntialiasFade: cellAntialiasFade,
+                       cellRoundedRadius: cellRoundedRadius,
                        selectMode: selectMode,
                        automationMode: automationMode,
                        automationInterval: automationInterval,
-                       cellAntialiasFade: cellAntialiasFade,
-                       cellRoundedRectangleRadius: cellRoundedRectangleRadius,
-                       adjustShift: false,
-                       refreshCells: false)
+                       adjustShiftOnResizeCells: false,
+                       refreshCells: false,
+                       onChangeImage: onChangeImage,
+                       onChangeCellSize: onChangeCellSize,
+                       centerCells: centerCells,
+                       scaled: false)
 
-        self._gridColumns = gridColumns > 0 ? gridColumns : self._viewColumns
-        self._gridRows = gridRows > 0 ? gridRows : self._viewRows
-        self._gridCellEndX = self._gridColumns - 1
-        self._gridCellEndY = self._gridRows - 1
-        self._gridCells = self.defineGridCells(gridColumns: self._gridColumns,
-                                               gridRows: self._gridRows,
-                                               foreground: cellForeground)
+        // self._gridColumns = gridColumns > 0 ? gridColumns : self._viewColumns
+        // self._gridRows = gridRows > 0 ? gridRows : self._viewRows
+        // self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
 
         #if targetEnvironment(simulator)
             self.printSizes(viewWidthInit: viewWidth, viewHeightInit: viewHeight,
                             cellSizeInit: cellSize , cellSizeFitInit: cellSizeFit)
         #endif
 
-        self._onChangeImage = onChangeImage
-        self._onChangeCellSize = onChangeCellSize
+        // self._onChangeImage = onChangeImage
+        // self._onChangeCellSize = onChangeCellSize
 
-        gridCenter ? self.center() : self.shiftCells(shiftTotalX: 0, shiftTotalY: 0, scaled: false)
+        // let centerCells: Bool = centerCells ?? Defaults.centerCells
+        // centerCells ? self.center() : self.writeCells()
+        if (!(centerCells ?? false)) {
+            self.writeCells()
+        }
 
         self.onChangeImage()
+    }
+
+    open var config: Config {
+        Config(self)
+    }
+
+    open func initialize(_ config: CellGridView.Config)
+    {
+    }
+
+    open func configure(_ config: CellGridView.Config)
+    {
     }
 
     public final func configure(screen: Screen? = nil,
@@ -177,23 +217,35 @@ open class CellGridView: ObservableObject
                                 viewTransparency: UInt8,
                                 viewScaling: Bool,
                                 cellSize: Int,
+                                // cellSize: Int? = nil,
                                 cellPadding: Int,
-                                cellShape: CellShape,
+                                cellSizeFit: Bool? = nil,
+                                cellShape: CellShape? = nil,
+                                cellColor: Colour? = nil,
                                 gridColumns: Int? = nil,
                                 gridRows: Int? = nil,
-                                gridCenter: Bool? = nil,
+                                restrictShift: Bool? = nil,
+                                unscaledZoom: Bool? = nil,
+                                cellAntialiasFade: Float? = nil,
+                                cellRoundedRadius: Float? = nil,
                                 selectMode: Bool? = nil,
                                 automationMode: Bool? = nil,
                                 automationInterval: Double? = nil,
-                                cellAntialiasFade: Float? = nil,
-                                cellRoundedRectangleRadius: Float? = nil,
-                                adjustShift: Bool = false,
+                                adjustShiftOnResizeCells: Bool = false,
                                 refreshCells: Bool = false,
-                                scaled: Bool = false)
+                                onChangeImage: (() -> Void)? = nil,
+                                onChangeCellSize: ((Int) -> Void)? = nil,
+                                centerCells: Bool? = nil,
+                                scaled: Bool = false,
+                                config: Configuration = Configuration())
     {
         if (screen != nil) {
             self._screen = screen
         }
+
+        let config: Configuration = config.defaultsFrom(self) // TODO
+
+        if let cellColor = cellColor { self._cellColor = cellColor }
 
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
@@ -203,17 +255,28 @@ open class CellGridView: ObservableObject
 
         let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(cellPadding) : cellPadding, scaled: true)
         let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, cellPadding: cellPadding, scaled: true)
+        // let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(cellSize ?? self.cellSize) : cellSize ?? self.cellSize, cellPadding: cellPadding, scaled: true)
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        // Note that adjustShift implies refreshCells.
+        let preferredSize: PreferredSize = (
+            cellSizeFit ?? Defaults.cellSizeFit
+            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
+                                         cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
+            : nil
+        ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
+
+        // Note that adjustShiftOnResizeCells implies refreshCells; and note we do this before
+        // actually (if indeed) changing cellSize, so that we now what the increment is.
 
         let shiftForRefresh = (
-            adjustShift && ((cellSize - self.scaled(self.cellSize)) != 0)
+            adjustShiftOnResizeCells && ((cellSize - self.scaled(self.cellSize)) != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
-            : (refreshCells
-               ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
-               : nil)
+            : (centerCells ?? false
+               ? shiftForCenterCells(cellSize: cellSize, gridColumns: gridColumns, gridRows: gridRows)
+               : (refreshCells
+                  ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
+                  : nil))
         )
 
         self._viewWidth = viewWidth
@@ -221,7 +284,8 @@ open class CellGridView: ObservableObject
         self._cellSize = cellSize
         self._cellSizeTimesViewWidth = self._cellSize * self._viewWidth
         self._cellPadding = cellPadding
-        self._cellShape = cellShape
+
+        if let cellColor = cellColor { self._cellColor = cellColor }
 
         self._unscaled_viewWidth = self.unscaled(viewWidth)
         self._unscaled_viewHeight = self.unscaled(viewHeight)
@@ -242,6 +306,10 @@ open class CellGridView: ObservableObject
         self._viewBackground = viewBackground
         self._viewTransparency = viewTransparency
 
+        if let cellColor = cellColor { self._cellColor = cellColor }
+        if let cellAntialiasFade = cellAntialiasFade { self._cellAntialiasFade = cellAntialiasFade }
+        if let cellRoundedRadius = cellRoundedRadius { self._cellRoundedRadius = cellRoundedRadius }
+
         self._buffer = Memory.allocate(self._viewWidth * self._viewHeight * Screen.channels)
         self._bufferBlocks = BufferBlocks.createBufferBlocks(bufferSize: self._buffer.count,
                                                              viewWidth: self._viewWidth,
@@ -249,16 +317,34 @@ open class CellGridView: ObservableObject
                                                              cellSize: self._cellSize,
                                                              cellPadding: self._cellPadding,
                                                              cellShape: self._cellShape,
-                                                             cellTransparency: self._viewTransparency)
+                                                             cellTransparency: self._viewTransparency,
+                                                             cellAntialiasFade: self._cellAntialiasFade,
+                                                             cellRoundedRadius: self._cellRoundedRadius)
 
+        var defineCells: Bool = false
+        if var gridColumns = gridColumns {
+            gridColumns = max(0, gridColumns)
+            if (gridColumns != self._gridColumns) { defineCells = true ; self._gridColumns = gridColumns }
+        }
+        if var gridRows = gridRows {
+            gridRows = max(0, gridRows)
+            if (gridRows != self._gridRows) { defineCells = true ; self._gridRows = gridRows }
+        }
+        if (defineCells) {
+            self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
+        }
+
+        if let restrictShift = restrictShift { self._restrictShift = restrictShift }
         if let selectMode = selectMode { self._selectMode = selectMode }
         if let automationMode = automationMode { self._automationMode = automationMode }
-        if let automationInterval = automationInterval { self._automationInterval = automationInterval }
-        if let cellAntialiasFade = cellAntialiasFade { self._cellAntialiasFade = cellAntialiasFade }
-        if let cellRoundedRectangleRadius = cellRoundedRectangleRadius { self._cellRoundedRectangleRadius = cellRoundedRectangleRadius }
+        if let automationInterval = automationInterval { self.automationInterval = automationInterval }
+
+        if let onChangeImage = onChangeImage { self._onChangeImage = onChangeImage }
+        if let onChangeCellSize = onChangeCellSize { self._onChangeCellSize = onChangeCellSize }
 
         if let shiftForRefresh = shiftForRefresh {
-            self.shiftCells(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
+            print("FOO> \(shiftForRefresh.x),\(shiftForRefresh.y) \(self.viewScaling)")
+            self.shift(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
         }
     }
 
@@ -276,7 +362,7 @@ open class CellGridView: ObservableObject
     public   final var cellShape: CellShape      { self._cellShape }
     public   final var gridColumns: Int          { self._gridColumns }
     public   final var gridRows: Int             { self._gridRows }
-    public   final var gridCells: [Cell]         { self._gridCells }
+    public   final var cells: [Cell]             { self._cells }
     public   final var gridWrapAround: Bool      { self._gridWrapAround }
 
     internal final var shiftCellX: Int  { self._unscaled_shiftCellX }
@@ -288,8 +374,8 @@ open class CellGridView: ObservableObject
 
     internal final var viewWidthScaled: Int      { self._viewWidth }
     internal final var viewHeightScaled: Int     { self._viewHeight }
-    internal final var viewCellEndX: Int         { self._viewCellEndX } // xyzzy
-    internal final var viewCellEndY: Int         { self._viewCellEndY } // xyzzy
+    internal final var viewCellEndX: Int         { self._viewCellEndX }
+    internal final var viewCellEndY: Int         { self._viewCellEndY }
     internal final var viewWidthExtraScaled: Int { self._viewWidthExtra }
     internal final var cellSizeScaled: Int       { self._cellSize }
     internal final var cellPaddingScaled: Int    { self._cellPadding }
@@ -326,10 +412,11 @@ open class CellGridView: ObservableObject
         return self.screen.unscaled(value, scaling: self._viewScaling)
     }
 
-    // Sets the cell-grid within the grid-view to be shifted by the given amount,
-    // from the upper-left; note that the given shiftTotalX and shiftTotalY values are unscaled.
+    // Sets the cell-grid within the grid-view to be shifted by the given amount, from the upper-left;
+    // note that the given shiftTotalX and shiftTotalY values, if not already scaled (as indicated by
+    // the scaled argument) will be scaled for the execution of this function.
     //
-    public final func shiftCells(shiftTotalX: Int, shiftTotalY: Int, dragging: Bool = false, scaled: Bool = false)
+    public final func shift(shiftTotalX: Int, shiftTotalY: Int, dragging: Bool = false, scaled: Bool = false)
     {
         #if targetEnvironment(simulator)
             let debugStart = Date()
@@ -415,7 +502,7 @@ open class CellGridView: ObservableObject
                                   viewCellEnd: Int,
                                   viewSizeExtra: Int,
                                   viewSize: Int,
-                                  gridCellEnd: Int) {
+                                  gridCells: Int) {
             if (shiftCell >= viewCellEnd) {
                 if (viewSizeExtra > 0) {
                     let shiftTotal = (shiftCell * self._cellSize) + shift
@@ -428,14 +515,15 @@ open class CellGridView: ObservableObject
                     shiftCell = viewCellEnd
                     shift = 0
                 }
-            } else if (-shiftCell >= gridCellEnd) {
-                shiftCell = -gridCellEnd
+            }
+            else if (-shiftCell >= (gridCells - 1)) {
+                shiftCell = -(gridCells - 1)
                 shift = 0
             }
         }
 
         if (!self._gridWrapAround) {
-            if (Defaults.restrictShiftStrict) {
+            if (self._restrictShift) {
                 restrictShiftStrict(shiftCell: &shiftCellX, shift: &shiftX,
                                     cellSize: self._cellSize,
                                     viewSize: self._viewWidth,
@@ -453,13 +541,13 @@ open class CellGridView: ObservableObject
                                      viewCellEnd: self._viewCellEndX - self._viewColumnsExtra,
                                      viewSizeExtra: self._viewWidthExtra,
                                      viewSize: self._viewWidth,
-                                     gridCellEnd: self._gridCellEndX)
+                                     gridCells: self._gridColumns)
                 restrictShiftLenient(shiftCell: &shiftCellY,
                                      shift: &shiftY,
                                      viewCellEnd: self._viewCellEndY - self._viewRowsExtra,
                                      viewSizeExtra: self._viewHeightExtra,
                                      viewSize: self._viewHeight,
-                                     gridCellEnd: self._gridCellEndY)
+                                     gridCells: self._gridRows)
             }
         }
 
@@ -526,7 +614,7 @@ open class CellGridView: ObservableObject
     // pixel level based shift values, negative meaning to shift the grid cell left or up, and positive
     // meaning to shift the grid cell right or down.
     //
-    internal final func writeCell(viewCellX: Int, viewCellY: Int)
+    internal final func writeCell(viewCellX: Int, viewCellY: Int, foregroundOnly: Bool = false)
     {
         // Get the left/right truncation amount.
         // This was all a lot tricker than you might expect (yes basic arithmetic).
@@ -583,7 +671,6 @@ open class CellGridView: ObservableObject
         // but this is probably not really a typical/common case for things we can think of for now.
         //
         let foreground: Colour = self.gridCell(gridCellX, gridCellY)?.color ?? self._viewBackground
-        let foregroundOnly: Bool = false
 
         // Setup the offset for the buffer blocks; offset used within writeCellBlock.
 
@@ -686,7 +773,7 @@ open class CellGridView: ObservableObject
         let gridHeight: Int = self.gridRows * self.cellSize
         let shiftTotalX: Int = -Int(round(Double(gridWidth) / 2.0))
         let shiftTotalY: Int = -Int(round(Double(gridHeight) / 2.0))
-        self.shiftCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY)
+        self.shift(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY)
     }
 
     public final func onChangeImage() {

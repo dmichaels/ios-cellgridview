@@ -30,11 +30,11 @@ open class Cell
         self._cellGridView
     }
 
-    public init(cellGridView: CellGridView, x: Int, y: Int, color: Colour) {
+    public init(cellGridView: CellGridView, x: Int, y: Int, color: Colour? = nil) {
         self._cellGridView = cellGridView
         self._x = x
         self._y = y
-        self._color = color
+        self._color = color ?? cellGridView.cellColor
     }
 
     public func write(color: Colour? = nil, foregroundOnly: Bool = false) {
@@ -42,7 +42,8 @@ open class Cell
             self.color = color
         }
         if let viewCellLocation = self._cellGridView.viewCellLocation(gridCellX: self._x, gridCellY: self._y) {
-            self._cellGridView.writeCell(viewCellX: viewCellLocation.x, viewCellY: viewCellLocation.y)
+            self._cellGridView.writeCell(viewCellX: viewCellLocation.x,
+                                         viewCellY: viewCellLocation.y, foregroundOnly: foregroundOnly)
         }
     }
 

@@ -31,7 +31,7 @@ extension CellGridView
         guard gridCellX >= 0, gridCellX < self.gridColumns, gridCellY >= 0, gridCellY < self.gridRows else {
             return nil
         }
-        return self.gridCells[gridCellY * self.gridColumns + gridCellX] as? T
+        return self.cells[gridCellY * self.gridColumns + gridCellX] as? T
     }
 
     // Returns the cell-grid cell object for the given cell-grid cell location, or nil.

@@ -20,7 +20,7 @@ extension CellGridView
 
         internal init(_ cellGridView: CellGridView, _ zoomFactor: CGFloat) {
 
-            self._unscaledZoom = CellGridView.Defaults.unscaledZoom && cellGridView.viewScaling
+            self._unscaledZoom = cellGridView.unscaledZoom && cellGridView.viewScaling
             if (self._unscaledZoom) {
                 cellGridView.viewScaling = false
             }
@@ -35,10 +35,16 @@ extension CellGridView
         internal func zoom(_ zoomFactor: CGFloat) {
             let cellSizeZoomed: CGFloat = CGFloat(self._startCellSize) * zoomFactor
             let cellSize: Int = Int(cellSizeZoomed.rounded(FloatingPointRoundingRule.toNearestOrEven))
-            self._cellGridView.resizeCells(cellSize: cellSize, adjustShift: true, scaled: true)
+            self._cellGridView.resizeCells(cellSize: cellSize, adjustShiftOnResizeCells: true, scaled: true)
         }
 
         internal func end(_ zoomFactor: CGFloat) {
+            //
+            // TODO
+            // It is possible that the onEnded event for the MagnificationGesture,
+            // e.g. from Utils.SmartGesture, will not be called as expected; not clear
+            // how to handle this; the only negative impact is if we are using unscaledZoom.
+            //
             self.zoom(zoomFactor)
             if (self._unscaledZoom) {
                 self._cellGridView.viewScaling = true
@@ -46,24 +52,25 @@ extension CellGridView
         }
     }
 
-    public func resizeCells(cellSize: Int, adjustShift: Bool = true,  scaled: Bool = false)
+    public func resizeCells(cellSize: Int, adjustShiftOnResizeCells: Bool = true,  scaled: Bool = false)
     {
-        let cellSize: Int = self.constrainCellSize(!scaled ?  self.scaled(cellSize) : cellSize, scaled: true)
+        let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, scaled: true)
 
         guard cellSize != self.cellSizeScaled else { return }
 
-        // If the given adjustShift is true, then we need to calculate the new shift values here BEFORE the
+        // If the given adjustShiftOnResizeCells is true, then we need to calculate the new shift values here BEFORE the
         // re-configure below, whether the resize takes or not due to reaching the maximum allowed cell size,
         // because they both cases depend on the cell size which is updated by this re-configure below.
 
-        var shift = adjustShift ? CellGridView.shiftForResizeCells(cellSize: self.cellSizeScaled,
-                                                                   cellSizeIncrement: cellSize - self.cellSizeScaled,
-                                                                   viewWidth: self.viewWidthScaled,
-                                                                   viewHeight: self.viewHeightScaled,
-                                                                   shiftTotalX: self.shiftTotalScaledX,
-                                                                   shiftTotalY: self.shiftTotalScaledY,
-                                                                   viewAnchorFactor: Zoom.Defaults.viewAnchorFactor)
-                                : (x: self.shiftTotalScaledX, y: self.shiftTotalScaledY)
+        var shift = adjustShiftOnResizeCells
+                    ? CellGridView.shiftForResizeCells(cellSize: self.cellSizeScaled,
+                                                       cellSizeIncrement: cellSize - self.cellSizeScaled,
+                                                       viewWidth: self.viewWidthScaled,
+                                                       viewHeight: self.viewHeightScaled,
+                                                       shiftTotalX: self.shiftTotalScaledX,
+                                                       shiftTotalY: self.shiftTotalScaledY,
+                                                       viewAnchorFactor: Zoom.Defaults.viewAnchorFactor)
+                    : (x: self.shiftTotalScaledX, y: self.shiftTotalScaledY)
 
         self.configure(viewWidth: self.viewWidthScaled,
                        viewHeight: self.viewHeightScaled,
@@ -75,7 +82,7 @@ extension CellGridView
                        cellShape: self.cellShape,
                        scaled: true)
 
-        self.shiftCells(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: true)
+        self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: true)
 
         self.onChangeCellSize(self.unscaled(cellSize))
     }
@@ -91,14 +98,15 @@ extension CellGridView
                        viewScaling: scaling,
                        cellSize: self.cellSize,
                        cellPadding: self.cellPadding,
-                       cellShape: self.cellShape)
-        self.shiftCells(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
+                       cellShape: self.cellShape,
+                       scaled: false)
+        self.shift(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
     }
 
     public func scale() { self.scale(true) }
     public func unscale() { self.scale(false) }
 
-    public func shiftForResizeCells(cellSizeIncrement: Int) -> (x: Int, y: Int)
+    internal func shiftForResizeCells(cellSizeIncrement: Int) -> (x: Int, y: Int)
     {
         return CellGridView.shiftForResizeCells(cellSize: self.cellSizeScaled,
                                                 cellSizeIncrement: cellSizeIncrement,
@@ -117,17 +125,17 @@ extension CellGridView
                                             shiftTotalY: Int,
                                             viewAnchorFactor: Double = 0.5) -> (x: Int, y: Int) {
         guard cellSizeIncrement != 0 else { return (x: 0, y: 0) }
-        let shiftTotalAdjustedX: Int = CellGridView.adjustShiftTotal(viewSize: viewWidth,
-                                                        cellSize: cellSize,
-                                                        cellSizeIncrement: cellSizeIncrement,
-                                                        shiftTotal: shiftTotalX,
-                                                        viewAnchorFactor: viewAnchorFactor)
-        let shiftTotalAdjustedY: Int = CellGridView.adjustShiftTotal(viewSize: viewHeight,
-                                                        cellSize: cellSize,
-                                                        cellSizeIncrement: cellSizeIncrement,
-                                                        shiftTotal: shiftTotalY,
-                                                        viewAnchorFactor: viewAnchorFactor)
-        return (x: shiftTotalAdjustedX, y: shiftTotalAdjustedY)
+        let shiftTotalX: Int = CellGridView.adjustShiftTotal(viewSize: viewWidth,
+                                                             cellSize: cellSize,
+                                                             cellSizeIncrement: cellSizeIncrement,
+                                                             shiftTotal: shiftTotalX,
+                                                             viewAnchorFactor: viewAnchorFactor)
+        let shiftTotalY: Int = CellGridView.adjustShiftTotal(viewSize: viewHeight,
+                                                             cellSize: cellSize,
+                                                             cellSizeIncrement: cellSizeIncrement,
+                                                             shiftTotal: shiftTotalY,
+                                                             viewAnchorFactor: viewAnchorFactor)
+        return (x: shiftTotalX, y: shiftTotalY)
     }
 
     // Returns the adjusted total shift value for the given view size (width or height), cell size and the amount
@@ -171,5 +179,22 @@ extension CellGridView
             shiftTotalResult = Int(((cellSizeResult % 2 == 0) ? ceil : floor)(Double(shiftTotalResult) - shiftDelta))
         }
         return shiftTotalResult
+    }
+
+    // Returns the total shift values to center the cell-grid within the grid-view, for the given cell-size,
+    // or the current cell-grid-view cell-size if the given cell-size is not specified; the given cell-size
+    // if given is assumed to be the scaled value; and the returned shift values are also thus scaled.
+    //
+    internal func shiftForCenterCells(cellSize: Int? = nil,
+                                      gridColumns: Int? = nil, gridRows: Int? = nil) -> (x: Int, y: Int)
+    {
+        let cellSize: Int = cellSize ?? self.cellSizeScaled
+        let gridColumns: Int = gridColumns ?? self.gridColumns
+        let gridRows: Int = gridRows ?? self.gridRows
+        let gridWidth: Int = gridColumns * cellSize
+        let gridHeight: Int = gridRows * cellSize
+        let shiftTotalX: Int = -Int(round(Double(gridWidth) / 2.0))
+        let shiftTotalY: Int = -Int(round(Double(gridHeight) / 2.0))
+        return (x: shiftTotalX, y: shiftTotalY)
     }
 }
