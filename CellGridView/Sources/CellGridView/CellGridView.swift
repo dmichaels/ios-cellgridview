@@ -221,8 +221,8 @@ open class CellGridView: ObservableObject
         self.onChangeImage()
     }
 
-    open var config: Config {
-        Config(self)
+    open var config: CellGridView.Config {
+        CellGridView.Config(self)
     }
 
     open func initialize(_ config: CellGridView.Config)
