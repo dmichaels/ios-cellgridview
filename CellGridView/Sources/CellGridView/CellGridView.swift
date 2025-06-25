@@ -169,18 +169,36 @@ open class CellGridView: ObservableObject
 
     open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
-        let scaled: Bool = false // xyzzy/todo
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight,
+                       adjustShiftOnResizeCells: false, refreshCells: false, scaled: false)
+    }
 
+    private func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int,
+                           adjustShiftOnResizeCells: Bool, refreshCells: Bool, scaled: Bool)
+    {
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
         self._viewScaling = [CellShape.square, CellShape.inset].contains(cellShape) ? false : config.viewScaling
 
         // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
 
-        let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(config.cellPadding) : config.cellPadding, scaled: true)
-        let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(config.cellSize) : config.cellSize, cellPadding: config.cellPadding, scaled: true)
+        let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(config.cellPadding) : config.cellPadding,
+                                                         scaled: true)
+        let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(config.cellSize) : config.cellSize,
+                                                   cellPadding: config.cellPadding, scaled: true)
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
+
+        // Note that adjustShiftOnResizeCells implies refreshCells; and note we do this before
+        // actually (if indeed) changing cellSize, so that we now what the increment is.
+
+        let shiftForRefresh = (
+            adjustShiftOnResizeCells && ((cellSize - self.scaled(self.cellSize)) != 0)
+            ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
+            : (refreshCells
+              ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
+              : nil)
+        )
 
         // TODO
     }
