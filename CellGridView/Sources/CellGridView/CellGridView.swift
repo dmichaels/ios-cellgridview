@@ -225,7 +225,8 @@ open class CellGridView: ObservableObject
         CellGridView.Config(self)
     }
 
-    open func initialize(_ config: CellGridView.Config)
+    open func initialize(_ config: CellGridView.Config,
+                         _ screen: Screen, fit: Bool = false, center: Bool = false)
     {
     }
 
