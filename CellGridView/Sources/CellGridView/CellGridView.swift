@@ -82,25 +82,25 @@ open class CellGridView: ObservableObject
     internal var cellColor: Colour { self._cellColor }
 
     private var _restrictShift: Bool = Defaults.restrictShift
-    internal var restrictShift: Bool { self._restrictShift }
+    public var restrictShift: Bool { self._restrictShift }
 
     private var _unscaledZoom: Bool = Defaults.unscaledZoom
-    internal var unscaledZoom: Bool { self._unscaledZoom }
+    public var unscaledZoom: Bool { self._unscaledZoom }
 
     private var _cellAntialiasFade: Float = Defaults.cellAntialiasFade
-    internal var cellAntialiasFade: Float { self._cellAntialiasFade }
+    public var cellAntialiasFade: Float { self._cellAntialiasFade }
 
     private var _cellRoundedRadius: Float = Defaults.cellRoundedRadius
-    internal var cellRoundedRadius: Float { self._cellRoundedRadius }
+    public var cellRoundedRadius: Float { self._cellRoundedRadius }
 
     private var _cellSizeMax: Int = Defaults.cellSizeMax
-    internal var cellSizeMax: Int { self._cellSizeMax }
+    public var cellSizeMax: Int { self._cellSizeMax }
 
     private var _cellSizeInnerMin: Int = Defaults.cellSizeInnerMin
-    internal var cellSizeInnerMin: Int { self._cellSizeInnerMin }
+    public var cellSizeInnerMin: Int { self._cellSizeInnerMin }
 
     private var _cellPaddingMax: Int = Defaults.cellPaddingMax
-    internal var cellPaddingMax: Int { self._cellPaddingMax }
+    public var cellPaddingMax: Int { self._cellPaddingMax }
 
     private var _automationMode: Bool = Defaults.automationMode
     private var _selectMode: Bool = Defaults.selectMode
@@ -114,7 +114,30 @@ open class CellGridView: ObservableObject
     private var _onChangeCellSize: (Int) -> Void = {_ in}
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
-    public init() {}
+    public init(_ config: CellGridView.Config? = nil) {
+        //
+        // TODO
+        //
+        self._viewBackground     = config?.viewBackground     ?? CellGridView.Defaults.viewBackground
+        self._viewTransparency   = config?.viewTransparency   ?? CellGridView.Defaults.viewTransparency
+        self._viewScaling        = config?.viewScaling        ?? CellGridView.Defaults.viewScaling
+        self._cellSize           = config?.cellSize           ?? CellGridView.Defaults.cellSize
+        self._cellPadding        = config?.cellPadding        ?? CellGridView.Defaults.cellPadding
+        self._cellShape          = config?.cellShape          ?? CellGridView.Defaults.cellShape
+        self._cellColor          = config?.cellColor          ?? CellGridView.Defaults.cellColor
+        self._cellSizeMax        = config?.cellSizeMax        ?? CellGridView.Defaults.cellSizeMax
+        self._cellSizeInnerMin   = config?.cellSizeInnerMin   ?? CellGridView.Defaults.cellSizeInnerMin
+        self._cellPaddingMax     = config?.cellPaddingMax     ?? CellGridView.Defaults.cellPaddingMax
+        self._gridColumns        = config?.gridColumns        ?? CellGridView.Defaults.gridColumns
+        self._gridRows           = config?.gridRows           ?? CellGridView.Defaults.gridRows
+        self._cellAntialiasFade  = config?.cellAntialiasFade  ?? CellGridView.Defaults.cellAntialiasFade
+        self._cellRoundedRadius  = config?.cellRoundedRadius  ?? CellGridView.Defaults.cellRoundedRadius
+        self._restrictShift      = config?.restrictShift      ?? CellGridView.Defaults.restrictShift
+        self._unscaledZoom       = config?.unscaledZoom       ?? CellGridView.Defaults.unscaledZoom
+        self._selectMode         = config?.selectMode         ?? CellGridView.Defaults.selectMode
+        self._automationMode     = config?.automationMode     ?? CellGridView.Defaults.automationMode
+        self._automationInterval = config?.automationInterval ?? CellGridView.Defaults.automationInterval
+    }
 
     // This initialize method should be called on startup as soon as possible,
     // e.g. from the onAppear notification of the main view (ZStack or whatever).

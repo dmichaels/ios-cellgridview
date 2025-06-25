@@ -45,152 +45,51 @@ extension CellGridView
 
     open class Config
     {
-        private var _viewBackground: Colour
-        private var _viewTransparency: UInt8
-        private var _viewScaling: Bool
+        public var viewBackground: Colour
+        public var viewTransparency: UInt8
+        public var viewScaling: Bool
 
-        private var _cellSize: Int
-        private var _cellPadding: Int
-        private var _cellShape: CellShape
-        private var _cellColor: Colour
+        public var cellSize: Int
+        public var cellPadding: Int
+        public var cellShape: CellShape
+        public var cellColor: Colour
 
-        private var _cellSizeMax: Int
-        private var _cellSizeInnerMin: Int
-        private var _cellPaddingMax: Int
+        public var cellSizeMax: Int
+        public var cellSizeInnerMin: Int
+        public var cellPaddingMax: Int
 
-        private var _gridColumns: Int
-        private var _gridRows: Int
+        public var gridColumns: Int
+        public var gridRows: Int
 
-        private var _cellAntialiasFade: Float
-        private var _cellRoundedRadius: Float
-        private var _restrictShift: Bool
-        private var _unscaledZoom: Bool
+        public var cellAntialiasFade: Float
+        public var cellRoundedRadius: Float
+        public var restrictShift: Bool
+        public var unscaledZoom: Bool
 
-        private var _selectMode: Bool
-        private var _automationMode: Bool
-        private var _automationInterval: Double
+        public var selectMode: Bool
+        public var automationMode: Bool
+        public var automationInterval: Double
 
-        public var viewBackground: Colour     { self._viewBackground }
-        public var viewTransparency: UInt8    { self._viewTransparency }
-        public var viewScaling: Bool          { self._viewScaling }
-
-        public var cellSize: Int              { self._cellSize }
-        public var cellPadding: Int           { self._cellPadding }
-        public var cellShape: CellShape       { self._cellShape }
-        public var cellColor: Colour          { self._cellColor }
-
-        public var cellSizeMax: Int           { self._cellSizeMax }
-        public var cellSizeInnerMin: Int      { self._cellSizeInnerMin }
-        public var cellPaddingMax: Int        { self._cellPaddingMax }
-
-        public var gridColumns: Int           { self._gridColumns }
-        public var gridRows: Int              { self._gridRows }
-
-        public var cellAntialiasFade: Float   { self._cellAntialiasFade }
-        public var cellRoundedRadius: Float   { self._cellRoundedRadius }
-        public var restrictShift: Bool        { self._restrictShift }
-        public var unscaledZoom: Bool         { self._unscaledZoom }
-
-        public var selectMode: Bool           { self._selectMode }
-        public var automationMode: Bool       { self._automationMode }
-        public var automationInterval: Double { self._automationInterval }
-
-        public init(_ cellGridView: CellGridView) {
-            self._viewBackground     = cellGridView.viewBackground
-            self._viewTransparency   = cellGridView.viewTransparency
-            self._viewScaling        = cellGridView.viewScaling
-            self._cellSize           = cellGridView.cellSize
-            self._cellPadding        = cellGridView.cellPadding
-            self._cellShape          = cellGridView.cellShape
-            self._cellColor          = cellGridView.cellColor
-            self._cellSizeMax        = cellGridView.cellSizeMax
-            self._cellSizeInnerMin   = cellGridView.cellSizeInnerMin
-            self._cellPaddingMax     = cellGridView.cellPaddingMax
-            self._gridColumns        = cellGridView.gridColumns
-            self._gridRows           = cellGridView.gridRows
-            self._cellAntialiasFade  = cellGridView.cellAntialiasFade
-            self._cellRoundedRadius  = cellGridView.cellRoundedRadius
-            self._restrictShift      = cellGridView.restrictShift
-            self._unscaledZoom       = cellGridView.unscaledZoom
-            self._selectMode         = cellGridView.selectMode
-            self._automationMode     = cellGridView.automationMode
-            self._automationInterval = cellGridView.automationInterval
-        }
-
-        open func with(viewBackground value: Colour) -> Config {
-            var copy = self ; copy._viewBackground = value; return copy
-        }
-
-        public func with(viewTransparency value: UInt8) -> Config {
-            var copy = self ; copy._viewTransparency = value; return copy
-        }
-
-        public func with(viewScaling value: Bool) -> Config {
-            var copy = self ; copy._viewScaling = value; return copy
-        }
-
-        public func with(cellSize value: Int) -> Config {
-            var copy = self ; copy._cellSize = value; return copy
-        }
-
-        public func with(cellPadding value: Int) -> Config {
-            var copy = self ; copy._cellPadding = value; return copy
-        }
-
-        public func with(cellShape value: CellShape) -> Config {
-            var copy = self ; copy._cellShape = value; return copy
-        }
-
-        public func with(cellColor value: Colour) -> Config {
-            var copy = self ; copy._cellColor = value; return copy
-        }
-
-        public func with(cellSizeMax value: Int) -> Config {
-            var copy = self ; copy._cellSizeMax = value; return copy
-        }
-
-        public func with(cellSizeInnerMin value: Int) -> Config {
-            var copy = self ; copy._cellSizeInnerMin = value; return copy
-        }
-
-        public func with(cellPaddingMax value: Int) -> Config {
-            var copy = self ; copy._cellPaddingMax = value; return copy
-        }
-
-        public func with(gridColumns value: Int) -> Config {
-            var copy = self ; copy._gridColumns = value; return copy
-        }
-
-        public func with(gridRows value: Int) -> Config {
-            var copy = self ; copy._gridRows = value; return copy
-        }
-
-        public func with(cellAntialiasFade value: Float) -> Config {
-            var copy = self ; copy._cellAntialiasFade = value; return copy
-        }
-
-        public func with(cellRoundedRadius value: Float) -> Config {
-            var copy = self ; copy._cellRoundedRadius = value; return copy
-        }
-
-        public func with(restrictShift value: Bool) -> Config {
-            var copy = self ; copy._restrictShift = value; return copy
-        }
-
-        public func with(unscaledZoom value: Bool) -> Config {
-            var copy = self ; copy._unscaledZoom = value; return copy
-        }
-
-        public func with(selectMode value: Bool) -> Config {
-            var copy = self ; copy._selectMode = value; return copy
-        }
-
-        public func with(automationMode value: Bool) -> Config {
-            var copy = self ; copy._automationMode = value; return copy
-        }
-
-        public func with(automationInterval value: Double) -> Config {
-            var copy = self ; copy._automationInterval = automationInterval ; return copy
+        public init(_ cellGridView: CellGridView? = nil) {
+            self.viewBackground     = cellGridView?.viewBackground     ?? CellGridView.Defaults.viewBackground
+            self.viewTransparency   = cellGridView?.viewTransparency   ?? CellGridView.Defaults.viewTransparency
+            self.viewScaling        = cellGridView?.viewScaling        ?? CellGridView.Defaults.viewScaling
+            self.cellSize           = cellGridView?.cellSize           ?? CellGridView.Defaults.cellSize
+            self.cellPadding        = cellGridView?.cellPadding        ?? CellGridView.Defaults.cellPadding
+            self.cellShape          = cellGridView?.cellShape          ?? CellGridView.Defaults.cellShape
+            self.cellColor          = cellGridView?.cellColor          ?? CellGridView.Defaults.cellColor
+            self.cellSizeMax        = cellGridView?.cellSizeMax        ?? CellGridView.Defaults.cellSizeMax
+            self.cellSizeInnerMin   = cellGridView?.cellSizeInnerMin   ?? CellGridView.Defaults.cellSizeInnerMin
+            self.cellPaddingMax     = cellGridView?.cellPaddingMax     ?? CellGridView.Defaults.cellPaddingMax
+            self.gridColumns        = cellGridView?.gridColumns        ?? CellGridView.Defaults.gridColumns
+            self.gridRows           = cellGridView?.gridRows           ?? CellGridView.Defaults.gridRows
+            self.cellAntialiasFade  = cellGridView?.cellAntialiasFade  ?? CellGridView.Defaults.cellAntialiasFade
+            self.cellRoundedRadius  = cellGridView?.cellRoundedRadius  ?? CellGridView.Defaults.cellRoundedRadius
+            self.restrictShift      = cellGridView?.restrictShift      ?? CellGridView.Defaults.restrictShift
+            self.unscaledZoom       = cellGridView?.unscaledZoom       ?? CellGridView.Defaults.unscaledZoom
+            self.selectMode         = cellGridView?.selectMode         ?? CellGridView.Defaults.selectMode
+            self.automationMode     = cellGridView?.automationMode     ?? CellGridView.Defaults.automationMode
+            self.automationInterval = cellGridView?.automationInterval ?? CellGridView.Defaults.automationInterval
         }
     }
 
