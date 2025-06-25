@@ -158,7 +158,7 @@ open class CellGridView: ObservableObject
             : nil
         ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
 
-        self.configure(config)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight)
 
         if (!center) {
             self.writeCells()
@@ -167,8 +167,21 @@ open class CellGridView: ObservableObject
         self.onChangeImage()
     }
 
-    open func configure(_ config: CellGridView.Config)
+    open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
+        let scaled: Bool = false // xyzzy/todo
+
+        // N.B. This here first so subsequent calls to self.scaled work properly.
+
+        self._viewScaling = [CellShape.square, CellShape.inset].contains(cellShape) ? false : config.viewScaling
+
+        // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
+
+        let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(config.cellPadding) : config.cellPadding, scaled: true)
+        let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(config.cellSize) : config.cellSize, cellPadding: config.cellPadding, scaled: true)
+        let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
+        let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
+
         // TODO
     }
 
