@@ -139,6 +139,43 @@ open class CellGridView: ObservableObject
         self._automationInterval = config?.automationInterval ?? CellGridView.Defaults.automationInterval
     }
 
+    open func initialize(_ config: CellGridView.Config, screen: Screen,
+                                                        viewWidth: Int,
+                                                        viewHeight: Int,
+                                                        onChangeImage: (() -> Void)? = nil,
+                                                        onChangeCellSize: ((Int) -> Void)? = nil,
+                                                        fit: Bool = false,
+                                                        center: Bool = false)
+    {
+        self._screen = screen
+        self._onChangeImage = onChangeImage ?? {}
+        self._onChangeCellSize = onChangeCellSize ?? {_ in}
+
+        let preferredSize: PreferredSize = (
+            fit
+            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: config.cellSize,
+                                         cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
+            : nil
+        ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
+
+        self.configure(config)
+
+        if (!center) {
+            self.writeCells()
+        }
+
+        self.onChangeImage()
+    }
+
+    open func configure(_ config: CellGridView.Config)
+    {
+        // TODO
+    }
+
+    open var config: CellGridView.Config {
+        CellGridView.Config(self)
+    }
+
     // This initialize method should be called on startup as soon as possible,
     // e.g. from the onAppear notification of the main view (ZStack or whatever).
     //
@@ -219,19 +256,6 @@ open class CellGridView: ObservableObject
         }
 
         self.onChangeImage()
-    }
-
-    open var config: CellGridView.Config {
-        CellGridView.Config(self)
-    }
-
-    open func initialize(_ config: CellGridView.Config,
-                         _ screen: Screen, fit: Bool = false, center: Bool = false)
-    {
-    }
-
-    open func configure(_ config: CellGridView.Config)
-    {
     }
 
     public final func configure(screen: Screen? = nil,
