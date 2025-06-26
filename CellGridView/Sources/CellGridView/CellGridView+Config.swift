@@ -70,6 +70,9 @@ extension CellGridView
         public var automationMode: Bool
         public var automationInterval: Double
 
+        // Initializes this instance of CellGridView.Config with the properties from the given
+        // CellGridView, or with the default values from CellGridView.Defaults is nil is given.
+        //
         public init(_ cellGridView: CellGridView? = nil) {
             self.viewBackground     = cellGridView?.viewBackground     ?? CellGridView.Defaults.viewBackground
             self.viewTransparency   = cellGridView?.viewTransparency   ?? CellGridView.Defaults.viewTransparency
