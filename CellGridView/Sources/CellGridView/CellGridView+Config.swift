@@ -5,30 +5,72 @@ extension CellGridView
 {
     open class Config
     {
-        public var viewBackground: Colour
-        public var viewTransparency: UInt8
-        public var viewScaling: Bool
+        public private(set) var viewBackground: Colour
+        public private(set) var viewTransparency: UInt8
+        public private(set) var viewScaling: Bool
 
-        public var cellSize: Int
-        public var cellPadding: Int
-        public var cellShape: CellShape
-        public var cellColor: Colour
+        public var cellSize: Int // xyzzy/todo/set
+        public private(set) var cellPadding: Int
+        public private(set) var cellShape: CellShape
+        public private(set) var cellColor: Colour
 
-        public var cellSizeMax: Int
-        public var cellSizeInnerMin: Int
-        public var cellPaddingMax: Int
+        public private(set) var cellSizeMax: Int
+        public private(set) var cellSizeInnerMin: Int
+        public private(set) var cellPaddingMax: Int
 
-        public var gridColumns: Int
-        public var gridRows: Int
+        public private(set) var gridColumns: Int
+        public private(set) var gridRows: Int
 
-        public var cellAntialiasFade: Float
-        public var cellRoundedRadius: Float
-        public var restrictShift: Bool
-        public var unscaledZoom: Bool
+        public private(set) var cellAntialiasFade: Float
+        public private(set) var cellRoundedRadius: Float
+        public private(set) var restrictShift: Bool
+        public private(set) var unscaledZoom: Bool
 
-        public var selectMode: Bool
-        public var automationMode: Bool
-        public var automationInterval: Double
+        public private(set) var selectMode: Bool
+        public private(set) var automationMode: Bool
+        public private(set) var automationInterval: Double
+
+        public init(viewBackground: Colour?     = nil,
+                    viewTransparency: UInt8?    = nil,
+                    viewScaling: Bool?          = nil,
+                    cellSize: Int?              = nil,
+                    cellPadding: Int?           = nil,
+                    cellShape: CellShape?       = nil,
+                    cellColor: Colour?          = nil,
+                    cellSizeMax: Int?           = nil,
+                    cellSizeInnerMin: Int?      = nil,
+                    cellPaddingMax: Int?        = nil,
+                    gridColumns: Int?           = nil,
+                    gridRows: Int?              = nil,
+                    cellAntialiasFade: Float?   = nil,
+                    cellRoundedRadius: Float?   = nil,
+                    restrictShift: Bool?        = nil,
+                    unscaledZoom: Bool?         = nil,
+                    selectMode: Bool?           = nil,
+                    automationMode: Bool?       = nil,
+                    automationInterval: Double? = nil
+        )
+        {
+            self.viewBackground     = viewBackground     ?? CellGridView.Defaults.viewBackground
+            self.viewTransparency   = viewTransparency   ?? CellGridView.Defaults.viewTransparency
+            self.viewScaling        = viewScaling        ?? CellGridView.Defaults.viewScaling
+            self.cellSize           = cellSize           ?? CellGridView.Defaults.cellSize
+            self.cellPadding        = cellPadding        ?? CellGridView.Defaults.cellPadding
+            self.cellShape          = cellShape          ?? CellGridView.Defaults.cellShape
+            self.cellColor          = cellColor          ?? CellGridView.Defaults.cellColor
+            self.cellSizeMax        = cellSizeMax        ?? CellGridView.Defaults.cellSizeMax
+            self.cellSizeInnerMin   = cellSizeInnerMin   ?? CellGridView.Defaults.cellSizeInnerMin
+            self.cellPaddingMax     = cellPaddingMax     ?? CellGridView.Defaults.cellPaddingMax
+            self.gridColumns        = gridColumns        ?? CellGridView.Defaults.gridColumns
+            self.gridRows           = gridRows           ?? CellGridView.Defaults.gridRows
+            self.cellAntialiasFade  = cellAntialiasFade  ?? CellGridView.Defaults.cellAntialiasFade
+            self.cellRoundedRadius  = cellRoundedRadius  ?? CellGridView.Defaults.cellRoundedRadius
+            self.restrictShift      = restrictShift      ?? CellGridView.Defaults.restrictShift
+            self.unscaledZoom       = unscaledZoom       ?? CellGridView.Defaults.unscaledZoom
+            self.selectMode         = selectMode         ?? CellGridView.Defaults.selectMode
+            self.automationMode     = automationMode     ?? CellGridView.Defaults.automationMode
+            self.automationInterval = automationInterval ?? CellGridView.Defaults.automationInterval
+        }
 
         // Initializes this instance of CellGridView.Config with the properties from the given
         // CellGridView, or with the default values from CellGridView.Defaults is nil is given.
