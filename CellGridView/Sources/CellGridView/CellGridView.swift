@@ -115,28 +115,30 @@ open class CellGridView: ObservableObject
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     public init(_ config: CellGridView.Config? = nil) {
-        //
-        // TODO
-        //
-        self._viewBackground     = config?.viewBackground     ?? CellGridView.Defaults.viewBackground
-        self._viewTransparency   = config?.viewTransparency   ?? CellGridView.Defaults.viewTransparency
-        self._viewScaling        = config?.viewScaling        ?? CellGridView.Defaults.viewScaling
-        self._cellSize           = config?.cellSize           ?? CellGridView.Defaults.cellSize
-        self._cellPadding        = config?.cellPadding        ?? CellGridView.Defaults.cellPadding
-        self._cellShape          = config?.cellShape          ?? CellGridView.Defaults.cellShape
-        self._cellColor          = config?.cellColor          ?? CellGridView.Defaults.cellColor
-        self._cellSizeMax        = config?.cellSizeMax        ?? CellGridView.Defaults.cellSizeMax
-        self._cellSizeInnerMin   = config?.cellSizeInnerMin   ?? CellGridView.Defaults.cellSizeInnerMin
-        self._cellPaddingMax     = config?.cellPaddingMax     ?? CellGridView.Defaults.cellPaddingMax
-        self._gridColumns        = config?.gridColumns        ?? CellGridView.Defaults.gridColumns
-        self._gridRows           = config?.gridRows           ?? CellGridView.Defaults.gridRows
-        self._cellAntialiasFade  = config?.cellAntialiasFade  ?? CellGridView.Defaults.cellAntialiasFade
-        self._cellRoundedRadius  = config?.cellRoundedRadius  ?? CellGridView.Defaults.cellRoundedRadius
-        self._restrictShift      = config?.restrictShift      ?? CellGridView.Defaults.restrictShift
-        self._unscaledZoom       = config?.unscaledZoom       ?? CellGridView.Defaults.unscaledZoom
-        self._selectMode         = config?.selectMode         ?? CellGridView.Defaults.selectMode
-        self._automationMode     = config?.automationMode     ?? CellGridView.Defaults.automationMode
-        self._automationInterval = config?.automationInterval ?? CellGridView.Defaults.automationInterval
+        let config: CellGridView.Config = config ?? CellGridView.Config()
+        self._viewBackground     = config.viewBackground
+        self._viewTransparency   = config.viewTransparency
+        self._viewScaling        = config.viewScaling
+        self._cellSize           = config.cellSize
+        self._cellPadding        = config.cellPadding
+        self._cellShape          = config.cellShape
+        self._cellColor          = config.cellColor
+        self._cellSizeMax        = config.cellSizeMax
+        self._cellSizeInnerMin   = config.cellSizeInnerMin
+        self._cellPaddingMax     = config.cellPaddingMax
+        self._gridColumns        = config.gridColumns
+        self._gridRows           = config.gridRows
+        self._cellAntialiasFade  = config.cellAntialiasFade
+        self._cellRoundedRadius  = config.cellRoundedRadius
+        self._restrictShift      = config.restrictShift
+        self._unscaledZoom       = config.unscaledZoom
+        self._selectMode         = config.selectMode
+        self._automationMode     = config.automationMode
+        self._automationInterval = config.automationInterval
+    }
+
+    open var config: CellGridView.Config {
+        CellGridView.Config(self)
     }
 
     open func initialize(_ config: CellGridView.Config, screen: Screen,
@@ -201,10 +203,6 @@ open class CellGridView: ObservableObject
         )
 
         // TODO
-    }
-
-    open var config: CellGridView.Config {
-        CellGridView.Config(self)
     }
 
     // This initialize method should be called on startup as soon as possible,
@@ -315,14 +313,11 @@ open class CellGridView: ObservableObject
                                 onChangeImage: (() -> Void)? = nil,
                                 onChangeCellSize: ((Int) -> Void)? = nil,
                                 centerCells: Bool? = nil,
-                                scaled: Bool = false,
-                                config: Configuration = Configuration())
+                                scaled: Bool = false)
     {
         if (screen != nil) {
             self._screen = screen
         }
-
-        let config: Configuration = config.defaultsFrom(self) // TODO
 
         if let cellColor = cellColor { self._cellColor = cellColor }
 
@@ -363,6 +358,7 @@ open class CellGridView: ObservableObject
         self._cellSize = cellSize
         self._cellSizeTimesViewWidth = self._cellSize * self._viewWidth
         self._cellPadding = cellPadding
+        self._cellShape = cellShape ?? self._cellShape // xyzzy
 
         if let cellColor = cellColor { self._cellColor = cellColor }
 
@@ -409,7 +405,7 @@ open class CellGridView: ObservableObject
             gridRows = max(0, gridRows)
             if (gridRows != self._gridRows) { defineCells = true ; self._gridRows = gridRows }
         }
-        if (defineCells) {
+        if (defineCells || (self._cells.count == 0) /* HACK DURING CONFIG REFACTOR WORK */ ) {
             self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
         }
 
