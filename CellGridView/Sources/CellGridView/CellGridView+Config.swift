@@ -123,6 +123,7 @@ extension CellGridView
                                        cellSize:           cellSize           ?? self.cellSize,
                                        cellPadding:        cellPadding        ?? self.cellPadding,
                                        cellShape:          cellShape          ?? self.cellShape,
+                                       cellColor:          cellColor          ?? self.cellColor,
                                        cellSizeMax:        cellSizeMax        ?? self.cellSizeMax,
                                        cellSizeInnerMin:   cellSizeInnerMin   ?? self.cellSizeInnerMin,
                                        cellPaddingMax:     cellPaddingMax     ?? self.cellPaddingMax,
