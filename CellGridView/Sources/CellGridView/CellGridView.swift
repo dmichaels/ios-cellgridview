@@ -161,8 +161,11 @@ open class CellGridView: ObservableObject
             fit: fit,
             preferredFitMarginMax: Defaults.preferredFitMarginMax)
 
-        config.cellSize = preferred.cellSize
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight)
+        // config.cellSize = preferred.cellSize
+        // let config = Config(config: config, cellSize: preferred.cellSize)
+        // self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight)
+        self.configure(config, cellSize: preferred.cellSize, viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight,
+                       adjustShiftOnResizeCells: false, refreshCells: false, scaled: false)
 
         if (!center) {
             self.writeCells()
@@ -173,11 +176,11 @@ open class CellGridView: ObservableObject
 
     open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight,
+        self.configure(config, cellSize: config.cellSize, viewWidth: viewWidth, viewHeight: viewHeight,
                        adjustShiftOnResizeCells: false, refreshCells: false, scaled: false)
     }
 
-    private func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int,
+    private func configure(_ config: CellGridView.Config, cellSize: Int, viewWidth: Int, viewHeight: Int,
                            adjustShiftOnResizeCells: Bool, refreshCells: Bool, scaled: Bool)
     {
         // N.B. This here first so subsequent calls to self.scaled work properly.
