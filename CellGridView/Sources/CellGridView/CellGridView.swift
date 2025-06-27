@@ -164,7 +164,7 @@ open class CellGridView: ObservableObject
         self.configure(config.update(cellSize: preferred.cellSize),
                        viewWidth: preferred.viewWidth,
                        viewHeight: preferred.viewHeight,
-                       adjustShiftOnResizeCells: false,
+                       adjustShift: false,
                        refreshCells: false,
                        scaled: false)
 
@@ -178,11 +178,11 @@ open class CellGridView: ObservableObject
     open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight,
-                       adjustShiftOnResizeCells: false, refreshCells: false, scaled: false)
+                       adjustShift: false, refreshCells: false, scaled: false)
     }
 
     private func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int,
-                           adjustShiftOnResizeCells: Bool, refreshCells: Bool, scaled: Bool)
+                           adjustShift: Bool, refreshCells: Bool, scaled: Bool)
     {
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
@@ -197,18 +197,18 @@ open class CellGridView: ObservableObject
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        // Note that adjustShiftOnResizeCells implies refreshCells; and note we do this before
+        // Note that adjustShift implies refreshCells; and note we do this before
         // actually (if indeed) changing cellSize, so that we now what the increment is.
 
-        let shiftForRefresh = (
-            adjustShiftOnResizeCells && ((cellSize - self.scaled(self.cellSize)) != 0)
+        let shift = (
+            adjustShift && ((cellSize - self.scaled(self.cellSize)) != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
             : (refreshCells
               ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
               : nil)
         )
 
-        // TODO
+        // TODO TODO TODO
     }
 
     // This initialize method should be called on startup as soon as possible,
@@ -265,7 +265,7 @@ open class CellGridView: ObservableObject
                        selectMode: selectMode,
                        automationMode: automationMode,
                        automationInterval: automationInterval,
-                       adjustShiftOnResizeCells: false,
+                       adjustShift: false,
                        refreshCells: false,
                        onChangeImage: onChangeImage,
                        onChangeCellSize: onChangeCellSize,
@@ -314,7 +314,7 @@ open class CellGridView: ObservableObject
                                 selectMode: Bool? = nil,
                                 automationMode: Bool? = nil,
                                 automationInterval: Double? = nil,
-                                adjustShiftOnResizeCells: Bool = false,
+                                adjustShift: Bool = false,
                                 refreshCells: Bool = false,
                                 onChangeImage: (() -> Void)? = nil,
                                 onChangeCellSize: ((Int) -> Void)? = nil,
@@ -346,11 +346,11 @@ open class CellGridView: ObservableObject
             : nil
         ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
 
-        // Note that adjustShiftOnResizeCells implies refreshCells; and note we do this before
+        // Note that adjustShift implies refreshCells; and note we do this before
         // actually (if indeed) changing cellSize, so that we now what the increment is.
 
         let shiftForRefresh = (
-            adjustShiftOnResizeCells && ((cellSize - self.scaled(self.cellSize)) != 0)
+            adjustShift && ((cellSize - self.scaled(self.cellSize)) != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
             : (centerCells ?? false
                ? shiftForCenterCells(cellSize: cellSize, gridColumns: gridColumns, gridRows: gridRows)
