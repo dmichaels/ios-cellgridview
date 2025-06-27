@@ -159,7 +159,7 @@ open class CellGridView: ObservableObject
             viewWidth: viewWidth,
             viewHeight: viewHeight,
             fit: fit,
-            cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
+            preferredFitMarginMax: Defaults.preferredFitMarginMax)
 
         config.cellSize = preferred.cellSize
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight)
@@ -239,7 +239,7 @@ open class CellGridView: ObservableObject
         let preferredSize: PreferredSize = (
             cellSizeFit
             ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
-                                         cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
+                                         preferredFitMarginMax: Defaults.preferredFitMarginMax)
             : nil
         ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
 
@@ -338,7 +338,7 @@ open class CellGridView: ObservableObject
         let preferredSize: PreferredSize = (
             cellSizeFit ?? Defaults.cellSizeFit
             ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
-                                         cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
+                                         preferredFitMarginMax: Defaults.preferredFitMarginMax)
             : nil
         ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
 

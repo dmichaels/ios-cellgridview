@@ -42,7 +42,7 @@ extension CellGridView
             print("PREFERRED-SIZE> \(cellSizeFitInit)")
             let sizes = CellGridView.preferredSizes(viewWidth: self.viewWidth,
                                                     viewHeight: self.viewHeight,
-                                                    cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
+                                                    preferredFitMarginMax: Defaults.preferredFitMarginMax)
             for size in sizes {
                 print("PREFFERED>" +
                       " CELL-SIZE \(String(format: "%3d", scaled(size.cellSize)))" +
