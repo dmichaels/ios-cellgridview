@@ -1,11 +1,40 @@
 extension CellGridView
 {
+    public enum PreferredFit: String, CaseIterable, Identifiable
+    {
+        case none = "none"
+        case cell = "cell"
+        case view  = "view"
+        public var id: String { self.rawValue }
+    }
+
     internal typealias PreferredSize = (cellSize: Int, viewWidth: Int, viewHeight: Int)
+
+    internal static func preferredSize
+    (
+        cellSize: Int,
+        viewWidth: Int,
+        viewHeight: Int,
+        fit: CellGridView.PreferredFit = CellGridView.PreferredFit.cell,
+        cellPreferredSizeMarginMax: Int = CellGridView.Defaults.cellPreferredSizeMarginMax
+    ) -> PreferredSize
+    {
+        if fit != CellGridView.PreferredFit.none,
+           let preferred = CellGridView.preferredSize(viewWidth: viewWidth,
+                                                      viewHeight: viewHeight,
+                                                      cellSize: cellSize,
+                                                      cellPreferredSizeMarginMax: cellPreferredSizeMarginMax) {
+            if ((fit != CellGridView.PreferredFit.view) || (preferred.cellSize == cellSize)) {
+                return (cellSize: preferred.cellSize, viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight)
+            }
+        }
+        return (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
+    }
 
     // Returns a list of preferred sizes for the cell size, such that they fit evenly without bleeding
     // out past the end of the view; the given and returned dimensions are assumed to be unscaled values.
     //
-    internal static func preferredSize(viewWidth: Int, viewHeight: Int, cellSize: Int,
+    internal static func preferredSize(viewWidth: Int, viewHeight: Int, cellSize: Int, // todo/xyzzy/private
                                        cellPreferredSizeMarginMax: Int) -> PreferredSize?
     {
         let sizes = CellGridView.preferredSizes(viewWidth: viewWidth, viewHeight: viewHeight,

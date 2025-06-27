@@ -141,25 +141,27 @@ open class CellGridView: ObservableObject
         CellGridView.Config(self)
     }
 
-    open func initialize(_ config: CellGridView.Config, screen: Screen,
-                                                        viewWidth: Int,
-                                                        viewHeight: Int,
-                                                        onChangeImage: (() -> Void)? = nil,
-                                                        onChangeCellSize: ((Int) -> Void)? = nil,
-                                                        fit: Bool = false,
-                                                        center: Bool = false)
+    open func initialize(_ config: CellGridView.Config,
+                           screen: Screen,
+                           viewWidth: Int,
+                           viewHeight: Int,
+                           onChangeImage: (() -> Void)? = nil,
+                           onChangeCellSize: ((Int) -> Void)? = nil,
+                           fit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
+                           center: Bool = false)
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
         self._onChangeCellSize = onChangeCellSize ?? {_ in}
 
-        let preferredSize: PreferredSize = (
-            fit
-            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: config.cellSize,
-                                         cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
-            : nil
-        ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
+        let preferred: PreferredSize = CellGridView.preferredSize(
+            cellSize: config.cellSize,
+            viewWidth: viewWidth,
+            viewHeight: viewHeight,
+            fit: fit,
+            cellPreferredSizeMarginMax: Defaults.cellPreferredSizeMarginMax)
 
+        config.cellSize = preferred.cellSize
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight)
 
         if (!center) {
