@@ -114,6 +114,7 @@ open class CellGridView: ObservableObject
     private var _onChangeCellSize: (Int) -> Void = {_ in}
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
+    // NEW
     public init(_ config: CellGridView.Config? = nil) {
         let config: CellGridView.Config = config ?? CellGridView.Config()
         self._viewBackground     = config.viewBackground
@@ -137,10 +138,12 @@ open class CellGridView: ObservableObject
         self._automationInterval = config.automationInterval
     }
 
+    // NEW
     open var config: CellGridView.Config {
         CellGridView.Config(self)
     }
 
+    // NEW
     open func initialize(_ config: CellGridView.Config,
                            screen: Screen,
                            viewWidth: Int,
@@ -175,12 +178,14 @@ open class CellGridView: ObservableObject
         self.onChangeImage()
     }
 
+    // NEW
     open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight,
                        adjustShift: false, refreshCells: false, scaled: false)
     }
 
+    // NEW
     private func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int,
                            adjustShift: Bool, refreshCells: Bool, scaled: Bool)
     {

@@ -72,6 +72,14 @@ extension CellGridView
                                                        viewAnchorFactor: Zoom.Defaults.viewAnchorFactor)
                     : (x: self.shiftTotalScaledX, y: self.shiftTotalScaledY)
 
+        // xyzzy/todo
+        let todo_config: CellGridView.Config = CellGridView.Config(config: self.config,
+                                                                   viewBackground: self.viewBackground,
+                                                                   viewTransparency: self.viewTransparency,
+                                                                   viewScaling: self.viewScaling,
+                                                                   cellSize: cellSize,
+                                                                   cellPadding: self.cellPaddingScaled,
+                                                                   cellShape: self.cellShape)
         self.configure(viewWidth: self.viewWidthScaled,
                        viewHeight: self.viewHeightScaled,
                        viewBackground: self.viewBackground,
