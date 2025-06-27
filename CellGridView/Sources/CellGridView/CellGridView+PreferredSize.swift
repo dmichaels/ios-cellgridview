@@ -15,16 +15,16 @@ extension CellGridView
         cellSize: Int,
         viewWidth: Int,
         viewHeight: Int,
-        fit: CellGridView.PreferredFit = CellGridView.PreferredFit.cell,
+        preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.cell,
         preferredFitMarginMax: Int = CellGridView.Defaults.preferredFitMarginMax
     ) -> PreferredSize
     {
-        if fit != CellGridView.PreferredFit.none,
+        if preferredFit != CellGridView.PreferredFit.none,
            let preferred = CellGridView.preferredSize(viewWidth: viewWidth,
                                                       viewHeight: viewHeight,
                                                       cellSize: cellSize,
                                                       preferredFitMarginMax: preferredFitMarginMax) {
-            if ((fit != CellGridView.PreferredFit.view) || (preferred.cellSize == cellSize)) {
+            if ((preferredFit != CellGridView.PreferredFit.view) || (preferred.cellSize == cellSize)) {
                 return (cellSize: preferred.cellSize, viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight)
             }
         }

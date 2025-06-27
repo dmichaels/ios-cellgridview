@@ -147,7 +147,7 @@ open class CellGridView: ObservableObject
                            viewHeight: Int,
                            onChangeImage: (() -> Void)? = nil,
                            onChangeCellSize: ((Int) -> Void)? = nil,
-                           fit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
+                           preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
                            center: Bool = false)
     {
         self._screen = screen
@@ -158,7 +158,7 @@ open class CellGridView: ObservableObject
             cellSize: config.cellSize,
             viewWidth: viewWidth,
             viewHeight: viewHeight,
-            fit: fit,
+            preferredFit: preferredFit,
             preferredFitMarginMax: Defaults.preferredFitMarginMax)
 
         self.configure(config.update(cellSize: preferred.cellSize),
@@ -222,11 +222,11 @@ open class CellGridView: ObservableObject
                                  viewScaling: Bool,
                                  cellSize: Int,
                                  cellPadding: Int,
-                                 cellSizeFit: Bool,
                                  cellShape: CellShape,
                                  cellColor: Colour,
                                  gridColumns: Int,
                                  gridRows: Int,
+                                 preferredFit: Bool = false,
                                  centerCells: Bool? = nil,
                                  restrictShift: Bool? = nil,
                                  unscaledZoom: Bool? = nil,
@@ -241,7 +241,7 @@ open class CellGridView: ObservableObject
         self._screen = screen
 
         let preferredSize: PreferredSize = (
-            cellSizeFit
+            preferredFit
             ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
                                          preferredFitMarginMax: Defaults.preferredFitMarginMax)
             : nil
@@ -278,7 +278,7 @@ open class CellGridView: ObservableObject
 
         #if targetEnvironment(simulator)
             self.printSizes(viewWidthInit: viewWidth, viewHeightInit: viewHeight,
-                            cellSizeInit: cellSize , cellSizeFitInit: cellSizeFit)
+                            cellSizeInit: cellSize , preferredFit: preferredFit)
         #endif
 
         // self._onChangeImage = onChangeImage
@@ -302,11 +302,11 @@ open class CellGridView: ObservableObject
                                 cellSize: Int,
                                 // cellSize: Int? = nil,
                                 cellPadding: Int,
-                                cellSizeFit: Bool? = nil,
                                 cellShape: CellShape? = nil,
                                 cellColor: Colour? = nil,
                                 gridColumns: Int? = nil,
                                 gridRows: Int? = nil,
+                                preferredFit: Bool? = nil,
                                 restrictShift: Bool? = nil,
                                 unscaledZoom: Bool? = nil,
                                 cellAntialiasFade: Float? = nil,
@@ -340,7 +340,7 @@ open class CellGridView: ObservableObject
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
         let preferredSize: PreferredSize = (
-            cellSizeFit ?? Defaults.cellSizeFit
+            preferredFit ?? Defaults.preferredFit
             ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
                                          preferredFitMarginMax: Defaults.preferredFitMarginMax)
             : nil
