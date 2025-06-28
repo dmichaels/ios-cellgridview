@@ -117,25 +117,25 @@ open class CellGridView: ObservableObject
     // NEW
     public init(_ config: CellGridView.Config? = nil) {
         let config: CellGridView.Config = config ?? CellGridView.Config()
-        self._viewBackground     = config.viewBackground
-        self._viewTransparency   = config.viewTransparency
-        self._viewScaling        = config.viewScaling
-        self._cellSize           = config.cellSize
-        self._cellPadding        = config.cellPadding
-        self._cellShape          = config.cellShape
-        self._cellColor          = config.cellColor
-        self._cellSizeMax        = config.cellSizeMax
-        self._cellSizeInnerMin   = config.cellSizeInnerMin
-        self._cellPaddingMax     = config.cellPaddingMax
-        self._gridColumns        = config.gridColumns
-        self._gridRows           = config.gridRows
-        self._cellAntialiasFade  = config.cellAntialiasFade
-        self._cellRoundedRadius  = config.cellRoundedRadius
-        self._restrictShift      = config.restrictShift
-        self._unscaledZoom       = config.unscaledZoom
-        self._selectMode         = config.selectMode
-        self._automationMode     = config.automationMode
-        self._automationInterval = config.automationInterval
+        self._viewBackground       = config.viewBackground
+        self._viewTransparency     = config.viewTransparency
+        self._viewScaling          = config.viewScaling
+        self._cellSize             = config.cellSize
+        self._cellPadding          = config.cellPadding
+        self._cellShape            = config.cellShape
+        self._cellColor            = config.cellColor
+        self._cellSizeMax          = config.cellSizeMax
+        self._cellSizeInnerMin     = config.cellSizeInnerMin
+        self._cellPaddingMax       = config.cellPaddingMax
+        self._gridColumns          = config.gridColumns
+        self._gridRows             = config.gridRows
+        self._cellAntialiasFade    = config.cellAntialiasFade
+        self._cellRoundedRadius    = config.cellRoundedRadius
+        self._restrictShift        = config.restrictShift
+        self._unscaledZoom         = config.unscaledZoom
+        self._selectMode           = config.selectMode
+        self._automationMode       = config.automationMode
+        self._automationInterval   = config.automationInterval
     }
 
     // NEW
@@ -204,6 +204,7 @@ open class CellGridView: ObservableObject
 
         // Note that adjustShift implies refreshCells; and note we do this before
         // actually (if indeed) changing cellSize, so that we now what the increment is.
+        // N.B. assumed self.cellSize is set correctly, i.e. already gone through initialize (TODO).
 
         let shift = (
             adjustShift && ((cellSize - self.scaled(self.cellSize)) != 0)
@@ -214,6 +215,32 @@ open class CellGridView: ObservableObject
         )
 
         // TODO TODO TODO
+
+        self._viewWidth = viewWidth
+        self._viewHeight = viewHeight
+        self._cellSize = cellSize
+        self._cellSizeTimesViewWidth = self._cellSize * self._viewWidth
+        self._cellPadding = cellPadding
+        self._cellShape = config.cellShape
+
+        self._unscaled_viewWidth = self.unscaled(self._viewWidth)
+        self._unscaled_viewHeight = self.unscaled(self._viewHeight)
+        self._unscaled_cellSize = self.unscaled(self._cellSize)
+        self._unscaled_cellPadding = self.unscaled(self._cellPadding)
+
+        // Note that viewColumns/Rows is the number of cells the
+        // view CAN (possibly) FULLY display horizontally/vertically.
+
+        self._viewWidthExtra = self._viewWidth % self._cellSize
+        self._viewHeightExtra = self._viewHeight % self._cellSize
+        self._viewColumns = self._viewWidth / self._cellSize
+        self._viewRows = self._viewHeight / self._cellSize
+        self._viewColumnsExtra = (self._viewWidthExtra > 0) ? 1 : 0
+        self._viewRowsExtra = (self._viewHeightExtra > 0) ? 1 : 0
+        self._viewCellEndX = self._viewColumns + self._viewColumnsExtra - 1
+        self._viewCellEndY = self._viewRows + self._viewRowsExtra - 1
+        self._viewBackground = config.viewBackground
+        self._viewTransparency = config.viewTransparency
     }
 
     // This initialize method should be called on startup as soon as possible,
@@ -377,6 +404,7 @@ open class CellGridView: ObservableObject
         self._unscaled_viewHeight = self.unscaled(viewHeight)
         self._unscaled_cellSize = self.unscaled(cellSize)
         self._unscaled_cellPadding = self.unscaled(cellPadding)
+        //xxx
 
         // Note that viewColumns/Rows is the number of cells the
         // view CAN (possibly) FULLY display horizontally/vertically.
