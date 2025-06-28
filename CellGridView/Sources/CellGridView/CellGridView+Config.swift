@@ -161,6 +161,23 @@ extension CellGridView
         Defaults.cellPaddingMax
     }
 
+    public final var minimumGridColumns: Int {
+        1
+    }
+
+    public final var maximumGridColumns: Int {
+        5000 // TODO: configize
+    }
+
+    public final var minimumGridRows: Int {
+        1
+    }
+
+    public final var maximumGridRows: Int {
+        5000 // TODO: configize
+    }
+
+
     internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil, scaled: Bool = false) -> Int {
         let cellSizeInnerMin: Int = self.scaled(Defaults.cellSizeInnerMin)
         let cellSizeMax: Int = self.scaled(Defaults.cellSizeMax)
@@ -174,5 +191,13 @@ extension CellGridView
         let cellPadding: Int = !scaled ? self.scaled(cellPadding) : cellPadding
         let constrainedCellPadding: Int = cellPadding.clamped(0...cellPaddingMax)
         return !scaled ? self.unscaled(constrainedCellPadding) : constrainedCellPadding
+    }
+
+    internal final func constrainGridColumns(_ gridColumns: Int) -> Int {
+        return gridColumns.clamped(self.minimumGridColumns...self.maximumGridColumns)
+    }
+
+    internal final func constrainGridRows(_ gridColumns: Int) -> Int {
+        return gridRows.clamped(self.minimumGridRows...self.maximumGridRows)
     }
 }

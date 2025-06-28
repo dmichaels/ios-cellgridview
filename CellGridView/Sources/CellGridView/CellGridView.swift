@@ -189,26 +189,35 @@ open class CellGridView: ObservableObject
     private func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int,
                            adjustShift: Bool, refreshCells: Bool, scaled: Bool)
     {
+        // Ensure screen is set; otherwise initialize was not called before this configure function.
+
+        guard self._screen != nil else { return }
+
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
         self._viewScaling = [CellShape.square, CellShape.inset].contains(cellShape) ? false : config.viewScaling
 
         // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
 
+        self._cellSizeInnerMin = config.cellSizeInnerMin
+        self._cellSizeMax = config.cellSizeMax
+        self._cellPaddingMax = config.cellPaddingMax
+
         let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(config.cellPadding) : config.cellPadding,
                                                          scaled: true)
+        let cellSizePrevious: Int = self._cellSize
         let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(config.cellSize) : config.cellSize,
-                                                   cellPadding: config.cellPadding, scaled: true)
+                                                   cellPadding: cellPadding, scaled: true)
+        let cellSizeIncrement: Int = cellSize - cellSizePrevious
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        // Note that adjustShift implies refreshCells; and note we do this before
-        // actually (if indeed) changing cellSize, so that we now what the increment is.
-        // N.B. assumed self.cellSize is set correctly, i.e. already gone through initialize (TODO).
+        // Note that adjustShift implies refreshCells; and note we got the cellSizePrevious
+        // above as it was before setting cellSize below, so we know what any increment may be.
 
         let shift = (
-            adjustShift && ((cellSize - self.scaled(self.cellSize)) != 0)
-            ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
+            adjustShift && (cellSizeIncrement != 0)
+            ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (refreshCells
               ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
               : nil)
@@ -241,6 +250,41 @@ open class CellGridView: ObservableObject
         self._viewCellEndY = self._viewRows + self._viewRowsExtra - 1
         self._viewBackground = config.viewBackground
         self._viewTransparency = config.viewTransparency
+
+        self._cellColor = config.cellColor
+        self._cellAntialiasFade = config.cellAntialiasFade
+        self._cellRoundedRadius = config.cellRoundedRadius
+
+        self._buffer = Memory.allocate(self._viewWidth * self._viewHeight * Screen.channels)
+        self._bufferBlocks = BufferBlocks.createBufferBlocks(bufferSize: self._buffer.count,
+                                                             viewWidth: self._viewWidth,
+                                                             viewHeight: self._viewHeight,
+                                                             cellSize: self._cellSize,
+                                                             cellPadding: self._cellPadding,
+                                                             cellShape: self._cellShape,
+                                                             cellTransparency: self._viewTransparency,
+                                                             cellAntialiasFade: self._cellAntialiasFade,
+                                                             cellRoundedRadius: self._cellRoundedRadius)
+
+        let gridColumns: Int = self.constrainGridColumns(config.gridColumns)
+        let gridRows: Int = self.constrainGridRows(config.gridRows)
+        var defineCells: Bool = false
+
+        if (gridColumns != self.gridColumns) { self._gridColumns = gridColumns ; defineCells = true }
+        if (gridRows    != self.gridRows)    { self._gridRows    = gridRows    ; defineCells = true }
+        if (defineCells || (self._cells.count == 0)) {
+            self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
+        }
+
+        self._restrictShift = restrictShift
+        self._selectMode = selectMode
+        self._automationMode = automationMode
+        self._automationInterval = automationInterval
+
+        if let shift = shift {
+            print("FOO> \(shift.x),\(shift.y) \(self.viewScaling)")
+            self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
+        }
     }
 
     // This initialize method should be called on startup as soon as possible,
@@ -404,7 +448,6 @@ open class CellGridView: ObservableObject
         self._unscaled_viewHeight = self.unscaled(viewHeight)
         self._unscaled_cellSize = self.unscaled(cellSize)
         self._unscaled_cellPadding = self.unscaled(cellPadding)
-        //xxx
 
         // Note that viewColumns/Rows is the number of cells the
         // view CAN (possibly) FULLY display horizontally/vertically.
@@ -448,10 +491,11 @@ open class CellGridView: ObservableObject
             self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
         }
 
+        //xxx
         if let restrictShift = restrictShift { self._restrictShift = restrictShift }
         if let selectMode = selectMode { self._selectMode = selectMode }
         if let automationMode = automationMode { self._automationMode = automationMode }
-        if let automationInterval = automationInterval { self.automationInterval = automationInterval }
+        if let automationInterval = automationInterval { self._automationInterval = automationInterval }
 
         if let onChangeImage = onChangeImage { self._onChangeImage = onChangeImage }
         if let onChangeCellSize = onChangeCellSize { self._onChangeCellSize = onChangeCellSize }
