@@ -168,7 +168,6 @@ open class CellGridView: ObservableObject
                        viewWidth: preferred.viewWidth,
                        viewHeight: preferred.viewHeight,
                        adjustShift: false,
-                       refreshCells: false,
                        scaled: false)
 
         if (!center) {
@@ -181,13 +180,12 @@ open class CellGridView: ObservableObject
     // NEW
     open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight,
-                       adjustShift: false, refreshCells: false, scaled: false)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, adjustShift: false, scaled: false)
     }
 
     // NEW
-    private func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int,
-                           adjustShift: Bool, refreshCells: Bool, scaled: Bool)
+    private func configure(_ config: CellGridView.Config,
+                             viewWidth: Int, viewHeight: Int, adjustShift: Bool, scaled: Bool)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
 
@@ -218,10 +216,18 @@ open class CellGridView: ObservableObject
         let shift = (
             adjustShift && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
+            : nil
+        )
+
+        /*
+        let shift = (
+            adjustShift && (cellSizeIncrement != 0)
+            ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (refreshCells
               ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
               : nil)
         )
+        */
 
         // TODO TODO TODO
 
@@ -276,14 +282,27 @@ open class CellGridView: ObservableObject
             self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
         }
 
-        self._restrictShift = restrictShift
-        self._selectMode = selectMode
-        self._automationMode = automationMode
-        self._automationInterval = automationInterval
+        self._restrictShift = config.restrictShift
+        self._selectMode = config.selectMode
+        self._automationMode = config.automationMode
+
+        var restartAutomation: Bool = false
+        if (self._automationInterval != config.automationInterval) {
+            self._automationInterval = config.automationInterval
+            restartAutomation = self._automationMode
+        }
 
         if let shift = shift {
             print("FOO> \(shift.x),\(shift.y) \(self.viewScaling)")
             self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
+        }
+        else {
+            self.writeCells()
+        }
+
+        if (restartAutomation) {
+            self._actions.automationStop()
+            self._actions.automationStart()
         }
     }
 
