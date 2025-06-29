@@ -82,7 +82,7 @@ extension CellGridView
         self.configure(config,
                        viewWidth: self.viewWidthScaled,
                        viewHeight: self.viewHeightScaled,
-                       adjustShift: true,
+                       adjust: true,
                        scaled: true)
 
 /*

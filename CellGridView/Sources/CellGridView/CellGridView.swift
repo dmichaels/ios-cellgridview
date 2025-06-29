@@ -165,7 +165,7 @@ open class CellGridView: ObservableObject
         self.configure(config.update(cellSize: preferred.cellSize),
                        viewWidth: preferred.viewWidth,
                        viewHeight: preferred.viewHeight,
-                       adjustShift: false,
+                       adjust: false,
                        scaled: false)
 
         if (!center) {
@@ -175,31 +175,40 @@ open class CellGridView: ObservableObject
         self.onChangeImage()
     }
 
-    // NEW
+    // NEW; TODO DONT NEED THIS ACTUALLY WE DONT THINK
     open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, adjustShift: false, scaled: false)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, adjust: false, scaled: false)
     }
 
     // NEW
-    /* private */ internal func configure(_ config: CellGridView.Config,
-                             viewWidth: Int, viewHeight: Int, adjustShift: Bool, scaled: Bool)
+    internal func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int, adjust: Bool = false, scaled: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
 
         guard self._screen != nil else { return }
 
-        // N.B. This here first so subsequent calls to self.scaled work properly.
+        // Setting of viewScaling is here first so subsequent calls to self.scaled/unscaled work properly.
 
-        self._viewScaling = [CellShape.square, CellShape.inset].contains(config.cellShape) ? false : config.viewScaling
-        if (!self._viewScalingArtificiallyDisabled) {
-            self._viewScalingArtificiallyDisabled = [CellShape.square, CellShape.inset].contains(config.cellShape) && config.viewScaling
+        func cellShapeRequiresNoViewScaling(_ cellShape: CellShape) -> Bool {
+            return [CellShape.square, CellShape.inset].contains(cellShape)
         }
-        else if ([CellShape.square, CellShape.inset].contains(self.cellShape)) {
-            if (![CellShape.square, CellShape.inset].contains(config.cellShape)) {
-                self._viewScalingArtificiallyDisabled = false
+
+        if (self._viewScalingArtificiallyDisabled) {
+            if (!cellShapeRequiresNoViewScaling(config.cellShape)) {
                 self._viewScaling = true
+                self._viewScalingArtificiallyDisabled = false
             }
+            else {
+                self._viewScaling = config.viewScaling
+            }
+        }
+        else if (cellShapeRequiresNoViewScaling(config.cellShape) && config.viewScaling) {
+            self._viewScaling = false
+            self._viewScalingArtificiallyDisabled = true
+        }
+        else {
+            self._viewScaling = config.viewScaling
         }
 
         // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
@@ -219,7 +228,7 @@ open class CellGridView: ObservableObject
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
         let shift: (x: Int, y: Int) = (
-            adjustShift && (cellSizeIncrement != 0)
+            adjust && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
         )
@@ -254,7 +263,15 @@ open class CellGridView: ObservableObject
         self._cellAntialiasFade = config.cellAntialiasFade
         self._cellRoundedRadius = config.cellRoundedRadius
 
-        self._buffer = Memory.allocate(self._viewWidth * self._viewHeight * Screen.channels)
+        let bufferSize: Int = self._viewWidth * self._viewHeight * Screen.channels
+        if (bufferSize != self._buffer.count) {
+            self._buffer = Memory.allocate(self._viewWidth * self._viewHeight * Screen.channels)
+        }
+
+        // Not actually necessary to call this if any of these arguments have not changed,
+        // i.e. if the ones that were in self were all the same as the ones in config, but
+        // this configure function is typically only called when at least of these has changed.
+
         self._bufferBlocks = BufferBlocks.createBufferBlocks(bufferSize: self._buffer.count,
                                                              viewWidth: self._viewWidth,
                                                              viewHeight: self._viewHeight,
@@ -347,7 +364,7 @@ open class CellGridView: ObservableObject
                        selectMode: selectMode,
                        automationMode: automationMode,
                        automationInterval: automationInterval,
-                       adjustShift: false,
+                       adjust: false,
                        refreshCells: false,
                        onChangeImage: onChangeImage,
                        centerCells: centerCells,
@@ -394,7 +411,7 @@ open class CellGridView: ObservableObject
                                 selectMode: Bool? = nil,
                                 automationMode: Bool? = nil,
                                 automationInterval: Double? = nil,
-                                adjustShift: Bool = false,
+                                adjust: Bool = false,
                                 refreshCells: Bool = false,
                                 onChangeImage: (() -> Void)? = nil,
                                 centerCells: Bool? = nil,
@@ -426,11 +443,11 @@ open class CellGridView: ObservableObject
             : nil
         ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
 
-        // Note that adjustShift implies refreshCells; and note we do this before
+        // Note that adjust implies refreshCells; and note we do this before
         // actually (if indeed) changing cellSize, so that we now what the increment is.
 
         let shiftForRefresh = (
-            adjustShift && ((cellSize - self.scaled(self.cellSize)) != 0)
+            adjust && ((cellSize - self.scaled(self.cellSize)) != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
             : (centerCells ?? false
                ? shiftForCenterCells(cellSize: cellSize, gridColumns: gridColumns, gridRows: gridRows)
