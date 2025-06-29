@@ -61,7 +61,6 @@ extension CellGridView
         // If the given adjustShiftOnResizeCells is true, then we need to calculate the new shift values here BEFORE the
         // re-configure below, whether the resize takes or not due to reaching the maximum allowed cell size,
         // because they both cases depend on the cell size which is updated by this re-configure below.
-
 /*
         var shift = adjustShiftOnResizeCells
                     ? CellGridView.shiftForResizeCells(cellSize: self.cellSizeScaled,
@@ -75,16 +74,11 @@ extension CellGridView
 */
 
         // Remember that CellGridView.Config is agnostic about its property values being scaled or not.
+        // Though (TODO) we could make it cognizant of this; might (or might not) make a littler clearer. 
         //
-        let config: CellGridView.Config = CellGridView.Config(self.config,
-                                                              cellSize: cellSize,
-                                                              cellPadding: self.cellPaddingScaled)
-        self.configure(config,
-                       viewWidth: self.viewWidthScaled,
-                       viewHeight: self.viewHeightScaled,
-                       adjust: true,
-                       scaled: true)
-
+        self.configure(self.config.update(cellSize: cellSize, cellPadding: self.cellPaddingScaled),
+                       viewWidth: self.viewWidthScaled, viewHeight: self.viewHeightScaled,
+                       adjust: true, scaled: true)
 /*
         self.configure(viewWidth: self.viewWidthScaled,
                        viewHeight: self.viewHeightScaled,
@@ -104,6 +98,14 @@ extension CellGridView
         guard self.viewScaling != scaling else { return }
         let shiftTotalX: Int = scaling ? self.screen.scaled(self.shiftTotalX) : self.screen.unscaled(self.shiftTotalX)
         let shiftTotalY: Int = scaling ? self.screen.scaled(self.shiftTotalY) : self.screen.unscaled(self.shiftTotalY)
+        //
+        // Remember that CellGridView.Config is agnostic about its property values being scaled or not.
+        // Though (TODO) we could make it cognizant of this; might (or might not) make a littler clearer. 
+        //
+        self.configure(self.config.update(viewScaling: scaling),
+                       viewWidth: self.viewWidth, viewHeight: self.viewHeight,
+                       adjust: false, scaled: false)
+/*
         self.configure(viewWidth: self.viewWidth,
                        viewHeight: self.viewHeight,
                        viewBackground: self.viewBackground,
@@ -113,6 +115,7 @@ extension CellGridView
                        cellPadding: self.cellPadding,
                        cellShape: self.cellShape,
                        scaled: false)
+*/
         self.shift(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
     }
 
