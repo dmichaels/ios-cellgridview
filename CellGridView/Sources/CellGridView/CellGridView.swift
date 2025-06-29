@@ -111,7 +111,6 @@ open class CellGridView: ObservableObject
     // view can make sure the the image updated here is actually visually updated.
     //
     private var _onChangeImage: () -> Void = {}
-    private var _onChangeCellSize: (Int) -> Void = {_ in}
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     // NEW
@@ -149,13 +148,11 @@ open class CellGridView: ObservableObject
                            viewWidth: Int,
                            viewHeight: Int,
                            onChangeImage: (() -> Void)? = nil,
-                           onChangeCellSize: ((Int) -> Void)? = nil,
                            preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
                            center: Bool = false)
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
-        self._onChangeCellSize = onChangeCellSize ?? {_ in}
 
         let preferred: PreferredSize = CellGridView.preferredSize(
             cellSize: config.cellSize,
@@ -193,7 +190,7 @@ open class CellGridView: ObservableObject
 
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
-        self._viewScaling = [CellShape.square, CellShape.inset].contains(cellShape) ? false : config.viewScaling
+        self._viewScaling = [CellShape.square, CellShape.inset].contains(config.cellShape) ? false : config.viewScaling
 
         // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
 
@@ -213,21 +210,11 @@ open class CellGridView: ObservableObject
         // Note that adjustShift implies refreshCells; and note we got the cellSizePrevious
         // above as it was before setting cellSize below, so we know what any increment may be.
 
-        let shift = (
+        let shift: (x: Int, y: Int) = (
             adjustShift && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
-            : nil
+            : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
         )
-
-        /*
-        let shift = (
-            adjustShift && (cellSizeIncrement != 0)
-            ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
-            : (refreshCells
-              ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
-              : nil)
-        )
-        */
 
         // TODO TODO TODO
 
@@ -292,6 +279,7 @@ open class CellGridView: ObservableObject
             restartAutomation = self._automationMode
         }
 
+        /*
         if let shift = shift {
             print("FOO> \(shift.x),\(shift.y) \(self.viewScaling)")
             self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
@@ -299,6 +287,8 @@ open class CellGridView: ObservableObject
         else {
             self.writeCells()
         }
+        */
+        self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
 
         if (restartAutomation) {
             self._actions.automationStop()
@@ -330,8 +320,8 @@ open class CellGridView: ObservableObject
                                  selectMode: Bool? = nil,
                                  automationMode: Bool? = nil,
                                  automationInterval: Double? = nil,
-                                 onChangeImage: @escaping () -> Void,
-                                 onChangeCellSize: @escaping (Int) -> Void = {_ in})
+                                 onChangeImage: (() -> Void)? = nil)
+                                 // onChangeImage: @escaping (() -> Void)? -> Void = {_ in})
     {
         self._screen = screen
 
@@ -363,7 +353,6 @@ open class CellGridView: ObservableObject
                        adjustShift: false,
                        refreshCells: false,
                        onChangeImage: onChangeImage,
-                       onChangeCellSize: onChangeCellSize,
                        centerCells: centerCells,
                        scaled: false)
 
@@ -377,7 +366,6 @@ open class CellGridView: ObservableObject
         #endif
 
         // self._onChangeImage = onChangeImage
-        // self._onChangeCellSize = onChangeCellSize
 
         // let centerCells: Bool = centerCells ?? Defaults.centerCells
         // centerCells ? self.center() : self.writeCells()
@@ -412,7 +400,6 @@ open class CellGridView: ObservableObject
                                 adjustShift: Bool = false,
                                 refreshCells: Bool = false,
                                 onChangeImage: (() -> Void)? = nil,
-                                onChangeCellSize: ((Int) -> Void)? = nil,
                                 centerCells: Bool? = nil,
                                 scaled: Bool = false)
     {
@@ -517,7 +504,6 @@ open class CellGridView: ObservableObject
         if let automationInterval = automationInterval { self._automationInterval = automationInterval }
 
         if let onChangeImage = onChangeImage { self._onChangeImage = onChangeImage }
-        if let onChangeCellSize = onChangeCellSize { self._onChangeCellSize = onChangeCellSize }
 
         if let shiftForRefresh = shiftForRefresh {
             print("FOO> \(shiftForRefresh.x),\(shiftForRefresh.y) \(self.viewScaling)")
@@ -955,10 +941,6 @@ open class CellGridView: ObservableObject
 
     public final func onChangeImage() {
         self._onChangeImage()
-    }
-
-    public final func onChangeCellSize(_ cellSize: Int) {
-        self._onChangeCellSize(cellSize)
     }
 
     public var selectMode: Bool {

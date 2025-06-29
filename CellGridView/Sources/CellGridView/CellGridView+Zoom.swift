@@ -91,8 +91,6 @@ extension CellGridView
                        scaled: true)
 
         self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: true)
-
-        self.onChangeCellSize(self.unscaled(cellSize))
     }
 
     public func scale(_ scaling: Bool) {
