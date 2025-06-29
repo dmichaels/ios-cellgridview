@@ -58,40 +58,14 @@ extension CellGridView
 
         guard cellSize != self.cellSizeScaled else { return }
 
-        // If the given adjustShiftOnResizeCells is true, then we need to calculate the new shift values here BEFORE the
-        // re-configure below, whether the resize takes or not due to reaching the maximum allowed cell size,
-        // because they both cases depend on the cell size which is updated by this re-configure below.
-/*
-        var shift = adjustShiftOnResizeCells
-                    ? CellGridView.shiftForResizeCells(cellSize: self.cellSizeScaled,
-                                                       cellSizeIncrement: cellSize - self.cellSizeScaled,
-                                                       viewWidth: self.viewWidthScaled,
-                                                       viewHeight: self.viewHeightScaled,
-                                                       shiftTotalX: self.shiftTotalScaledX,
-                                                       shiftTotalY: self.shiftTotalScaledY,
-                                                       viewAnchorFactor: Zoom.Defaults.viewAnchorFactor)
-                    : (x: self.shiftTotalScaledX, y: self.shiftTotalScaledY)
-*/
-
         // Remember that CellGridView.Config is agnostic about its property values being scaled or not.
         // Though (TODO) we could make it cognizant of this; might (or might not) make a littler clearer. 
         //
-        self.configure(self.config.update(cellSize: cellSize, cellPadding: self.cellPaddingScaled),
-                       viewWidth: self.viewWidthScaled, viewHeight: self.viewHeightScaled,
-                       adjust: true, scaled: true)
-/*
-        self.configure(viewWidth: self.viewWidthScaled,
+        self.configure(self.config.update(cellSize: cellSize,
+                                          cellPadding: self.cellPaddingScaled),
+                       viewWidth: self.viewWidthScaled,
                        viewHeight: self.viewHeightScaled,
-                       viewBackground: self.viewBackground,
-                       viewTransparency: self.viewTransparency,
-                       viewScaling: self.viewScaling,
-                       cellSize: cellSize,
-                       cellPadding: self.cellPaddingScaled,
-                       cellShape: self.cellShape,
-                       scaled: true)
-*/
-
-        // self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: true)
+                       adjust: true, scaled: true)
     }
 
     public func scale(_ scaling: Bool) {
@@ -103,19 +77,9 @@ extension CellGridView
         // Though (TODO) we could make it cognizant of this; might (or might not) make a littler clearer. 
         //
         self.configure(self.config.update(viewScaling: scaling),
-                       viewWidth: self.viewWidth, viewHeight: self.viewHeight,
-                       adjust: false, scaled: false)
-/*
-        self.configure(viewWidth: self.viewWidth,
+                       viewWidth: self.viewWidth,
                        viewHeight: self.viewHeight,
-                       viewBackground: self.viewBackground,
-                       viewTransparency: self.viewTransparency,
-                       viewScaling: scaling,
-                       cellSize: self.cellSize,
-                       cellPadding: self.cellPadding,
-                       cellShape: self.cellShape,
-                       scaled: false)
-*/
+                       adjust: false, scaled: false)
         self.shift(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
     }
 

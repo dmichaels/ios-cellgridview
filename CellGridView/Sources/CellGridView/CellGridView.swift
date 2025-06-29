@@ -114,7 +114,6 @@ open class CellGridView: ObservableObject
     private var _onChangeImage: () -> Void = {}
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
-    // NEW
     public init(_ config: CellGridView.Config? = nil) {
         let config: CellGridView.Config = config ?? CellGridView.Config()
         self._viewBackground       = config.viewBackground
@@ -138,12 +137,10 @@ open class CellGridView: ObservableObject
         self._automationInterval   = config.automationInterval
     }
 
-    // NEW
     open var config: CellGridView.Config {
         CellGridView.Config(self)
     }
 
-    // NEW
     open func initialize(_ config: CellGridView.Config,
                            screen: Screen,
                            viewWidth: Int,
@@ -175,15 +172,6 @@ open class CellGridView: ObservableObject
         self.onChangeImage()
     }
 
-    // NEW; TODO DONT NEED THIS ACTUALLY WE DONT THINK
-    /*
-    open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
-    {
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, adjust: false, scaled: false)
-    }
-    */
-
-    // NEW
     public func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int, adjust: Bool = false, scaled: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
@@ -311,224 +299,6 @@ open class CellGridView: ObservableObject
             self._actions.automationStart()
         }
     }
-
-/*
-    // This initialize method should be called on startup as soon as possible,
-    // e.g. from the onAppear notification of the main view (ZStack or whatever).
-    //
-    public final func initialize(screen: Screen,
-                                 viewWidth: Int,
-                                 viewHeight: Int,
-                                 viewBackground: Colour,
-                                 viewTransparency: UInt8,
-                                 viewScaling: Bool,
-                                 cellSize: Int,
-                                 cellPadding: Int,
-                                 cellShape: CellShape,
-                                 cellColor: Colour,
-                                 gridColumns: Int,
-                                 gridRows: Int,
-                                 preferredFit: Bool = false,
-                                 centerCells: Bool? = nil,
-                                 restrictShift: Bool? = nil,
-                                 unscaledZoom: Bool? = nil,
-                                 cellAntialiasFade: Float? = nil,
-                                 cellRoundedRadius: Float? = nil,
-                                 selectMode: Bool? = nil,
-                                 automationMode: Bool? = nil,
-                                 automationInterval: Double? = nil,
-                                 onChangeImage: (() -> Void)? = nil)
-                                 // onChangeImage: @escaping (() -> Void)? -> Void = {_ in})
-    {
-        self._screen = screen
-
-        let preferredSize: PreferredSize = (
-            preferredFit
-            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
-                                         preferredFitMarginMax: Defaults.preferredFitMarginMax)
-            : nil
-        ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
-
-        self.configure(viewWidth: preferredSize.viewWidth,
-                       viewHeight: preferredSize.viewHeight,
-                       viewBackground: viewBackground,
-                       viewTransparency: viewTransparency,
-                       viewScaling: viewScaling,
-                       cellSize: preferredSize.cellSize,
-                       cellPadding: cellPadding,
-                       cellShape: cellShape,
-                       cellColor: cellColor,
-                       gridColumns: gridColumns,
-                       gridRows: gridRows,
-                       restrictShift: restrictShift,
-                       unscaledZoom: unscaledZoom,
-                       cellAntialiasFade: cellAntialiasFade,
-                       cellRoundedRadius: cellRoundedRadius,
-                       selectMode: selectMode,
-                       automationMode: automationMode,
-                       automationInterval: automationInterval,
-                       adjust: false,
-                       refreshCells: false,
-                       onChangeImage: onChangeImage,
-                       centerCells: centerCells,
-                       scaled: false)
-
-        // self._gridColumns = gridColumns > 0 ? gridColumns : self._viewColumns
-        // self._gridRows = gridRows > 0 ? gridRows : self._viewRows
-        // self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
-
-        #if targetEnvironment(simulator)
-            self.printSizes(viewWidthInit: viewWidth, viewHeightInit: viewHeight,
-                            cellSizeInit: cellSize , preferredFit: preferredFit)
-        #endif
-
-        // self._onChangeImage = onChangeImage
-
-        // let centerCells: Bool = centerCells ?? Defaults.centerCells
-        // centerCells ? self.center() : self.writeCells()
-        if (!(centerCells ?? false)) {
-            self.writeCells()
-        }
-
-        self.onChangeImage()
-    }
-
-    public final func configure(screen: Screen? = nil,
-                                viewWidth: Int,
-                                viewHeight: Int,
-                                viewBackground: Colour,
-                                viewTransparency: UInt8,
-                                viewScaling: Bool,
-                                cellSize: Int,
-                                // cellSize: Int? = nil,
-                                cellPadding: Int,
-                                cellShape: CellShape? = nil,
-                                cellColor: Colour? = nil,
-                                gridColumns: Int? = nil,
-                                gridRows: Int? = nil,
-                                preferredFit: Bool? = nil,
-                                restrictShift: Bool? = nil,
-                                unscaledZoom: Bool? = nil,
-                                cellAntialiasFade: Float? = nil,
-                                cellRoundedRadius: Float? = nil,
-                                selectMode: Bool? = nil,
-                                automationMode: Bool? = nil,
-                                automationInterval: Double? = nil,
-                                adjust: Bool = false,
-                                refreshCells: Bool = false,
-                                onChangeImage: (() -> Void)? = nil,
-                                centerCells: Bool? = nil,
-                                scaled: Bool = false)
-    {
-        if (screen != nil) {
-            self._screen = screen
-        }
-
-        if let cellColor = cellColor { self._cellColor = cellColor }
-
-        // N.B. This here first so subsequent calls to self.scaled work properly.
-
-        self._viewScaling = [CellShape.square, CellShape.inset].contains(cellShape) ? false : viewScaling
-
-        // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
-
-        let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(cellPadding) : cellPadding, scaled: true)
-        let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(cellSize) : cellSize, cellPadding: cellPadding, scaled: true)
-        // let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(cellSize ?? self.cellSize) : cellSize ?? self.cellSize, cellPadding: cellPadding, scaled: true)
-        let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
-        let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
-
-        let preferredSize: PreferredSize = (
-            // xyzzy preferredFit ?? Defaults.preferredFit
-            preferredFit ?? false
-            ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
-                                         preferredFitMarginMax: Defaults.preferredFitMarginMax)
-            : nil
-        ) ?? (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
-
-        // Note that adjust implies refreshCells; and note we do this before
-        // actually (if indeed) changing cellSize, so that we now what the increment is.
-
-        let shiftForRefresh = (
-            adjust && ((cellSize - self.scaled(self.cellSize)) != 0)
-            ? self.shiftForResizeCells(cellSizeIncrement: cellSize - self.scaled(self.cellSize))
-            : (centerCells ?? false
-               ? shiftForCenterCells(cellSize: cellSize, gridColumns: gridColumns, gridRows: gridRows)
-               : (refreshCells
-                  ? (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
-                  : nil))
-        )
-
-        self._viewWidth = viewWidth
-        self._viewHeight = viewHeight
-        self._cellSize = cellSize
-        self._cellSizeTimesViewWidth = self._cellSize * self._viewWidth
-        self._cellPadding = cellPadding
-        self._cellShape = cellShape ?? self._cellShape // xyzzy
-
-        if let cellColor = cellColor { self._cellColor = cellColor }
-
-        self._unscaled_viewWidth = self.unscaled(viewWidth)
-        self._unscaled_viewHeight = self.unscaled(viewHeight)
-        self._unscaled_cellSize = self.unscaled(cellSize)
-        self._unscaled_cellPadding = self.unscaled(cellPadding)
-
-        // Note that viewColumns/Rows is the number of cells the
-        // view CAN (possibly) FULLY display horizontally/vertically.
-
-        self._viewWidthExtra = self._viewWidth % self._cellSize
-        self._viewHeightExtra = self._viewHeight % self._cellSize
-        self._viewColumns = self._viewWidth / self._cellSize
-        self._viewRows = self._viewHeight / self._cellSize
-        self._viewColumnsExtra = (self._viewWidthExtra > 0) ? 1 : 0
-        self._viewRowsExtra = (self._viewHeightExtra > 0) ? 1 : 0
-        self._viewCellEndX = self._viewColumns + self._viewColumnsExtra - 1
-        self._viewCellEndY = self._viewRows + self._viewRowsExtra - 1
-        self._viewBackground = viewBackground
-        self._viewTransparency = viewTransparency
-
-        if let cellColor = cellColor { self._cellColor = cellColor }
-        if let cellAntialiasFade = cellAntialiasFade { self._cellAntialiasFade = cellAntialiasFade }
-        if let cellRoundedRadius = cellRoundedRadius { self._cellRoundedRadius = cellRoundedRadius }
-
-        self._buffer = Memory.allocate(self._viewWidth * self._viewHeight * Screen.channels)
-        self._bufferBlocks = BufferBlocks.createBufferBlocks(bufferSize: self._buffer.count,
-                                                             viewWidth: self._viewWidth,
-                                                             viewHeight: self._viewHeight,
-                                                             cellSize: self._cellSize,
-                                                             cellPadding: self._cellPadding,
-                                                             cellShape: self._cellShape,
-                                                             cellTransparency: self._viewTransparency,
-                                                             cellAntialiasFade: self._cellAntialiasFade,
-                                                             cellRoundedRadius: self._cellRoundedRadius)
-
-        var defineCells: Bool = false
-        if var gridColumns = gridColumns {
-            gridColumns = max(0, gridColumns)
-            if (gridColumns != self._gridColumns) { defineCells = true ; self._gridColumns = gridColumns }
-        }
-        if var gridRows = gridRows {
-            gridRows = max(0, gridRows)
-            if (gridRows != self._gridRows) { defineCells = true ; self._gridRows = gridRows }
-        }
-        if (defineCells || (self._cells.count == 0) /* HACK DURING CONFIG REFACTOR WORK */ ) {
-            self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
-        }
-
-        //xxx
-        if let restrictShift = restrictShift { self._restrictShift = restrictShift }
-        if let selectMode = selectMode { self._selectMode = selectMode }
-        if let automationMode = automationMode { self._automationMode = automationMode }
-        if let automationInterval = automationInterval { self._automationInterval = automationInterval }
-
-        if let onChangeImage = onChangeImage { self._onChangeImage = onChangeImage }
-
-        if let shiftForRefresh = shiftForRefresh {
-            print("FOO> \(shiftForRefresh.x),\(shiftForRefresh.y) \(self.viewScaling)")
-            self.shift(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
-        }
-    }
-    */
 
     public   final var initialized: Bool         { self._screen != nil }
     public   final var screen: Screen            { self._screen! }
