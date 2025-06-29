@@ -163,6 +163,7 @@ open class CellGridView: ObservableObject
                        viewWidth: preferred.viewWidth,
                        viewHeight: preferred.viewHeight,
                        adjust: false,
+                       center: center,
                        scaled: false)
 
         if (!center) {
@@ -172,7 +173,12 @@ open class CellGridView: ObservableObject
         self.onChangeImage()
     }
 
-    public func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int, adjust: Bool = false, scaled: Bool = false)
+    public func configure(_ config: CellGridView.Config,
+                            viewWidth: Int,
+                            viewHeight: Int,
+                            adjust: Bool = false,
+                            center: Bool = false,
+                            scaled: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
 
@@ -217,10 +223,15 @@ open class CellGridView: ObservableObject
 
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
+        let gridColumns: Int = self.constrainGridColumns(config.gridColumns)
+        let gridRows: Int = self.constrainGridRows(config.gridRows)
+
         let shift: (x: Int, y: Int) = (
             adjust && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
-            : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
+            : (center
+               ? shiftForCenterCells(cellSize: cellSize, gridColumns: gridColumns, gridRows: gridRows)
+               : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY)))
         )
 
         self._viewWidth = viewWidth
@@ -272,10 +283,7 @@ open class CellGridView: ObservableObject
                                                              cellAntialiasFade: self._cellAntialiasFade,
                                                              cellRoundedRadius: self._cellRoundedRadius)
 
-        let gridColumns: Int = self.constrainGridColumns(config.gridColumns)
-        let gridRows: Int = self.constrainGridRows(config.gridRows)
         var defineCells: Bool = false
-
         if (gridColumns != self.gridColumns) { self._gridColumns = gridColumns ; defineCells = true }
         if (gridRows    != self.gridRows)    { self._gridRows    = gridRows    ; defineCells = true }
         if (defineCells || (self._cells.count == 0)) {
