@@ -30,7 +30,8 @@ extension CellGridView
         public private(set) var automationMode: Bool
         public private(set) var automationInterval: Double
 
-        public init(config: CellGridView.Config? = nil,
+        // public init(config: CellGridView.Config? = nil,
+        public init(_ config: CellGridView.Config? = nil,
                     viewBackground: Colour?      = nil,
                     viewTransparency: UInt8?     = nil,
                     viewScaling: Bool?           = nil,

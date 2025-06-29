@@ -1,6 +1,6 @@
 extension CellGridView
 {
-    public enum PreferredFit: String, CaseIterable, Identifiable
+    public enum PreferredFit: String, CaseIterable, Identifiable, Sendable
     {
         case none = "none"
         case cell = "cell"

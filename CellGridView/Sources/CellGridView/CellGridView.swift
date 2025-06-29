@@ -40,6 +40,7 @@ open class CellGridView: ObservableObject
     private var _viewBackground: Colour = Colour.black
     private var _viewTransparency: UInt8 = 0
     private var _viewScaling: Bool = true
+    internal var _viewScalingArtificiallyDisabled: Bool = false // xyzzy
 
     private var _cellSize: Int = 0
     private var _cellSizeTimesViewWidth: Int = 0
@@ -181,7 +182,7 @@ open class CellGridView: ObservableObject
     }
 
     // NEW
-    private func configure(_ config: CellGridView.Config,
+    /* private */ internal func configure(_ config: CellGridView.Config,
                              viewWidth: Int, viewHeight: Int, adjustShift: Bool, scaled: Bool)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
@@ -191,6 +192,15 @@ open class CellGridView: ObservableObject
         // N.B. This here first so subsequent calls to self.scaled work properly.
 
         self._viewScaling = [CellShape.square, CellShape.inset].contains(config.cellShape) ? false : config.viewScaling
+        if (!self._viewScalingArtificiallyDisabled) {
+            self._viewScalingArtificiallyDisabled = [CellShape.square, CellShape.inset].contains(config.cellShape) && config.viewScaling
+        }
+        else if ([CellShape.square, CellShape.inset].contains(self.cellShape)) {
+            if (![CellShape.square, CellShape.inset].contains(config.cellShape)) {
+                self._viewScalingArtificiallyDisabled = false
+                self._viewScaling = true
+            }
+        }
 
         // Convert to scaled and sanity (max/min) check the cell-size and cell-padding.
 
@@ -200,23 +210,19 @@ open class CellGridView: ObservableObject
 
         let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(config.cellPadding) : config.cellPadding,
                                                          scaled: true)
-        let cellSizePrevious: Int = self._cellSize
         let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(config.cellSize) : config.cellSize,
                                                    cellPadding: cellPadding, scaled: true)
-        let cellSizeIncrement: Int = cellSize - cellSizePrevious
+        let cellSizeIncrement: Int = cellSize - self._cellSize
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        // Note that adjustShift implies refreshCells; and note we got the cellSizePrevious
-        // above as it was before setting cellSize below, so we know what any increment may be.
+        // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
         let shift: (x: Int, y: Int) = (
             adjustShift && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY))
         )
-
-        // TODO TODO TODO
 
         self._viewWidth = viewWidth
         self._viewHeight = viewHeight
@@ -279,15 +285,6 @@ open class CellGridView: ObservableObject
             restartAutomation = self._automationMode
         }
 
-        /*
-        if let shift = shift {
-            print("FOO> \(shift.x),\(shift.y) \(self.viewScaling)")
-            self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
-        }
-        else {
-            self.writeCells()
-        }
-        */
         self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
 
         if (restartAutomation) {
@@ -422,7 +419,8 @@ open class CellGridView: ObservableObject
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
         let preferredSize: PreferredSize = (
-            preferredFit ?? Defaults.preferredFit
+            // xyzzy preferredFit ?? Defaults.preferredFit
+            preferredFit ?? false
             ? CellGridView.preferredSize(viewWidth: viewWidth, viewHeight: viewHeight, cellSize: cellSize,
                                          preferredFitMarginMax: Defaults.preferredFitMarginMax)
             : nil

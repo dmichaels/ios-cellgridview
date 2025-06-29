@@ -80,6 +80,7 @@ extension CellGridView
      // let emptySpaceRight: Int = self.viewWidthScaled - (self.shiftTotalScaledX + (self.cellSizeScaled * self.gridColumns))
         print(String(format: "SHIFT(\(shiftTotalX),\(shiftTotalY)) %.5f" +
                              (self.viewScaling ? " SC" : " US") +
+                             (self._viewScalingArtificiallyDisabled ? " [scad]" : " [-]") +
                              " VS:\(self.viewWidthScaled)x\(self.viewHeightScaled)" +
                              " VSU:\(self.viewWidth)x\(self.viewHeight)" +
                              " CS:\(self.cellSizeScaled)" +

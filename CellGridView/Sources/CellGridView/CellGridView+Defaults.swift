@@ -3,6 +3,13 @@ import Utils
 
 extension CellGridView
 {
+    public enum XPreferredFit: String, CaseIterable, Identifiable, Sendable
+    {
+        case none = "none"
+        case cell = "cell"
+        case view  = "view"
+        public var id: String { self.rawValue }
+    }
     public struct Defaults
     {
         // The size related properties here (being outward facing) are unscaled.
@@ -34,7 +41,8 @@ extension CellGridView
 
         // Only used on CellGridView.initialize
         //
-        public static let preferredFit: Bool         = false
+        public static let preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.cell
+        // public static let preferredFit: XPreferredFit? = XPreferredFit.cell
         public static let preferredFitMarginMax: Int = 30
         public static let centerCells: Bool          = false
 
