@@ -176,13 +176,15 @@ open class CellGridView: ObservableObject
     }
 
     // NEW; TODO DONT NEED THIS ACTUALLY WE DONT THINK
+    /*
     open func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int)
     {
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, adjust: false, scaled: false)
     }
+    */
 
     // NEW
-    internal func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int, adjust: Bool = false, scaled: Bool = false)
+    public func configure(_ config: CellGridView.Config, viewWidth: Int, viewHeight: Int, adjust: Bool = false, scaled: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
 
@@ -310,6 +312,7 @@ open class CellGridView: ObservableObject
         }
     }
 
+/*
     // This initialize method should be called on startup as soon as possible,
     // e.g. from the onAppear notification of the main view (ZStack or whatever).
     //
@@ -525,6 +528,7 @@ open class CellGridView: ObservableObject
             self.shift(shiftTotalX: shiftForRefresh.x, shiftTotalY: shiftForRefresh.y, scaled: self.viewScaling)
         }
     }
+    */
 
     public   final var initialized: Bool         { self._screen != nil }
     public   final var screen: Screen            { self._screen! }
