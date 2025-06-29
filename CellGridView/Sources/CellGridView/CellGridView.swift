@@ -40,7 +40,7 @@ open class CellGridView: ObservableObject
     private var _viewBackground: Colour = Colour.black
     private var _viewTransparency: UInt8 = 0
     private var _viewScaling: Bool = true
-    internal var _viewScalingArtificiallyDisabled: Bool = false // xyzzy
+    private var _viewScalingArtificiallyDisabled: Bool = false
 
     private var _cellSize: Int = 0
     private var _cellSizeTimesViewWidth: Int = 0
