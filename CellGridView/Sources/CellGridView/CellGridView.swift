@@ -137,7 +137,6 @@ open class CellGridView: ObservableObject
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
-
         self.configure(config,
                        viewWidth: viewWidth,
                        viewHeight: viewHeight,
@@ -145,12 +144,6 @@ open class CellGridView: ObservableObject
                        adjust: false,
                        center: center,
                        scaled: false)
-
-        if (!center) {
-            self.writeCells()
-        }
-
-        self.onChangeImage()
     }
 
     public func configure(_ config: CellGridView.Config,
