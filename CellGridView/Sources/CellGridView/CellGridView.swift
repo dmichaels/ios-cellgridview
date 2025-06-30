@@ -91,7 +91,6 @@ open class CellGridView: ObservableObject
     private var _automationMode: Bool = Defaults.automationMode
     private var _selectMode: Bool = Defaults.selectMode
     private var _automationInterval: Double = Defaults.automationInterval
-    internal var cellColor: Colour { self._cellColor }
 
     // This _onChangeImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
@@ -137,13 +136,7 @@ open class CellGridView: ObservableObject
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
-        self.configure(config,
-                       viewWidth: viewWidth,
-                       viewHeight: viewHeight,
-                       preferredFit: preferredFit,
-                       adjust: false,
-                       center: center,
-                       scaled: false)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, preferredFit: preferredFit, center: center)
     }
 
     public func configure(_ config: CellGridView.Config,
@@ -317,13 +310,14 @@ open class CellGridView: ObservableObject
     public   final var cells: [Cell]             { self._cells }
     public   final var gridWrapAround: Bool      { self._gridWrapAround }
 
-    public   final var restrictShift: Bool        { self._restrictShift }
-    public   final var unscaledZoom: Bool         { self._unscaledZoom }
-    public   final var cellAntialiasFade: Float   { self._cellAntialiasFade }
-    public   final var cellRoundedRadius: Float   { self._cellRoundedRadius }
+    public   final var cellColor: Colour          { self._cellColor }
     public   final var cellSizeMax: Int           { self._cellSizeMax }
     public   final var cellSizeInnerMin: Int      { self._cellSizeInnerMin }
     public   final var cellPaddingMax: Int        { self._cellPaddingMax }
+    public   final var cellAntialiasFade: Float   { self._cellAntialiasFade }
+    public   final var cellRoundedRadius: Float   { self._cellRoundedRadius }
+    public   final var restrictShift: Bool        { self._restrictShift }
+    public   final var unscaledZoom: Bool         { self._unscaledZoom }
     public   final var selectMode: Bool           { self._selectMode }
     public   final var automationMode: Bool       { self._automationMode }
     public   final var automationInterval: Double { self._automationInterval }
