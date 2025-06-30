@@ -176,8 +176,4 @@ extension CellGridView
 
     private final var cellGridSmallWidth: Bool  { (self.cellSizeScaled * self.gridColumns) < self.viewWidthScaled }
     private final var cellGridSmallHeight: Bool { (self.cellSizeScaled * self.gridRows) < self.viewHeightScaled }
-
-    private final func scaled(_ viewPoint: CGFloat) -> CGFloat {
-        return self.screen.scaled(viewPoint, scaling: self.viewScaling)
-    }
 }

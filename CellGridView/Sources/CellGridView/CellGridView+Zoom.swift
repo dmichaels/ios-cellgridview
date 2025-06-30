@@ -166,15 +166,22 @@ extension CellGridView
     // if given is assumed to be the scaled value; and the returned shift values are also thus scaled.
     //
     internal func shiftForCenterCells(cellSize: Int? = nil,
-                                      gridColumns: Int? = nil, gridRows: Int? = nil) -> (x: Int, y: Int)
+                                      gridColumns: Int? = nil,
+                                      gridRows: Int? = nil,
+                                      viewWidth: Int? = nil,
+                                      viewHeight: Int? = nil) -> (x: Int, y: Int)
     {
         let cellSize: Int = cellSize ?? self.cellSizeScaled
         let gridColumns: Int = gridColumns ?? self.gridColumns
         let gridRows: Int = gridRows ?? self.gridRows
+        let viewWidth: Int = viewWidth ?? self.viewWidthScaled
+        let viewHeight: Int = viewHeight ?? self.viewHeightScaled
         let gridWidth: Int = gridColumns * cellSize
         let gridHeight: Int = gridRows * cellSize
-        let shiftTotalX: Int = -Int(round(Double(gridWidth) / 2.0))
-        let shiftTotalY: Int = -Int(round(Double(gridHeight) / 2.0))
+        // let shiftTotalX: Int = -Int(round(Double(gridWidth) / 2.0))
+        // let shiftTotalY: Int = -Int(round(Double(gridHeight) / 2.0))
+        let shiftTotalX: Int = -Int(round(Double(gridWidth - viewWidth) / 2.0))
+        let shiftTotalY: Int = -Int(round(Double(gridHeight - viewHeight) / 2.0))
         return (x: shiftTotalX, y: shiftTotalY)
     }
 }
