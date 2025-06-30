@@ -178,8 +178,6 @@ extension CellGridView
         let viewHeight: Int = viewHeight ?? self.viewHeightScaled
         let gridWidth: Int = gridColumns * cellSize
         let gridHeight: Int = gridRows * cellSize
-        // let shiftTotalX: Int = -Int(round(Double(gridWidth) / 2.0))
-        // let shiftTotalY: Int = -Int(round(Double(gridHeight) / 2.0))
         let shiftTotalX: Int = -Int(round(Double(gridWidth - viewWidth) / 2.0))
         let shiftTotalY: Int = -Int(round(Double(gridHeight - viewHeight) / 2.0))
         return (x: shiftTotalX, y: shiftTotalY)
