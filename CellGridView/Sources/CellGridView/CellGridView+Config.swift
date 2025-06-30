@@ -9,7 +9,6 @@ extension CellGridView
         public private(set) var viewTransparency: UInt8
         public private(set) var viewScaling: Bool
 
-        // public var cellSize: Int // xyzzy/todo/set
         public private(set) var cellSize: Int
         public private(set) var cellPadding: Int
         public private(set) var cellShape: CellShape
