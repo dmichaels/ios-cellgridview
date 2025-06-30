@@ -2,7 +2,9 @@ extension CellGridView
 {
     public enum PreferredFit: String, CaseIterable, Identifiable, Sendable
     {
-        case none = "none"
+        case disable = "disable"
+        case enable = "enable"
+        case fixed = "fixed"
         case cell = "cell"
         case view  = "view"
         public var id: String { self.rawValue }
@@ -19,12 +21,14 @@ extension CellGridView
         preferredFitMarginMax: Int = CellGridView.Defaults.preferredFitMarginMax
     ) -> PreferredSize
     {
-        if preferredFit != CellGridView.PreferredFit.none,
+        if preferredFit != CellGridView.PreferredFit.disable,
            let preferred = CellGridView.preferredSize(viewWidth: viewWidth,
                                                       viewHeight: viewHeight,
                                                       cellSize: cellSize,
                                                       preferredFitMarginMax: preferredFitMarginMax) {
-            if ((preferredFit == CellGridView.PreferredFit.view) || (preferred.cellSize == cellSize)) {
+            if ((preferredFit == CellGridView.PreferredFit.enable) ||
+                (preferredFit == CellGridView.PreferredFit.fixed) ||
+                ((preferredFit == CellGridView.PreferredFit.view) && (preferred.cellSize == cellSize))) {
                 return (cellSize: preferred.cellSize, viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight)
             }
         }

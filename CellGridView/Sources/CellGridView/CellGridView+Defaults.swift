@@ -3,13 +3,6 @@ import Utils
 
 extension CellGridView
 {
-    public enum XPreferredFit: String, CaseIterable, Identifiable, Sendable
-    {
-        case none = "none"
-        case cell = "cell"
-        case view  = "view"
-        public var id: String { self.rawValue }
-    }
     public struct Defaults
     {
         // The size related properties here (being outward facing) are unscaled.

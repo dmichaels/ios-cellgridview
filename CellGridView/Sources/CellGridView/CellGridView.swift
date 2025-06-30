@@ -41,6 +41,7 @@ open class CellGridView: ObservableObject
     private var _viewTransparency: UInt8 = 0
     private var _viewScaling: Bool = true
     private var _viewScalingArtificiallyDisabled: Bool = false
+    private var _fixed: Bool = false
 
     private var _cellSize: Int = 0
     private var _cellSizeTimesViewWidth: Int = 0
@@ -130,7 +131,7 @@ open class CellGridView: ObservableObject
                            screen: Screen,
                            viewWidth: Int,
                            viewHeight: Int,
-                           preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
+                           preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.disable,
                            center: Bool = false,
                            onChangeImage: (() -> Void)? = nil)
     {
@@ -142,7 +143,7 @@ open class CellGridView: ObservableObject
     public func configure(_ config: CellGridView.Config,
                             viewWidth: Int,
                             viewHeight: Int,
-                            preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
+                            preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.disable,
                             adjust: Bool = false,
                             center: Bool = false,
                             scaled: Bool = false)
@@ -196,19 +197,19 @@ open class CellGridView: ObservableObject
             preferredFit: preferredFit,
             preferredFitMarginMax: Defaults.preferredFitMarginMax)
 
-        if (preferredFit != CellGridView.PreferredFit.none) {
-            //
-            // TODO/experiment ...
-            //
-            let gridColums: Int = preferred.viewWidth / preferred.cellSize
-            let gridRows: Int = preferred.viewHeight / preferred.cellSize
-            var x = 1
-        }
-
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
-        let gridColumns: Int = self.constrainGridColumns(config.gridColumns)
-        let gridRows: Int = self.constrainGridRows(config.gridRows)
+        var gridColumns: Int = self.constrainGridColumns(config.gridColumns)
+        var gridRows: Int = self.constrainGridRows(config.gridRows)
+
+        if (preferredFit == CellGridView.PreferredFit.fixed) {
+            gridColumns = preferred.viewWidth / preferred.cellSize
+            gridRows = preferred.viewHeight / preferred.cellSize
+            self._fixed = true
+        }
+        else {
+            self._fixed = false
+        }
 
         let shift: (x: Int, y: Int) = (
             adjust && (cellSizeIncrement != 0)
@@ -275,7 +276,7 @@ open class CellGridView: ObservableObject
             self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
         }
 
-        self._restrictShift = config.restrictShift
+        self._restrictShift = config.restrictShift || (preferredFit == CellGridView.PreferredFit.fixed)
         self._selectMode = config.selectMode
         self._automationMode = config.automationMode
 
@@ -342,6 +343,7 @@ open class CellGridView: ObservableObject
     internal final var shiftScaledY: Int         { self._shiftY }
     internal final var shiftTotalScaledX: Int    { self._shiftX + (self._shiftCellX * self._cellSize) }
     internal final var shiftTotalScaledY: Int    { self._shiftY + (self._shiftCellY * self._cellSize) }
+    internal final var fixed: Bool               { self._fixed }
 
     public internal(set) var viewScaling: Bool {
         get { self._viewScaling }

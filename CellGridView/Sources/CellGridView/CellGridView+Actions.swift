@@ -53,6 +53,9 @@ extension CellGridView
         }
 
         internal func onZoom(_ zoomFactor: CGFloat) {
+            guard !self._cellGridView.fixed else {
+                return
+            }
             if let zoomer: CellGridView.Zoom = self._zoomer {
                 zoomer.zoom(zoomFactor)
             }
@@ -63,6 +66,9 @@ extension CellGridView
         }
 
         internal func onZoomEnd(_ zoomFactor: CGFloat) {
+            guard !self._cellGridView.fixed else {
+                return
+            }
             if let zoomer: CellGridView.Zoom = self._zoomer {
                 zoomer.end(zoomFactor)
                 self._zoomer = nil
