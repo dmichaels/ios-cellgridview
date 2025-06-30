@@ -268,7 +268,6 @@ open class CellGridView: ObservableObject
                                                              cellTransparency: self._viewTransparency,
                                                              cellAntialiasFade: self._cellAntialiasFade,
                                                              cellRoundedRadius: self._cellRoundedRadius)
-
         var defineCells: Bool = false
         if (gridColumns != self.gridColumns) { self._gridColumns = gridColumns ; defineCells = true }
         if (gridRows    != self.gridRows)    { self._gridRows    = gridRows    ; defineCells = true }
@@ -280,15 +279,10 @@ open class CellGridView: ObservableObject
         self._selectMode = config.selectMode
         self._automationMode = config.automationMode
 
-        var restartAutomation: Bool = false
-        if (self._automationInterval != config.automationInterval) {
-            self._automationInterval = config.automationInterval
-            restartAutomation = self._automationMode
-        }
-
         self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
 
-        if (restartAutomation) {
+        if (self._automationInterval != config.automationInterval) {
+            self._automationInterval = config.automationInterval
             self._actions.automationStop()
             self._actions.automationStart()
         }
