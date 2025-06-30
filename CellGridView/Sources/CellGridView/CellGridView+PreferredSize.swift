@@ -24,7 +24,7 @@ extension CellGridView
                                                       viewHeight: viewHeight,
                                                       cellSize: cellSize,
                                                       preferredFitMarginMax: preferredFitMarginMax) {
-            if ((preferredFit != CellGridView.PreferredFit.view) || (preferred.cellSize == cellSize)) {
+            if ((preferredFit == CellGridView.PreferredFit.view) || (preferred.cellSize == cellSize)) {
                 return (cellSize: preferred.cellSize, viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight)
             }
         }

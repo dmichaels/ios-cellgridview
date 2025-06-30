@@ -145,23 +145,17 @@ open class CellGridView: ObservableObject
                            screen: Screen,
                            viewWidth: Int,
                            viewHeight: Int,
-                           onChangeImage: (() -> Void)? = nil,
                            preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
-                           center: Bool = false)
+                           center: Bool = false,
+                           onChangeImage: (() -> Void)? = nil)
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
 
-        let preferred: PreferredSize = CellGridView.preferredSize(
-            cellSize: config.cellSize,
-            viewWidth: viewWidth,
-            viewHeight: viewHeight,
-            preferredFit: preferredFit,
-            preferredFitMarginMax: Defaults.preferredFitMarginMax)
-
-        self.configure(config.update(cellSize: preferred.cellSize),
-                       viewWidth: preferred.viewWidth,
-                       viewHeight: preferred.viewHeight,
+        self.configure(config,
+                       viewWidth: viewWidth,
+                       viewHeight: viewHeight,
+                       preferredFit: preferredFit,
                        adjust: false,
                        center: center,
                        scaled: false)
@@ -176,6 +170,7 @@ open class CellGridView: ObservableObject
     public func configure(_ config: CellGridView.Config,
                             viewWidth: Int,
                             viewHeight: Int,
+                            preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.none,
                             adjust: Bool = false,
                             center: Bool = false,
                             scaled: Bool = false)
@@ -185,6 +180,7 @@ open class CellGridView: ObservableObject
         guard self._screen != nil else { return }
 
         // Setting of viewScaling is here first so subsequent calls to self.scaled/unscaled work properly.
+        // If the cellShape is square or inset there is no need for scaling so we forcibly disable it.  
 
         func cellShapeRequiresNoViewScaling(_ cellShape: CellShape) -> Bool {
             return [CellShape.square, CellShape.inset].contains(cellShape)
@@ -221,6 +217,19 @@ open class CellGridView: ObservableObject
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
+        let preferred: PreferredSize = CellGridView.preferredSize(
+            cellSize: cellSize,
+            viewWidth: viewWidth,
+            viewHeight: viewHeight,
+            preferredFit: preferredFit,
+            preferredFitMarginMax: Defaults.preferredFitMarginMax)
+
+        if (preferredFit != CellGridView.PreferredFit.none) {
+            let gridColums: Int = preferred.viewWidth / preferred.cellSize
+            let gridRows: Int = preferred.viewHeight / preferred.cellSize
+            var x = 1
+        }
+
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
         let gridColumns: Int = self.constrainGridColumns(config.gridColumns)
@@ -230,13 +239,13 @@ open class CellGridView: ObservableObject
             adjust && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (center
-               ? shiftForCenterCells(cellSize: cellSize, gridColumns: gridColumns, gridRows: gridRows)
+               ? self.shiftForCenterCells(cellSize: preferred.cellSize, gridColumns: gridColumns, gridRows: gridRows)
                : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY)))
         )
 
-        self._viewWidth = viewWidth
-        self._viewHeight = viewHeight
-        self._cellSize = cellSize
+        self._viewWidth = preferred.viewWidth
+        self._viewHeight = preferred.viewHeight
+        self._cellSize = preferred.cellSize
         self._cellSizeTimesViewWidth = self._cellSize * self._viewWidth
         self._cellPadding = cellPadding
         self._cellShape = config.cellShape
