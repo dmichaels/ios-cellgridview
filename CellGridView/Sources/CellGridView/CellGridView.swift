@@ -305,10 +305,6 @@ open class CellGridView: ObservableObject
             self._actions.automationStop()
             self._actions.automationStart()
         }
-
-        // #if targetEnvironment(simulator)
-        //     self.printSizes()
-        // #endif
     }
 
     public   final var initialized: Bool         { self._screen != nil }
@@ -328,13 +324,16 @@ open class CellGridView: ObservableObject
     public   final var cells: [Cell]             { self._cells }
     public   final var gridWrapAround: Bool      { self._gridWrapAround }
 
-    public   final var restrictShift: Bool       { self._restrictShift }
-    public   final var unscaledZoom: Bool        { self._unscaledZoom }
-    public   final var cellAntialiasFade: Float  { self._cellAntialiasFade }
-    public   final var cellRoundedRadius: Float  { self._cellRoundedRadius }
-    public   final var cellSizeMax: Int          { self._cellSizeMax }
-    public   final var cellSizeInnerMin: Int     { self._cellSizeInnerMin }
-    public   final var cellPaddingMax: Int       { self._cellPaddingMax }
+    public   final var restrictShift: Bool        { self._restrictShift }
+    public   final var unscaledZoom: Bool         { self._unscaledZoom }
+    public   final var cellAntialiasFade: Float   { self._cellAntialiasFade }
+    public   final var cellRoundedRadius: Float   { self._cellRoundedRadius }
+    public   final var cellSizeMax: Int           { self._cellSizeMax }
+    public   final var cellSizeInnerMin: Int      { self._cellSizeInnerMin }
+    public   final var cellPaddingMax: Int        { self._cellPaddingMax }
+    public   final var selectMode: Bool           { self._selectMode }
+    public   final var automationMode: Bool       { self._automationMode }
+    public   final var automationInterval: Double { self._automationInterval }
 
     internal final var shiftCellX: Int  { self._unscaled_shiftCellX }
     internal final var shiftCellY: Int  { self._unscaled_shiftCellY }
@@ -696,16 +695,8 @@ open class CellGridView: ObservableObject
         self._onChangeImage()
     }
 
-    public var selectMode: Bool {
-        self._selectMode
-    }
-
     public func selectModeToggle() {
         self._selectMode = !self._selectMode
-    }
-
-    public var automationMode: Bool {
-        self._automationMode
     }
 
     public func automationModeToggle() {
@@ -722,19 +713,6 @@ open class CellGridView: ObservableObject
     open func automationStart() { self._actions.automationStart() }
     open func automationStop() { self._actions.automationStop() }
     open func automationStep() {}
-
-    public final var automationInterval: Double {
-        get { return self._automationInterval }
-        set {
-            if (newValue != self._automationInterval) {
-                self._automationInterval = newValue
-                if (self._automationMode) {
-                    self._actions.automationStop()
-                    self._actions.automationStart()
-                }
-            }
-        }
-    }
 
     open func onTap(_ viewPoint: CGPoint) { self._actions.onTap(viewPoint) }
     open func onDrag(_ viewPoint: CGPoint) { self._actions.onDrag(viewPoint) }
