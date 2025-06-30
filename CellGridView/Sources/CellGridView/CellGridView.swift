@@ -436,90 +436,28 @@ open class CellGridView: ObservableObject
         //   position of the grid-view, and the right-most cell of the grid-view being left-shifted
         //   past the left-most position of the grid-view; similarly for the vertical.
 
-        func restrictShiftStrict(shiftCell: inout Int, shift: inout Int,
-                                 cellSize: Int,
-                                 viewSize: Int,
-                                 gridCells: Int,
-                                 dragging: Bool = false) {
-            var shiftTotal = (shiftCell * cellSize) + shift
-            let gridSize: Int = gridCells * cellSize
-            if (gridSize < viewSize) {
-                //
-                // The entire cell-grid being smaller than the grid-view requires
-                // slightly difference logic than the presumably more commmon case.
-                //
-                if ((shift < 0) || (shiftCell < 0)) {
-                    shiftCell = 0
-                    shift = 0
-                }
-                else if (shiftTotal > (viewSize - gridSize)) {
-                    shiftTotal = (viewSize - gridSize)
-                    shiftCell = shiftTotal / cellSize
-                    shift = shiftTotal % cellSize
-                }
-            }
-            else if (!dragging) {
-                if ((shift > 0) || (shiftCell > 0)) {
-                    shift = 0
-                    shiftCell = 0
-                }
-                else if ((shift < 0) || (shiftCell < 0)) {
-                    if ((shiftTotal < 0) && ((gridSize + shiftTotal) < viewSize)) {
-                        shiftTotal = viewSize - gridSize
-                        shiftCell = shiftTotal / cellSize
-                        shift = shiftTotal % cellSize
-                    }
-                }
-            }
-        }
-
-        func restrictShiftLenient(shiftCell: inout Int, shift: inout Int,
-                                  cellSize: Int,
-                                  viewCellEnd: Int,
-                                  viewSizeExtra: Int,
-                                  viewSize: Int,
-                                  gridCells: Int) {
-            if (shiftCell >= viewCellEnd) {
-                if (viewSizeExtra > 0) {
-                    let shiftTotal = (shiftCell * cellSize) + shift
-                    if ((viewSize - shiftTotal) <= cellSize) {
-                        let viewSizeAdjusted = viewSize - cellSize
-                        shiftCell = viewSizeAdjusted / cellSize
-                        shift = viewSizeAdjusted % cellSize
-                    }
-                } else {
-                    shiftCell = viewCellEnd
-                    shift = 0
-                }
-            }
-            else if (-shiftCell >= (gridCells - 1)) {
-                shiftCell = -(gridCells - 1)
-                shift = 0
-            }
-        }
-
         if (!self._gridWrapAround) {
             if (self._restrictShift) {
-                restrictShiftStrict(shiftCell: &shiftCellX, shift: &shiftX,
+                CellGridView.restrictShiftStrict(shiftCell: &shiftCellX, shift: &shiftX,
                                     cellSize: self._cellSize,
                                     viewSize: self._viewWidth,
                                     gridCells: self._gridColumns,
                                     dragging: dragging)
-                restrictShiftStrict(shiftCell: &shiftCellY, shift: &shiftY,
+                CellGridView.restrictShiftStrict(shiftCell: &shiftCellY, shift: &shiftY,
                                     cellSize: self._cellSize,
                                     viewSize: self._viewHeight,
                                     gridCells: self._gridRows,
                                     dragging: dragging)
             }
             else {
-                restrictShiftLenient(shiftCell: &shiftCellX,
+                CellGridView.restrictShiftLenient(shiftCell: &shiftCellX,
                                      shift: &shiftX,
                                      cellSize: self._cellSize,
                                      viewCellEnd: self._viewCellEndX - self._viewColumnsExtra,
                                      viewSizeExtra: self._viewWidthExtra,
                                      viewSize: self._viewWidth,
                                      gridCells: self._gridColumns)
-                restrictShiftLenient(shiftCell: &shiftCellY,
+                CellGridView.restrictShiftLenient(shiftCell: &shiftCellY,
                                      shift: &shiftY,
                                      cellSize: self._cellSize,
                                      viewCellEnd: self._viewCellEndY - self._viewRowsExtra,

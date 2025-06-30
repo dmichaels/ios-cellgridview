@@ -30,27 +30,26 @@ extension CellGridView
         public private(set) var automationMode: Bool
         public private(set) var automationInterval: Double
 
-        // public init(config: CellGridView.Config? = nil,
         public init(_ config: CellGridView.Config? = nil,
-                    viewBackground: Colour?      = nil,
-                    viewTransparency: UInt8?     = nil,
-                    viewScaling: Bool?           = nil,
-                    cellSize: Int?               = nil,
-                    cellPadding: Int?            = nil,
-                    cellShape: CellShape?        = nil,
-                    cellColor: Colour?           = nil,
-                    cellSizeMax: Int?            = nil,
-                    cellSizeInnerMin: Int?       = nil,
-                    cellPaddingMax: Int?         = nil,
-                    gridColumns: Int?            = nil,
-                    gridRows: Int?               = nil,
-                    cellAntialiasFade: Float?    = nil,
-                    cellRoundedRadius: Float?    = nil,
-                    restrictShift: Bool?         = nil,
-                    unscaledZoom: Bool?          = nil,
-                    selectMode: Bool?            = nil,
-                    automationMode: Bool?        = nil,
-                    automationInterval: Double?  = nil
+                    viewBackground: Colour?        = nil,
+                    viewTransparency: UInt8?       = nil,
+                    viewScaling: Bool?             = nil,
+                    cellSize: Int?                 = nil,
+                    cellPadding: Int?              = nil,
+                    cellShape: CellShape?          = nil,
+                    cellColor: Colour?             = nil,
+                    cellSizeMax: Int?              = nil,
+                    cellSizeInnerMin: Int?         = nil,
+                    cellPaddingMax: Int?           = nil,
+                    gridColumns: Int?              = nil,
+                    gridRows: Int?                 = nil,
+                    cellAntialiasFade: Float?      = nil,
+                    cellRoundedRadius: Float?      = nil,
+                    restrictShift: Bool?           = nil,
+                    unscaledZoom: Bool?            = nil,
+                    selectMode: Bool?              = nil,
+                    automationMode: Bool?          = nil,
+                    automationInterval: Double?    = nil
         )
         {
             self.viewBackground     = viewBackground     ?? config?.viewBackground     ?? Defaults.viewBackground
@@ -139,65 +138,5 @@ extension CellGridView
                                        automationMode:     automationMode     ?? self.automationMode,
                                        automationInterval: automationInterval ?? self.automationInterval)
         }
-    }
-
-    public final var minimumCellSize: Int {
-        self.minimumCellSize(cellPadding: self.cellPadding)
-    }
-
-    public final func minimumCellSize(cellPadding: Int? = nil) -> Int {
-        let cellPadding: Int = max(0, cellPadding ?? self.cellPadding)
-        return self.constrainCellSize(Defaults.cellSizeInnerMin, cellPadding: cellPadding, scaled: false)
-    }
-
-    public final var maximumCellSize: Int {
-        Defaults.cellSizeMax
-    }
-
-    public final var minimumCellPadding: Int {
-        0
-    }
-
-    public final var maximumCellPadding: Int {
-        Defaults.cellPaddingMax
-    }
-
-    public final var minimumGridColumns: Int {
-        1
-    }
-
-    public final var maximumGridColumns: Int {
-        5000 // TODO: configize
-    }
-
-    public final var minimumGridRows: Int {
-        1
-    }
-
-    public final var maximumGridRows: Int {
-        5000 // TODO: configize
-    }
-
-    internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil, scaled: Bool = false) -> Int {
-        let cellSizeInnerMin: Int = self.scaled(Defaults.cellSizeInnerMin)
-        let cellSizeMax: Int = self.scaled(Defaults.cellSizeMax)
-        let cellPadding: Int = !scaled ? self.scaled(cellPadding ?? self.cellPadding) : (cellPadding ?? self.cellPaddingScaled)
-        let constrainedCellSize: Int = cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
-        return !scaled ? self.unscaled(constrainedCellSize) : constrainedCellSize
-    }
-
-    internal final func constrainCellPadding(_ cellPadding: Int, scaled: Bool = false) -> Int {
-        let cellPaddingMax: Int = self.scaled(Defaults.cellPaddingMax)
-        let cellPadding: Int = !scaled ? self.scaled(cellPadding) : cellPadding
-        let constrainedCellPadding: Int = cellPadding.clamped(0...cellPaddingMax)
-        return !scaled ? self.unscaled(constrainedCellPadding) : constrainedCellPadding
-    }
-
-    internal final func constrainGridColumns(_ gridColumns: Int) -> Int {
-        return gridColumns.clamped(self.minimumGridColumns...self.maximumGridColumns)
-    }
-
-    internal final func constrainGridRows(_ gridColumns: Int) -> Int {
-        return gridRows.clamped(self.minimumGridRows...self.maximumGridRows)
     }
 }
