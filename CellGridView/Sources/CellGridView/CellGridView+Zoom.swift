@@ -130,8 +130,8 @@ extension CellGridView
     // due to the cummulative effects of rounding. Another possible solution is to define this function as
     // working properly only for increments of one, and when zooming if this function would otherwise be called
     // with increments greater than one, then manually manufacture zoom "events" for the intermediate steps,
-    // i.e. call the resizeCells function iteratively; if we were worried about performance with this iteratively
-    // looping solution here, that alternate solution would should be orders of magnitude less performant, but
+    // i.e. call the resizeCells function iteratively; if were worried about performance with such an iterative
+    // looping solution here, that alternate solution would surely be orders of magnitude less performant, but
     // the result might (might) look even smoother, or it could just make things seem slower and sluggish.
     //
     // Ask ChatGPT to explain further if you want to understand more about why this kind of problem requires
