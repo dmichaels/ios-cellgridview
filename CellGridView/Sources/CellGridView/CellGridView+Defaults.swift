@@ -23,8 +23,8 @@ extension CellGridView
         public static let gridColumns: Int           = 0
         public static let gridRows: Int              = 0
 
-        public static let cellAntialiasFade: Float   = 0.6  // smaller -> smoother
-        public static let cellRoundedRadius: Float   = 0.25
+        public static let cellAntialiasFade: Float   = 0.60 // smaller -> smoother
+        public static let cellRoundedRadius: Float   = 0.25 // smaller -> squarer
         public static let restrictShift: Bool        = true
         public static let unscaledZoom: Bool         = false
 
@@ -35,9 +35,8 @@ extension CellGridView
         // Only used on CellGridView.initialize
         //
         public static let preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.cell
-        // public static let preferredFit: XPreferredFit? = XPreferredFit.cell
-        public static let preferredFitMarginMax: Int = 30
-        public static let centerCells: Bool          = false
+        public static let preferredFitMarginMax: Int              = 40
+        public static let centerCells: Bool                       = false
 
         // Wraparound support is incomplete, half-baked, and of questionable utility.
         //
