@@ -42,6 +42,7 @@ open class CellGridView: ObservableObject
     private var _viewScaling: Bool = true
     private var _viewScalingArtificiallyDisabled: Bool = false
     private var _fixed: Bool = false
+    private var _fit: CellGridView.Fit = CellGridView.Fit.disabled
 
     private var _cellSize: Int = 0
     private var _cellSizeTimesViewWidth: Int = 0
@@ -131,21 +132,21 @@ open class CellGridView: ObservableObject
                            screen: Screen,
                            viewWidth: Int,
                            viewHeight: Int,
-                           preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.disable,
+                           fit: CellGridView.Fit = CellGridView.Fit.disabled,
                            center: Bool = false,
                            onChangeImage: (() -> Void)? = nil)
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, preferredFit: preferredFit, center: center)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, fit: fit, center: center)
     }
 
     public func configure(_ config: CellGridView.Config,
                             viewWidth: Int,
                             viewHeight: Int,
-                            preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.disable,
-                            adjust: Bool = false,
+                            fit: CellGridView.Fit = CellGridView.Fit.disabled,
                             center: Bool = false,
+                            adjust: Bool = false,
                             scaled: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
@@ -194,15 +195,15 @@ open class CellGridView: ObservableObject
             cellSize: cellSize,
             viewWidth: viewWidth,
             viewHeight: viewHeight,
-            preferredFit: preferredFit,
-            preferredFitMarginMax: Defaults.preferredFitMarginMax)
+            fit: fit,
+            fitMarginMax: Defaults.fitMarginMax)
 
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
         var gridColumns: Int = self.constrainGridColumns(config.gridColumns)
         var gridRows: Int = self.constrainGridRows(config.gridRows)
 
-        if (preferredFit == CellGridView.PreferredFit.fixed) {
+        if (fit == CellGridView.Fit.fixed) {
             gridColumns = preferred.viewWidth / preferred.cellSize
             gridRows = preferred.viewHeight / preferred.cellSize
             self._fixed = true
@@ -211,14 +212,20 @@ open class CellGridView: ObservableObject
             self._fixed = false
         }
 
-        let shift: (x: Int, y: Int) = (
+        var shift: (x: Int, y: Int) = (
             adjust && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (center
                ? self.shiftForCenterCells(cellSize: preferred.cellSize, gridColumns: gridColumns, gridRows: gridRows,
-                                          viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight)
+                                          viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight, fit: fit)
                : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY)))
         )
+        if (self._fit != fit) {
+            self._fit = fit
+            if (!center) {
+                shift = (x: 0, y: 0)
+            }
+        }
 
         self._viewWidth = preferred.viewWidth
         self._viewHeight = preferred.viewHeight
@@ -275,7 +282,7 @@ open class CellGridView: ObservableObject
             self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
         }
 
-        self._restrictShift = config.restrictShift || (preferredFit == CellGridView.PreferredFit.fixed)
+        self._restrictShift = config.restrictShift || (fit == CellGridView.Fit.fixed)
         self._selectMode = config.selectMode
         self._automationMode = config.automationMode
 

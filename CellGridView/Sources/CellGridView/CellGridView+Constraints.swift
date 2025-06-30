@@ -1,12 +1,11 @@
 extension CellGridView
 {
-    public enum PreferredFit: String, CaseIterable, Identifiable, Sendable
+    public enum Fit: String, CaseIterable, Identifiable, Sendable
     {
-        case disable = "disable"
-        case enable = "enable"
-        case fixed = "fixed"
-        case cell = "cell"
+        case disabled = "disabled"
+        case enabled = "enabled"
         case view  = "view"
+        case fixed = "fixed"
         public var id: String { self.rawValue }
     }
 
@@ -17,18 +16,18 @@ extension CellGridView
         cellSize: Int,
         viewWidth: Int,
         viewHeight: Int,
-        preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.cell,
-        preferredFitMarginMax: Int = CellGridView.Defaults.preferredFitMarginMax
+        fit: CellGridView.Fit = CellGridView.Fit.disabled,
+        fitMarginMax: Int = CellGridView.Defaults.fitMarginMax
     ) -> PreferredSize
     {
-        if preferredFit != CellGridView.PreferredFit.disable,
+        if fit != CellGridView.Fit.disabled,
            let preferred = CellGridView.preferredSize(viewWidth: viewWidth,
                                                       viewHeight: viewHeight,
                                                       cellSize: cellSize,
-                                                      preferredFitMarginMax: preferredFitMarginMax) {
-            if ((preferredFit == CellGridView.PreferredFit.enable) ||
-                (preferredFit == CellGridView.PreferredFit.fixed) ||
-                ((preferredFit == CellGridView.PreferredFit.view) && (preferred.cellSize == cellSize))) {
+                                                      fitMarginMax: fitMarginMax) {
+            if ((fit == CellGridView.Fit.enabled) ||
+                (fit == CellGridView.Fit.fixed) ||
+                ((fit == CellGridView.Fit.view) && (preferred.cellSize == cellSize))) {
                 return (cellSize: preferred.cellSize, viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight)
             }
         }
@@ -38,16 +37,16 @@ extension CellGridView
     // Returns a list of preferred sizes for the cell size, such that they fit evenly without bleeding
     // out past the end of the view; the given and returned dimensions are assumed to be unscaled values.
     //
-    internal static func preferredSize(viewWidth: Int, viewHeight: Int, cellSize: Int, // todo/xyzzy/private
-                                       preferredFitMarginMax: Int) -> PreferredSize?
+    internal static func preferredSize(viewWidth: Int,
+                                       viewHeight: Int, cellSize: Int, fitMarginMax: Int) -> PreferredSize?
     {
         let sizes = CellGridView.preferredSizes(viewWidth: viewWidth, viewHeight: viewHeight,
-                                                preferredFitMarginMax: preferredFitMarginMax)
+                                                fitMarginMax: fitMarginMax)
         return CellGridView.closestPreferredCellSize(in: sizes, to: cellSize)
     }
 
     internal static func preferredSizes(viewWidth: Int, viewHeight: Int,
-                                        preferredFitMarginMax: Int)
+                                        fitMarginMax: Int)
                                         -> [PreferredSize] {
         let mindim: Int = min(viewWidth, viewHeight)
         guard mindim > 0 else { return [] }
@@ -59,7 +58,7 @@ extension CellGridView
             let usedh: Int = nrows * cellSize
             let leftx: Int = viewWidth - usedw
             let lefty: Int = viewHeight - usedh
-            if ((leftx <= preferredFitMarginMax) && (lefty <= preferredFitMarginMax)) {
+            if ((leftx <= fitMarginMax) && (lefty <= fitMarginMax)) {
                 results.append((cellSize: cellSize, viewWidth: usedw, viewHeight: usedh))
             }
         }

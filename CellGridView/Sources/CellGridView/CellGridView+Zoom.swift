@@ -169,7 +169,8 @@ extension CellGridView
                                       gridColumns: Int? = nil,
                                       gridRows: Int? = nil,
                                       viewWidth: Int? = nil,
-                                      viewHeight: Int? = nil) -> (x: Int, y: Int)
+                                      viewHeight: Int? = nil,
+                                      fit: CellGridView.Fit = CellGridView.Fit.disabled) -> (x: Int, y: Int)
     {
         let cellSize: Int = cellSize ?? self.cellSizeScaled
         let gridColumns: Int = gridColumns ?? self.gridColumns
@@ -178,8 +179,12 @@ extension CellGridView
         let viewHeight: Int = viewHeight ?? self.viewHeightScaled
         let gridWidth: Int = gridColumns * cellSize
         let gridHeight: Int = gridRows * cellSize
-        let shiftTotalX: Int = -Int(round(Double(gridWidth - viewWidth) / 2.0))
-        let shiftTotalY: Int = -Int(round(Double(gridHeight - viewHeight) / 2.0))
+        var shiftTotalX: Int = -Int(round(Double(gridWidth - viewWidth) / 2.0))
+        var shiftTotalY: Int = -Int(round(Double(gridHeight - viewHeight) / 2.0))
+        if (fit != CellGridView.Fit.disabled) {
+            shiftTotalX += shiftTotalX % cellSize
+            shiftTotalY += shiftTotalY % cellSize
+        }
         return (x: shiftTotalX, y: shiftTotalY)
     }
 }

@@ -6,7 +6,7 @@ import Utils
 extension CellGridView
 {
     internal final func printSizes(viewWidthInit: Int = 0, viewHeightInit: Int = 0,
-                                   cellSizeInit: Int = 0, preferredFit: Bool = false) {
+                                   cellSizeInit: Int = 0, fit: Bool = false) {
 
         func scaled(_ value: Int) -> Int {
             //
@@ -38,11 +38,11 @@ extension CellGridView
               (self.viewScaling ? " (unscaled: \(self.cellPadding))" : ""))
         print("SHIFT>          [\(self.shiftTotalScaledX),\(self.shiftTotalScaledY)]" +
               (self.viewScaling ? " (unscaled: [\(self.shiftTotalX),\(self.shiftTotalY)])" : ""))
-        if (preferredFit) {
-            print("PREFERRED-SIZE> \(preferredFit)")
+        if (fit) {
+            print("PREFERRED-SIZE> \(fit)")
             let sizes = CellGridView.preferredSizes(viewWidth: self.viewWidth,
                                                     viewHeight: self.viewHeight,
-                                                    preferredFitMarginMax: Defaults.preferredFitMarginMax)
+                                                    fitMarginMax: Defaults.fitMarginMax)
             for size in sizes {
                 print("PREFFERED>" +
                       " CELL-SIZE \(String(format: "%3d", scaled(size.cellSize)))" +

@@ -34,9 +34,9 @@ extension CellGridView
 
         // Only used on CellGridView.initialize
         //
-        public static let preferredFit: CellGridView.PreferredFit = CellGridView.PreferredFit.cell
-        public static let preferredFitMarginMax: Int              = 40
-        public static let centerCells: Bool                       = false
+        public static let fit: CellGridView.Fit      = CellGridView.Fit.disabled
+        public static let fitMarginMax: Int          = 40
+        public static let centerCells: Bool          = false
 
         // Wraparound support is incomplete, half-baked, and of questionable utility.
         //
