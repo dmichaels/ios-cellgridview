@@ -300,16 +300,15 @@ open class CellGridView: ObservableObject
     public   final var viewHeight: Int           { self._unscaled_viewHeight }
     public   final var viewColumns: Int          { self._viewColumns }
     public   final var viewRows: Int             { self._viewRows }
-    public   final var viewBackground: Colour    { self._viewBackground }
-    public   final var viewTransparency: UInt8   { self._viewTransparency }
-    public   final var cellSize: Int             { self._unscaled_cellSize }
-    public   final var cellPadding: Int          { self._unscaled_cellPadding }
-    public   final var cellShape: CellShape      { self._cellShape }
     public   final var gridColumns: Int          { self._gridColumns }
     public   final var gridRows: Int             { self._gridRows }
-    public   final var cells: [Cell]             { self._cells }
-    public   final var gridWrapAround: Bool      { self._gridWrapAround }
+    internal final var cells: [Cell]             { self._cells }
 
+    public   final var viewBackground: Colour     { self._viewBackground }
+    public   final var viewTransparency: UInt8    { self._viewTransparency }
+    public   final var cellSize: Int              { self._unscaled_cellSize }
+    public   final var cellPadding: Int           { self._unscaled_cellPadding }
+    public   final var cellShape: CellShape       { self._cellShape }
     public   final var cellColor: Colour          { self._cellColor }
     public   final var cellSizeMax: Int           { self._cellSizeMax }
     public   final var cellSizeInnerMin: Int      { self._cellSizeInnerMin }
@@ -321,6 +320,7 @@ open class CellGridView: ObservableObject
     public   final var selectMode: Bool           { self._selectMode }
     public   final var automationMode: Bool       { self._automationMode }
     public   final var automationInterval: Double { self._automationInterval }
+    public   final var gridWrapAround: Bool       { self._gridWrapAround }
 
     internal final var shiftCellX: Int  { self._unscaled_shiftCellX }
     internal final var shiftCellY: Int  { self._unscaled_shiftCellY }
