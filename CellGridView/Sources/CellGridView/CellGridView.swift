@@ -93,13 +93,13 @@ open class CellGridView: ObservableObject
     private var _automationMode: Bool = Defaults.automationMode
     private var _selectMode: Bool = Defaults.selectMode
     private var _automationInterval: Double = Defaults.automationInterval
+    private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     // This _onChangeImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
     //
     private var _onChangeImage: () -> Void = {}
-    private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     public init(_ config: CellGridView.Config? = nil) {
         let config: CellGridView.Config = config ?? CellGridView.Config()
@@ -191,9 +191,6 @@ open class CellGridView: ObservableObject
             viewHeight: self.scaled(self._screen!.height),
             fit: config.fit,
             fitMarginMax: Defaults.fitMarginMax)
-
-        print("CONFIG.CGF:  \(cellSize) \(fit) -> \(preferred.fit) \(preferred.cellSize) \(preferred.viewWidth)x\(preferred.viewHeight)")
-        print("CONFIG.CGFU: \(self.unscaled(cellSize)) \(fit) -> \(preferred.fit) \(self.unscaled(preferred.cellSize)) \(self.unscaled(preferred.viewWidth))x\(self.unscaled(preferred.viewHeight))")
 
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
@@ -457,6 +454,7 @@ open class CellGridView: ObservableObject
         self._shiftCellY = shiftCellY
         self._shiftX = shiftX
         self._shiftY = shiftY
+
         let unscaled_shiftTotalX: Int = self.unscaled(self._shiftX + (self._shiftCellX * self._cellSize))
         let unscaled_shiftTotalY: Int = self.unscaled(self._shiftY + (self._shiftCellY * self._cellSize))
         self._unscaled_shiftCellX = unscaled_shiftTotalX / self._unscaled_cellSize
@@ -503,10 +501,6 @@ open class CellGridView: ObservableObject
                 self.writeCell(viewCellX: vx, viewCellY: vy)
             }
         }
-
-        #if targetEnvironment(simulator)
-            self.printWriteCellsResult(debugStart)
-        #endif
     }
 
     // Draws at the given grid view cell location (viewCellX, viewCellY), the grid cell currently corresponding
