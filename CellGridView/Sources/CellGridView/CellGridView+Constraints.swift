@@ -9,7 +9,20 @@ extension CellGridView
         public var id: String { self.rawValue }
     }
 
-    internal typealias PreferredSize = (cellSize: Int, viewWidth: Int, viewHeight: Int)
+    public typealias PreferredSize = (cellSize: Int, viewWidth: Int, viewHeight: Int)
+
+    public func preferredSize(_ cellSize: Int, fit: CellGridView.Fit, scaled: Bool = false) -> PreferredSize
+    {
+        let cellSize: Int = !scaled ? self.scaled(cellSize) : cellSize
+        let preferred: PreferredSize = CellGridView.preferredSize(cellSize: cellSize,
+                                                                  viewWidth: self.scaled(self.screen.width),
+                                                                  viewHeight: self.scaled(self.screen.height),
+                                                                  fit: fit,
+                                                                  fitMarginMax: CellGridView.Defaults.fitMarginMax)
+        return scaled ? preferred : (cellSize: self.unscaled(preferred.cellSize),
+                                     viewWidth: self.unscaled(preferred.viewWidth),
+                                     viewHeight: self.unscaled(preferred.viewHeight))
+    }
 
     internal static func preferredSize
     (
@@ -35,7 +48,9 @@ extension CellGridView
     }
 
     // Returns a list of preferred sizes for the cell size, such that they fit evenly without bleeding
-    // out past the end of the view; the given and returned dimensions are assumed to be unscaled values.
+    // out past the end of the view; the given and returned dimensions are assumed to be either scaled
+    // or unscaled values, but they are assumed to be consistent with each other; i.e. we are agnostic
+    // regarding whether or not the given/returned values are scaled.
     //
     internal static func preferredSize(viewWidth: Int,
                                        viewHeight: Int, cellSize: Int, fitMarginMax: Int) -> PreferredSize?

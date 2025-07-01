@@ -41,8 +41,6 @@ open class CellGridView: ObservableObject
     private var _viewTransparency: UInt8 = 0
     private var _viewScaling: Bool = true
     private var _viewScalingArtificiallyDisabled: Bool = false
-    private var _fixed: Bool = false
-    private var _fit: CellGridView.Fit = CellGridView.Fit.disabled
 
     private var _cellSize: Int = 0
     private var _cellSizeTimesViewWidth: Int = 0
@@ -52,6 +50,8 @@ open class CellGridView: ObservableObject
     private var _gridColumns: Int = 0 // Defaults.gridColumns
     private var _gridRows: Int = 0 // Defaults.gridRows
     private var _gridWrapAround: Bool = Defaults.gridWrapAround
+    private var _fit: CellGridView.Fit = CellGridView.Fit.disabled
+    private var _fixed: Bool = false
     private var _cells: [Cell] = []
 
     // These change based on moving/shifting the cell-grid around the grid-view.
@@ -115,6 +115,7 @@ open class CellGridView: ObservableObject
         self._cellPaddingMax       = config.cellPaddingMax
         self._gridColumns          = config.gridColumns
         self._gridRows             = config.gridRows
+        self._fit                  = config.fit
         self._cellAntialiasFade    = config.cellAntialiasFade
         self._cellRoundedRadius    = config.cellRoundedRadius
         self._restrictShift        = config.restrictShift
@@ -193,9 +194,9 @@ open class CellGridView: ObservableObject
 
         let preferred: PreferredSize = CellGridView.preferredSize(
             cellSize: cellSize,
-            viewWidth: viewWidth,
-            viewHeight: viewHeight,
-            fit: fit,
+            viewWidth: self.scaled(self._screen!.width),
+            viewHeight: self.scaled(self._screen!.height),
+            fit: config.fit,
             fitMarginMax: Defaults.fitMarginMax)
 
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
@@ -203,7 +204,7 @@ open class CellGridView: ObservableObject
         var gridColumns: Int = self.constrainGridColumns(config.gridColumns)
         var gridRows: Int = self.constrainGridRows(config.gridRows)
 
-        if (fit == CellGridView.Fit.fixed) {
+        if (config.fit == CellGridView.Fit.fixed) {
             gridColumns = preferred.viewWidth / preferred.cellSize
             gridRows = preferred.viewHeight / preferred.cellSize
             self._fixed = true
@@ -217,11 +218,11 @@ open class CellGridView: ObservableObject
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (center
                ? self.shiftForCenterCells(cellSize: preferred.cellSize, gridColumns: gridColumns, gridRows: gridRows,
-                                          viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight, fit: fit)
+                                          viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight, fit: config.fit)
                : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY)))
         )
-        if (self._fit != fit) {
-            self._fit = fit
+        if (self._fit != config.fit) {
+            self._fit = config.fit
             if (!center) {
                 shift = (x: 0, y: 0)
             }
@@ -282,7 +283,7 @@ open class CellGridView: ObservableObject
             self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
         }
 
-        self._restrictShift = config.restrictShift || (fit == CellGridView.Fit.fixed)
+        self._restrictShift = config.restrictShift || (config.fit == CellGridView.Fit.fixed)
         self._selectMode = config.selectMode
         self._automationMode = config.automationMode
 
@@ -304,6 +305,7 @@ open class CellGridView: ObservableObject
     public   final var viewRows: Int             { self._viewRows }
     public   final var gridColumns: Int          { self._gridColumns }
     public   final var gridRows: Int             { self._gridRows }
+    public   final var fit: CellGridView.Fit     { self._fit }
     internal final var cells: [Cell]             { self._cells }
 
     public   final var viewBackground: Colour     { self._viewBackground }
