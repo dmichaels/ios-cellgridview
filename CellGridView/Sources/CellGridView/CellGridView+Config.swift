@@ -21,6 +21,7 @@ extension CellGridView
         public private(set) var gridColumns: Int
         public private(set) var gridRows: Int
         public private(set) var fit: CellGridView.Fit
+        public private(set) var center: Bool
 
         public private(set) var cellAntialiasFade: Float
         public private(set) var cellRoundedRadius: Float
@@ -45,6 +46,7 @@ extension CellGridView
                     gridColumns: Int?              = nil,
                     gridRows: Int?                 = nil,
                     fit: CellGridView.Fit?         = nil,
+                    center: Bool?                  = nil,
                     cellAntialiasFade: Float?      = nil,
                     cellRoundedRadius: Float?      = nil,
                     restrictShift: Bool?           = nil,
@@ -67,6 +69,7 @@ extension CellGridView
             self.gridColumns        = gridColumns        ?? config?.gridColumns        ?? Defaults.gridColumns
             self.gridRows           = gridRows           ?? config?.gridRows           ?? Defaults.gridRows
             self.fit                = fit                ?? config?.fit                ?? Defaults.fit
+            self.center             = center             ?? config?.center             ?? Defaults.center
             self.cellAntialiasFade  = cellAntialiasFade  ?? config?.cellAntialiasFade  ?? Defaults.cellAntialiasFade
             self.cellRoundedRadius  = cellRoundedRadius  ?? config?.cellRoundedRadius  ?? Defaults.cellRoundedRadius
             self.restrictShift      = restrictShift      ?? config?.restrictShift      ?? Defaults.restrictShift
@@ -93,6 +96,7 @@ extension CellGridView
             self.gridColumns        = cellGridView?.gridColumns        ?? Defaults.gridColumns
             self.gridRows           = cellGridView?.gridRows           ?? Defaults.gridRows
             self.fit                = cellGridView?.fit                ?? Defaults.fit
+            self.center             = cellGridView?.center             ?? Defaults.center
             self.cellAntialiasFade  = cellGridView?.cellAntialiasFade  ?? Defaults.cellAntialiasFade
             self.cellRoundedRadius  = cellGridView?.cellRoundedRadius  ?? Defaults.cellRoundedRadius
             self.restrictShift      = cellGridView?.restrictShift      ?? Defaults.restrictShift
@@ -115,6 +119,7 @@ extension CellGridView
                            gridColumns: Int?           = nil,
                            gridRows: Int?              = nil,
                            fit: CellGridView.Fit?      = nil,
+                           center: Bool?               = nil,
                            cellAntialiasFade: Float?   = nil,
                            cellRoundedRadius: Float?   = nil,
                            restrictShift: Bool?        = nil,
@@ -136,6 +141,7 @@ extension CellGridView
                                        gridColumns:        gridColumns        ?? self.gridColumns,
                                        gridRows:           gridRows           ?? self.gridRows,
                                        fit:                fit                ?? self.fit,
+                                       center:             center             ?? self.center,
                                        cellAntialiasFade:  cellAntialiasFade  ?? self.cellAntialiasFade,
                                        cellRoundedRadius:  cellRoundedRadius  ?? self.cellRoundedRadius,
                                        restrictShift:      restrictShift      ?? self.restrictShift,

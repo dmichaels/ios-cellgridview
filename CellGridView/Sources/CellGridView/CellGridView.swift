@@ -51,7 +51,7 @@ open class CellGridView: ObservableObject
     private var _gridRows: Int = 0 // Defaults.gridRows
     private var _gridWrapAround: Bool = Defaults.gridWrapAround
     private var _fit: CellGridView.Fit = CellGridView.Fit.disabled
-    private var _fixed: Bool = false
+    private var _center: Bool = Defaults.center
     private var _cells: [Cell] = []
 
     // These change based on moving/shifting the cell-grid around the grid-view.
@@ -116,6 +116,7 @@ open class CellGridView: ObservableObject
         self._gridColumns          = config.gridColumns
         self._gridRows             = config.gridRows
         self._fit                  = config.fit
+        self._center               = config.center
         self._cellAntialiasFade    = config.cellAntialiasFade
         self._cellRoundedRadius    = config.cellRoundedRadius
         self._restrictShift        = config.restrictShift
@@ -133,20 +134,16 @@ open class CellGridView: ObservableObject
                            screen: Screen,
                            viewWidth: Int,
                            viewHeight: Int,
-                           fit: CellGridView.Fit = CellGridView.Fit.disabled,
-                           center: Bool = false,
                            onChangeImage: (() -> Void)? = nil)
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, fit: fit, center: center)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight)
     }
 
     public func configure(_ config: CellGridView.Config,
                             viewWidth: Int,
                             viewHeight: Int,
-                            fit: CellGridView.Fit = CellGridView.Fit.disabled,
-                            center: Bool = false,
                             adjust: Bool = false,
                             scaled: Bool = false)
     {
@@ -210,26 +207,23 @@ open class CellGridView: ObservableObject
         if (config.fit == CellGridView.Fit.fixed) {
             gridColumns = preferred.viewWidth / preferred.cellSize
             gridRows = preferred.viewHeight / preferred.cellSize
-            self._fixed = true
-        }
-        else {
-            self._fixed = false
         }
 
         var shift: (x: Int, y: Int) = (
             adjust && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
-            : (center
+            : (config.center
                ? self.shiftForCenterCells(cellSize: preferred.cellSize, gridColumns: gridColumns, gridRows: gridRows,
                                           viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight, fit: config.fit)
                : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY)))
         )
         if (self._fit != config.fit) {
             self._fit = config.fit
-            if (!center) {
+            if (!config.center) {
                 shift = (x: 0, y: 0)
             }
         }
+        self._center = config.center
 
         self._viewWidth = preferred.viewWidth
         self._viewHeight = preferred.viewHeight
@@ -309,6 +303,7 @@ open class CellGridView: ObservableObject
     public   final var gridColumns: Int          { self._gridColumns }
     public   final var gridRows: Int             { self._gridRows }
     public   final var fit: CellGridView.Fit     { self._fit }
+    public   final var center: Bool              { self._center }
     internal final var cells: [Cell]             { self._cells }
 
     public   final var viewBackground: Colour     { self._viewBackground }
@@ -349,7 +344,6 @@ open class CellGridView: ObservableObject
     internal final var shiftScaledY: Int         { self._shiftY }
     internal final var shiftTotalScaledX: Int    { self._shiftX + (self._shiftCellX * self._cellSize) }
     internal final var shiftTotalScaledY: Int    { self._shiftY + (self._shiftCellY * self._cellSize) }
-    internal final var fixed: Bool               { self._fixed }
 
     public internal(set) var viewScaling: Bool {
         get { self._viewScaling }
@@ -675,15 +669,6 @@ open class CellGridView: ObservableObject
                 }
             }
         }
-    }
-
-    public final func center()
-    {
-        let gridWidth: Int = self.gridColumns * self.cellSize
-        let gridHeight: Int = self.gridRows * self.cellSize
-        let shiftTotalX: Int = -Int(round(Double(gridWidth) / 2.0))
-        let shiftTotalY: Int = -Int(round(Double(gridHeight) / 2.0))
-        self.shift(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY)
     }
 
     public final func onChangeImage() {
