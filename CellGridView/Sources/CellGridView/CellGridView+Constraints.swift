@@ -211,4 +211,8 @@ extension CellGridView
     internal final func constrainGridRows(_ gridColumns: Int) -> Int {
         return gridRows.clamped(self.minimumGridRows...self.maximumGridRows)
     }
+
+    public func cellShapeRequiresNoScaling(_ cellShape: CellShape) -> Bool {
+        return [CellShape.square, CellShape.inset].contains(cellShape)
+    }
 }

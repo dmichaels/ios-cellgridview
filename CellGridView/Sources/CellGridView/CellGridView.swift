@@ -154,12 +154,8 @@ open class CellGridView: ObservableObject
         // Setting of viewScaling is here first so subsequent calls to self.scaled/unscaled work properly.
         // If the cellShape is square or inset there is no need for scaling so we forcibly disable it.  
 
-        func cellShapeRequiresNoViewScaling(_ cellShape: CellShape) -> Bool {
-            return [CellShape.square, CellShape.inset].contains(cellShape)
-        }
-
         if (self._viewScalingArtificiallyDisabled) {
-            if (!cellShapeRequiresNoViewScaling(config.cellShape)) {
+            if (!self.cellShapeRequiresNoScaling(config.cellShape)) {
                 self._viewScaling = true
                 self._viewScalingArtificiallyDisabled = false
             }
@@ -167,7 +163,7 @@ open class CellGridView: ObservableObject
                 self._viewScaling = config.viewScaling
             }
         }
-        else if (cellShapeRequiresNoViewScaling(config.cellShape) && config.viewScaling) {
+        else if (self.cellShapeRequiresNoScaling(config.cellShape) && config.viewScaling) {
             self._viewScaling = false
             self._viewScalingArtificiallyDisabled = true
         }
