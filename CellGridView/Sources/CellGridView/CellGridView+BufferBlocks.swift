@@ -112,7 +112,7 @@ extension CellGridView
         private let _width: Int
         private var _blocks: [BufferBlock] = []
 
-        init(width: Int) {
+        init(width: Int = 0) {
             self._width = width
         }
 

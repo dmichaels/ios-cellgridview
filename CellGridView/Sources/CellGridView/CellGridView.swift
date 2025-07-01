@@ -37,18 +37,18 @@ open class CellGridView: ObservableObject
     private var _viewRowsExtra: Int = 0
     private var _viewCellEndX: Int = 0
     private var _viewCellEndY: Int = 0
-    private var _viewBackground: Colour = Colour.black
+    private var _viewBackground: Colour = Defaults.viewBackground
     private var _viewTransparency: UInt8 = 0
-    private var _viewScaling: Bool = true
+    private var _viewScaling: Bool = Defaults.viewScaling
     private var _viewScalingArtificiallyDisabled: Bool = false
 
-    private var _cellSize: Int = 0
+    private var _cellSize: Int = Defaults.cellSize
     private var _cellSizeTimesViewWidth: Int = 0
-    private var _cellPadding: Int = 0
-    private var _cellShape: CellShape = CellShape.rounded
+    private var _cellPadding: Int = Defaults.cellPadding
+    private var _cellShape: CellShape = Defaults.cellShape
 
-    private var _gridColumns: Int = 0 // Defaults.gridColumns
-    private var _gridRows: Int = 0 // Defaults.gridRows
+    private var _gridColumns: Int = Defaults.gridColumns
+    private var _gridRows: Int = Defaults.gridRows
     private var _gridWrapAround: Bool = Defaults.gridWrapAround
     private var _fit: CellGridView.Fit = CellGridView.Fit.disabled
     private var _center: Bool = Defaults.center
@@ -72,7 +72,7 @@ open class CellGridView: ObservableObject
     private var _unscaled_shiftX: Int = 0
     private var _unscaled_shiftY: Int = 0
 
-    private var _bufferBlocks: CellGridView.BufferBlocks = BufferBlocks(width: 0)
+    private var _bufferBlocks: CellGridView.BufferBlocks = BufferBlocks()
     //
     // The only reason this _buffer is internal and not private is that we factored
     // out the image property into CellGridView+Image.swift which needs it.
@@ -286,18 +286,18 @@ open class CellGridView: ObservableObject
         }
     }
 
-    public   final var initialized: Bool         { self._screen != nil }
-    public   final var screen: Screen            { self._screen! }
+    public   final var initialized: Bool          { self._screen != nil }
+    public   final var screen: Screen             { self._screen! }
 
-    public   final var viewWidth: Int            { self._unscaled_viewWidth }
-    public   final var viewHeight: Int           { self._unscaled_viewHeight }
-    public   final var viewColumns: Int          { self._viewColumns }
-    public   final var viewRows: Int             { self._viewRows }
-    public   final var gridColumns: Int          { self._gridColumns }
-    public   final var gridRows: Int             { self._gridRows }
-    public   final var fit: CellGridView.Fit     { self._fit }
-    public   final var center: Bool              { self._center }
-    internal final var cells: [Cell]             { self._cells }
+    public   final var viewWidth: Int             { self._unscaled_viewWidth }
+    public   final var viewHeight: Int            { self._unscaled_viewHeight }
+    public   final var viewColumns: Int           { self._viewColumns }
+    public   final var viewRows: Int              { self._viewRows }
+    public   final var gridColumns: Int           { self._gridColumns }
+    public   final var gridRows: Int              { self._gridRows }
+    public   final var fit: CellGridView.Fit      { self._fit }
+    public   final var center: Bool               { self._center }
+    internal final var cells: [Cell]              { self._cells }
 
     public   final var viewBackground: Colour     { self._viewBackground }
     public   final var viewTransparency: UInt8    { self._viewTransparency }
@@ -324,19 +324,19 @@ open class CellGridView: ObservableObject
     internal final var shiftTotalX: Int { self._unscaled_shiftX + (self._unscaled_shiftCellX * self._unscaled_cellSize) }
     internal final var shiftTotalY: Int { self._unscaled_shiftY + (self._unscaled_shiftCellY * self._unscaled_cellSize) }
 
-    internal final var viewWidthScaled: Int      { self._viewWidth }
-    internal final var viewHeightScaled: Int     { self._viewHeight }
-    internal final var viewCellEndX: Int         { self._viewCellEndX }
-    internal final var viewCellEndY: Int         { self._viewCellEndY }
-    internal final var viewWidthExtraScaled: Int { self._viewWidthExtra }
-    internal final var cellSizeScaled: Int       { self._cellSize }
-    internal final var cellPaddingScaled: Int    { self._cellPadding }
-    internal final var shiftCellScaledX: Int     { self._shiftCellX }
-    internal final var shiftCellScaledY: Int     { self._shiftCellY }
-    internal final var shiftScaledX: Int         { self._shiftX }
-    internal final var shiftScaledY: Int         { self._shiftY }
-    internal final var shiftTotalScaledX: Int    { self._shiftX + (self._shiftCellX * self._cellSize) }
-    internal final var shiftTotalScaledY: Int    { self._shiftY + (self._shiftCellY * self._cellSize) }
+    internal final var viewWidthScaled: Int       { self._viewWidth }
+    internal final var viewHeightScaled: Int      { self._viewHeight }
+    internal final var viewCellEndX: Int          { self._viewCellEndX }
+    internal final var viewCellEndY: Int          { self._viewCellEndY }
+    internal final var viewWidthExtraScaled: Int  { self._viewWidthExtra }
+    internal final var cellSizeScaled: Int        { self._cellSize }
+    internal final var cellPaddingScaled: Int     { self._cellPadding }
+    internal final var shiftCellScaledX: Int      { self._shiftCellX }
+    internal final var shiftCellScaledY: Int      { self._shiftCellY }
+    internal final var shiftScaledX: Int          { self._shiftX }
+    internal final var shiftScaledY: Int          { self._shiftY }
+    internal final var shiftTotalScaledX: Int     { self._shiftX + (self._shiftCellX * self._cellSize) }
+    internal final var shiftTotalScaledY: Int     { self._shiftY + (self._shiftCellY * self._cellSize) }
 
     public internal(set) var viewScaling: Bool {
         get { self._viewScaling }
