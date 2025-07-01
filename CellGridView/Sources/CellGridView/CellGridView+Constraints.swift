@@ -9,7 +9,7 @@ extension CellGridView
         public var id: String { self.rawValue }
     }
 
-    public typealias PreferredSize = (cellSize: Int, viewWidth: Int, viewHeight: Int)
+    public typealias PreferredSize = (cellSize: Int, viewWidth: Int, viewHeight: Int, fit: Bool)
 
     public func preferredSize(_ cellSize: Int, fit: CellGridView.Fit, scaled: Bool = false) -> PreferredSize
     {
@@ -21,7 +21,8 @@ extension CellGridView
                                                                   fitMarginMax: CellGridView.Defaults.fitMarginMax)
         return scaled ? preferred : (cellSize: self.unscaled(preferred.cellSize),
                                      viewWidth: self.unscaled(preferred.viewWidth),
-                                     viewHeight: self.unscaled(preferred.viewHeight))
+                                     viewHeight: self.unscaled(preferred.viewHeight),
+                                     fit: preferred.fit)
     }
 
     internal static func preferredSize
@@ -41,10 +42,11 @@ extension CellGridView
             if ((fit == CellGridView.Fit.enabled) ||
                 (fit == CellGridView.Fit.fixed) ||
                 ((fit == CellGridView.Fit.view) && (preferred.cellSize == cellSize))) {
-                return (cellSize: preferred.cellSize, viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight)
+                return (cellSize: preferred.cellSize, viewWidth: preferred.viewWidth,
+                                                      viewHeight: preferred.viewHeight, fit: true)
             }
         }
-        return (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight)
+        return (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight, fit: false)
     }
 
     // Returns a list of preferred sizes for the cell size, such that they fit evenly without bleeding
@@ -60,9 +62,7 @@ extension CellGridView
         return CellGridView.closestPreferredCellSize(in: sizes, to: cellSize)
     }
 
-    internal static func preferredSizes(viewWidth: Int, viewHeight: Int,
-                                        fitMarginMax: Int)
-                                        -> [PreferredSize] {
+    internal static func preferredSizes(viewWidth: Int, viewHeight: Int, fitMarginMax: Int) -> [PreferredSize] {
         let mindim: Int = min(viewWidth, viewHeight)
         guard mindim > 0 else { return [] }
         var results: [PreferredSize] = []
@@ -74,7 +74,7 @@ extension CellGridView
             let leftx: Int = viewWidth - usedw
             let lefty: Int = viewHeight - usedh
             if ((leftx <= fitMarginMax) && (lefty <= fitMarginMax)) {
-                results.append((cellSize: cellSize, viewWidth: usedw, viewHeight: usedh))
+                results.append((cellSize: cellSize, viewWidth: usedw, viewHeight: usedh, fit: true))
             }
         }
         return results

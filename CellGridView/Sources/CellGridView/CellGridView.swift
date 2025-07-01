@@ -199,6 +199,9 @@ open class CellGridView: ObservableObject
             fit: config.fit,
             fitMarginMax: Defaults.fitMarginMax)
 
+        print("CONFIG.CGF:  \(cellSize) \(fit) -> \(preferred.fit) \(preferred.cellSize) \(preferred.viewWidth)x\(preferred.viewHeight)")
+        print("CONFIG.CGFU: \(self.unscaled(cellSize)) \(fit) -> \(preferred.fit) \(self.unscaled(preferred.cellSize)) \(self.unscaled(preferred.viewWidth))x\(self.unscaled(preferred.viewHeight))")
+
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
         var gridColumns: Int = self.constrainGridColumns(config.gridColumns)
