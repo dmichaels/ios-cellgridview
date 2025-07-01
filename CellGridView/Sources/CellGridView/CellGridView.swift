@@ -63,14 +63,14 @@ open class CellGridView: ObservableObject
 
     // We store unscaled versions of commonly used properties.
     //
-    private var _unscaled_viewWidth: Int = 0
-    private var _unscaled_viewHeight: Int = 0
-    private var _unscaled_cellSize: Int = 0
-    private var _unscaled_cellPadding: Int = 0
-    private var _unscaled_shiftCellX: Int = 0
-    private var _unscaled_shiftCellY: Int = 0
-    private var _unscaled_shiftX: Int = 0
-    private var _unscaled_shiftY: Int = 0
+    private var _viewWidthUnscaled: Int = 0
+    private var _viewHeightUnscaled: Int = 0
+    private var _cellSizeUnscaled: Int = 0
+    private var _cellPaddingUnscaled: Int = 0
+    private var _shiftCellUnscaledX: Int = 0
+    private var _shiftCellUnscaledY: Int = 0
+    private var _shiftUnscaledX: Int = 0
+    private var _shiftUnscaledY: Int = 0
 
     private var _bufferBlocks: CellGridView.BufferBlocks = BufferBlocks()
     //
@@ -225,10 +225,10 @@ open class CellGridView: ObservableObject
         self._cellPadding = cellPadding
         self._cellShape = config.cellShape
 
-        self._unscaled_viewWidth = self.unscaled(self._viewWidth)
-        self._unscaled_viewHeight = self.unscaled(self._viewHeight)
-        self._unscaled_cellSize = self.unscaled(self._cellSize)
-        self._unscaled_cellPadding = self.unscaled(self._cellPadding)
+        self._viewWidthUnscaled = self.unscaled(self._viewWidth)
+        self._viewHeightUnscaled = self.unscaled(self._viewHeight)
+        self._cellSizeUnscaled = self.unscaled(self._cellSize)
+        self._cellPaddingUnscaled = self.unscaled(self._cellPadding)
 
         // Note that viewColumns/Rows is the number of cells the
         // view CAN (possibly) FULLY display horizontally/vertically.
@@ -289,8 +289,8 @@ open class CellGridView: ObservableObject
     public   final var initialized: Bool          { self._screen != nil }
     public   final var screen: Screen             { self._screen! }
 
-    public   final var viewWidth: Int             { self._unscaled_viewWidth }
-    public   final var viewHeight: Int            { self._unscaled_viewHeight }
+    public   final var viewWidth: Int             { self._viewWidthUnscaled }
+    public   final var viewHeight: Int            { self._viewHeightUnscaled }
     public   final var viewColumns: Int           { self._viewColumns }
     public   final var viewRows: Int              { self._viewRows }
     public   final var gridColumns: Int           { self._gridColumns }
@@ -301,8 +301,8 @@ open class CellGridView: ObservableObject
 
     public   final var viewBackground: Colour     { self._viewBackground }
     public   final var viewTransparency: UInt8    { self._viewTransparency }
-    public   final var cellSize: Int              { self._unscaled_cellSize }
-    public   final var cellPadding: Int           { self._unscaled_cellPadding }
+    public   final var cellSize: Int              { self._cellSizeUnscaled }
+    public   final var cellPadding: Int           { self._cellPaddingUnscaled }
     public   final var cellShape: CellShape       { self._cellShape }
     public   final var cellColor: Colour          { self._cellColor }
     public   final var cellSizeMax: Int           { self._cellSizeMax }
@@ -317,12 +317,12 @@ open class CellGridView: ObservableObject
     public   final var automationInterval: Double { self._automationInterval }
     public   final var gridWrapAround: Bool       { self._gridWrapAround }
 
-    internal final var shiftCellX: Int  { self._unscaled_shiftCellX }
-    internal final var shiftCellY: Int  { self._unscaled_shiftCellY }
-    internal final var shiftX: Int      { self._unscaled_shiftX }
-    internal final var shiftY: Int      { self._unscaled_shiftY }
-    internal final var shiftTotalX: Int { self._unscaled_shiftX + (self._unscaled_shiftCellX * self._unscaled_cellSize) }
-    internal final var shiftTotalY: Int { self._unscaled_shiftY + (self._unscaled_shiftCellY * self._unscaled_cellSize) }
+    internal final var shiftCellX: Int  { self._shiftCellUnscaledX }
+    internal final var shiftCellY: Int  { self._shiftCellUnscaledY }
+    internal final var shiftX: Int      { self._shiftUnscaledX }
+    internal final var shiftY: Int      { self._shiftUnscaledY }
+    internal final var shiftTotalX: Int { self._shiftUnscaledX + (self._shiftCellUnscaledX * self._cellSizeUnscaled) }
+    internal final var shiftTotalY: Int { self._shiftUnscaledY + (self._shiftCellUnscaledY * self._cellSizeUnscaled) }
 
     internal final var viewWidthScaled: Int       { self._viewWidth }
     internal final var viewHeightScaled: Int      { self._viewHeight }
@@ -457,10 +457,10 @@ open class CellGridView: ObservableObject
 
         let unscaled_shiftTotalX: Int = self.unscaled(self._shiftX + (self._shiftCellX * self._cellSize))
         let unscaled_shiftTotalY: Int = self.unscaled(self._shiftY + (self._shiftCellY * self._cellSize))
-        self._unscaled_shiftCellX = unscaled_shiftTotalX / self._unscaled_cellSize
-        self._unscaled_shiftX = unscaled_shiftTotalX % self._unscaled_cellSize
-        self._unscaled_shiftCellY = unscaled_shiftTotalY / self._unscaled_cellSize
-        self._unscaled_shiftY = unscaled_shiftTotalY % self._unscaled_cellSize
+        self._shiftCellUnscaledX = unscaled_shiftTotalX / self._cellSizeUnscaled
+        self._shiftUnscaledX = unscaled_shiftTotalX % self._cellSizeUnscaled
+        self._shiftCellUnscaledY = unscaled_shiftTotalY / self._cellSizeUnscaled
+        self._shiftUnscaledY = unscaled_shiftTotalY % self._cellSizeUnscaled
 
         self._viewColumnsExtra = (self._shiftX != 0 ? 1 : 0)
         if (self._shiftX > 0) {
@@ -501,6 +501,10 @@ open class CellGridView: ObservableObject
                 self.writeCell(viewCellX: vx, viewCellY: vy)
             }
         }
+
+        #if targetEnvironment(simulator)
+            self.printWriteCellsResult(debugStart)
+        #endif
     }
 
     // Draws at the given grid view cell location (viewCellX, viewCellY), the grid cell currently corresponding
