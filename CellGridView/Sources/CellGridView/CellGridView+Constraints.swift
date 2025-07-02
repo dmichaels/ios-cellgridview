@@ -174,19 +174,19 @@ extension CellGridView
     }
 
     public final var minimumGridColumns: Int {
-        1
+        Defaults.gridColumnsMin
     }
 
     public final var maximumGridColumns: Int {
-        5000 // TODO: configize
+        Defaults.gridColumnsMax
     }
 
     public final var minimumGridRows: Int {
-        1
+        Defaults.gridRowsMin
     }
 
     public final var maximumGridRows: Int {
-        5000 // TODO: configize
+        Defaults.gridRowsMax
     }
 
     internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil, scaled: Bool = false) -> Int {

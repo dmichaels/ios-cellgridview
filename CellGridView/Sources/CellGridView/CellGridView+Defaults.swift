@@ -22,6 +22,10 @@ extension CellGridView
 
         public static let gridColumns: Int           = 0
         public static let gridRows: Int              = 0
+        public static let gridColumnsMin: Int        = 2
+        public static let gridRowsMin: Int           = 2
+        public static let gridColumnsMax: Int        = 5000
+        public static let gridRowsMax: Int           = 5000
         public static let fit: CellGridView.Fit      = CellGridView.Fit.disabled
         public static let center: Bool               = false
 
