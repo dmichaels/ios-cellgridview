@@ -54,12 +54,13 @@ extension CellGridView
 
         internal func onZoom(_ zoomFactor: CGFloat) {
             //
-            // Somehow (maybe we are that good), zooming in/out
-            // in "fixed" mode actually just pretty much falls out.
+            // Somehow (maybe we are that good), zooming in/out in CellGridView.Fit.fixed
+            // mode actually just pretty much falls out; was prepared to do a bunch of work.
             //
             // guard self._cellGridView.fit != CellGridView.Fit.fixed else {
             //     return
             // }
+            //
             if let zoomer: CellGridView.Zoom = self._zoomer {
                 zoomer.zoom(zoomFactor)
             }
@@ -76,6 +77,7 @@ extension CellGridView
             // guard self._cellGridView.fit != CellGridView.Fit.fixed else {
             //     return
             // }
+            //
             if let zoomer: CellGridView.Zoom = self._zoomer {
                 zoomer.end(zoomFactor)
                 self._zoomer = nil
