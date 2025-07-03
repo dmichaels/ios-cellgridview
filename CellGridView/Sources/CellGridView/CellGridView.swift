@@ -288,6 +288,14 @@ open class CellGridView: ObservableObject
             self._actions.automationStop()
             self._actions.automationStart()
         }
+
+        if (self._fit == CellGridView.Fit.enabled) {
+            //
+            // TODO
+            // Experiment. Enable initially only then disable.
+            //
+            self._fit = CellGridView.Fit.disabled
+        }
     }
 
     public   final var initialized: Bool          { self._screen != nil }
