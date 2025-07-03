@@ -128,6 +128,10 @@ extension CellGridView
             return totalTuples * MemoryLayout<(Int, Int)>.stride
         }
 
+        internal var blockCount: Int {
+            return self._blocks.count
+        }
+
         private func append(_ index: Int, foreground: Bool, blend: Float, width: Int) {
             if let last: BufferBlock = self._blocks.last,
                    last.foreground == foreground,
@@ -217,7 +221,8 @@ extension CellGridView
                         }
                         //
                         // NEW (3D shading) BUT NOT YET WORKING VERY WELL (VIA CHATGPT) ...
-                        // PLUS IT SLOWS DOWN RENDERING CONSIDERABLE (NOTICABLE MOSTLY ON ZOOM IN/OUT).
+                        // Plus it slows down rendering considerably (noticable mostly on zoom in/out);
+                        // and (related) it consumes significantly more memory, i.e. via BufferBlocks.
                         //
                         if (cellShading && (coverage > 0.0)) {
                             let fx = Float(dx - padding)

@@ -91,6 +91,8 @@ extension CellGridView
                              " SH:\(self.shiftScaledX),\(shiftScaledY)" +
                              " SHU:\(self.shiftX),\(self.shiftY)" +
                              " SHO:\(shiftOppositeScaled)" +
+                             " BBC:\(self._bufferBlocks.blockCount)" +
+                             " BBM:\(self._bufferBlocks.memoryUsageBytes)" +
                           // " ESR:\(emptySpaceRight)" +
                              (even ? " EVEN" : " UNEVEN"), time))
     }

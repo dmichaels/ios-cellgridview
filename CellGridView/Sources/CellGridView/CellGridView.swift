@@ -73,7 +73,7 @@ open class CellGridView: ObservableObject
     private var _shiftUnscaledX: Int = 0
     private var _shiftUnscaledY: Int = 0
 
-    private var _bufferBlocks: CellGridView.BufferBlocks = BufferBlocks()
+    internal var _bufferBlocks: CellGridView.BufferBlocks = BufferBlocks()
     //
     // The only reason this _buffer is internal and not private is that we factored
     // out the image property into CellGridView+Image.swift which needs it.
