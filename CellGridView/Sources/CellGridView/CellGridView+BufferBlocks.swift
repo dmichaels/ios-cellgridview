@@ -150,7 +150,8 @@ extension CellGridView
             cellShape: CellShape,
             cellTransparency: UInt8,
             cellAntialiasFade: Float = Defaults.cellAntialiasFade,
-            cellRoundedRadius: Float = Defaults.cellRoundedRadius) -> BufferBlocks
+            cellRoundedRadius: Float = Defaults.cellRoundedRadius,
+            cellShading: Bool = false) -> BufferBlocks
         {
             // Note that all size related arguments here are assume to be scaled.
 
@@ -169,7 +170,7 @@ extension CellGridView
     
                     if ((dx >= viewWidth) || (dy >= viewHeight)) { continue }
                     if ((dx < 0) || (dy < 0)) { continue }
-                    let coverage: Float
+                    var coverage: Float
 
                     switch shape {
                     case .square, .inset:
@@ -214,13 +215,30 @@ extension CellGridView
                             let d: Float = cornerRadius - sqrt(dx * dx + dy * dy)
                             coverage = max(0.0, min(1.0, d / fade))
                         }
+                        //
+                        // NEW (3D shading) BUT NOT YET WORKING VERY WELL (VIA CHATGPT) ...
+                        // PLUS IT SLOWS DOWN RENDERING CONSIDERABLE (NOTICABLE MOSTLY ON ZOOM IN/OUT).
+                        //
+                        if (cellShading && (coverage > 0.0)) {
+                            let fx = Float(dx - padding)
+                            let fy = Float(dy - padding)
+                            let size = Float(cellSize - 2 * padding)
+                            // normalized [0, 1] coordinate within cell
+                            let u = fx / size
+                            let v = fy / size
+                            // diagonal gradient factor; 0 at top/left; 1 at bottom/right
+                            let gradient = (u + v) / 2.0
+                            // apply shading; brightens near top/left; darkens near bottom/right
+                            let shadingStrength: Float = 1.4 // max effect
+                            let shading = shadingStrength * (0.5 - gradient)
+                            coverage = max(0.0, min(1.0, coverage + shading))
+                        }
                     }
 
                     let index: Int = (dy * viewWidth + dx) * Screen.channels
                     if ((index >= 0) && ((index + (Screen.channels - 1)) < bufferSize)) {
-                        if (coverage > 0) {
+                        if (coverage > 0.0) {
                             blocks.append(index, foreground: true, blend: coverage, width: viewWidth)
-    
                         } else {
                             blocks.append(index, foreground: false, blend: 0.0, width: viewWidth)
                         }
