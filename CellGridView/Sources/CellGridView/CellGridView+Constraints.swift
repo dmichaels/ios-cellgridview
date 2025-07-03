@@ -156,9 +156,13 @@ extension CellGridView
         self.minimumCellSize(cellPadding: self.cellPadding)
     }
 
-    public final func minimumCellSize(cellPadding: Int? = nil) -> Int {
+    public final func minimumCellSize(cellPadding: Int? = nil, cellShape: CellShape? = nil) -> Int {
         let cellPadding: Int = max(0, cellPadding ?? self.cellPadding)
-        return self.constrainCellSize(Defaults.cellSizeInnerMin, cellPadding: cellPadding, scaled: false)
+        let minimumCellSize: Int = self.constrainCellSize(Defaults.cellSizeInnerMin, cellPadding: cellPadding, scaled: false)
+        if let cellShape: CellShape = cellShape {
+            return [CellShape.rounded, CellShape.circle].contains(cellShape) ? max(minimumCellSize, 4) : minimumCellSize
+        }
+        return minimumCellSize
     }
 
     public final var maximumCellSize: Int {
@@ -189,11 +193,17 @@ extension CellGridView
         Defaults.gridRowsMax
     }
 
-    internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil, scaled: Bool = false) -> Int {
+    internal final func constrainCellSize(_ cellSize: Int, cellPadding: Int? = nil,
+                                            cellShape: CellShape? = nil, scaled: Bool = false) -> Int {
         let cellSizeInnerMin: Int = self.scaled(Defaults.cellSizeInnerMin)
         let cellSizeMax: Int = self.scaled(Defaults.cellSizeMax)
         let cellPadding: Int = !scaled ? self.scaled(cellPadding ?? self.cellPadding) : (cellPadding ?? self.cellPaddingScaled)
         let constrainedCellSize: Int = cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
+        if let cellShape: CellShape = cellShape, [CellShape.rounded, CellShape.circle].contains(cellShape) {
+            if ((cellSize - cellPadding) < self.scaled(4)) {
+                return self.scaled(4)
+            }
+        }
         return !scaled ? self.unscaled(constrainedCellSize) : constrainedCellSize
     }
 

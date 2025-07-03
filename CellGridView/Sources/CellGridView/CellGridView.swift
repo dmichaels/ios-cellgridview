@@ -180,7 +180,7 @@ open class CellGridView: ObservableObject
         let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(config.cellPadding) : config.cellPadding,
                                                          scaled: true)
         let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(config.cellSize) : config.cellSize,
-                                                   cellPadding: cellPadding, scaled: true)
+                                                   cellPadding: cellPadding, cellShape: config.cellShape, scaled: true)
         let cellSizeIncrement: Int = cellSize - self._cellSize
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
