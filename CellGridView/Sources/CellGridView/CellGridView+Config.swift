@@ -12,6 +12,7 @@ extension CellGridView
         public private(set) var cellSize: Int
         public private(set) var cellPadding: Int
         public private(set) var cellShape: CellShape
+        public private(set) var cellShading: Bool
         public private(set) var cellColor: Colour
 
         public private(set) var cellSizeMax: Int
@@ -39,6 +40,7 @@ extension CellGridView
                     cellSize: Int?                 = nil,
                     cellPadding: Int?              = nil,
                     cellShape: CellShape?          = nil,
+                    cellShading: Bool?             = nil,
                     cellColor: Colour?             = nil,
                     cellSizeMax: Int?              = nil,
                     cellSizeInnerMin: Int?         = nil,
@@ -62,6 +64,7 @@ extension CellGridView
             self.cellSize           = cellSize           ?? config?.cellSize           ?? Defaults.cellSize
             self.cellPadding        = cellPadding        ?? config?.cellPadding        ?? Defaults.cellPadding
             self.cellShape          = cellShape          ?? config?.cellShape          ?? Defaults.cellShape
+            self.cellShading        = cellShading        ?? config?.cellShading        ?? Defaults.cellShading
             self.cellColor          = cellColor          ?? config?.cellColor          ?? Defaults.cellColor
             self.cellSizeMax        = cellSizeMax        ?? config?.cellSizeMax        ?? Defaults.cellSizeMax
             self.cellSizeInnerMin   = cellSizeInnerMin   ?? config?.cellSizeInnerMin   ?? Defaults.cellSizeInnerMin
@@ -89,6 +92,7 @@ extension CellGridView
             self.cellSize           = cellGridView?.cellSize           ?? Defaults.cellSize
             self.cellPadding        = cellGridView?.cellPadding        ?? Defaults.cellPadding
             self.cellShape          = cellGridView?.cellShape          ?? Defaults.cellShape
+            self.cellShading        = cellGridView?.cellShading        ?? Defaults.cellShading
             self.cellColor          = cellGridView?.cellColor          ?? Defaults.cellColor
             self.cellSizeMax        = cellGridView?.cellSizeMax        ?? Defaults.cellSizeMax
             self.cellSizeInnerMin   = cellGridView?.cellSizeInnerMin   ?? Defaults.cellSizeInnerMin
@@ -112,6 +116,7 @@ extension CellGridView
                            cellSize: Int?              = nil,
                            cellPadding: Int?           = nil,
                            cellShape: CellShape?       = nil,
+                           cellShading: Bool?          = nil,
                            cellColor: Colour?          = nil,
                            cellSizeMax: Int?           = nil,
                            cellSizeInnerMin: Int?      = nil,
@@ -134,6 +139,7 @@ extension CellGridView
                                        cellSize:           cellSize           ?? self.cellSize,
                                        cellPadding:        cellPadding        ?? self.cellPadding,
                                        cellShape:          cellShape          ?? self.cellShape,
+                                       cellShading:        cellShading        ?? self.cellShading,
                                        cellColor:          cellColor          ?? self.cellColor,
                                        cellSizeMax:        cellSizeMax        ?? self.cellSizeMax,
                                        cellSizeInnerMin:   cellSizeInnerMin   ?? self.cellSizeInnerMin,

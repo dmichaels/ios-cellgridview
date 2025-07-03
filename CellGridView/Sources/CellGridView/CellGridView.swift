@@ -46,6 +46,7 @@ open class CellGridView: ObservableObject
     private var _cellSizeTimesViewWidth: Int = 0
     private var _cellPadding: Int = Defaults.cellPadding
     private var _cellShape: CellShape = Defaults.cellShape
+    private var _cellShading: Bool = Defaults.cellShading
 
     private var _gridColumns: Int = Defaults.gridColumns
     private var _gridRows: Int = Defaults.gridRows
@@ -109,6 +110,7 @@ open class CellGridView: ObservableObject
         self._cellSize             = config.cellSize
         self._cellPadding          = config.cellPadding
         self._cellShape            = config.cellShape
+        self._cellShading          = config.cellShading
         self._cellColor            = config.cellColor
         self._cellSizeMax          = config.cellSizeMax
         self._cellSizeInnerMin     = config.cellSizeInnerMin
@@ -224,6 +226,7 @@ open class CellGridView: ObservableObject
         self._cellSizeTimesViewWidth = self._cellSize * self._viewWidth
         self._cellPadding = cellPadding
         self._cellShape = config.cellShape
+        self._cellShading = config.cellShading
 
         self._viewWidthUnscaled = self.unscaled(self._viewWidth)
         self._viewHeightUnscaled = self.unscaled(self._viewHeight)
@@ -263,6 +266,7 @@ open class CellGridView: ObservableObject
                                                              cellSize: self._cellSize,
                                                              cellPadding: self._cellPadding,
                                                              cellShape: self._cellShape,
+                                                             cellShading: self._cellShading,
                                                              cellTransparency: self._viewTransparency,
                                                              cellAntialiasFade: self._cellAntialiasFade,
                                                              cellRoundedRadius: self._cellRoundedRadius)
@@ -304,6 +308,7 @@ open class CellGridView: ObservableObject
     public   final var cellSize: Int              { self._cellSizeUnscaled }
     public   final var cellPadding: Int           { self._cellPaddingUnscaled }
     public   final var cellShape: CellShape       { self._cellShape }
+    public   final var cellShading: Bool          { self._cellShading }
     public   final var cellColor: Colour          { self._cellColor }
     public   final var cellSizeMax: Int           { self._cellSizeMax }
     public   final var cellSizeInnerMin: Int      { self._cellSizeInnerMin }

@@ -14,6 +14,7 @@ extension CellGridView
         public static let cellSize: Int              = 25
         public static let cellPadding: Int           = 1
         public static let cellShape: CellShape       = CellShape.rounded
+        public static let cellShading: Bool          = false
         public static let cellColor: Colour          = Colour.white
 
         public static let cellSizeMax: Int           = 200

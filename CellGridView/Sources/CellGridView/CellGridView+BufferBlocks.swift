@@ -148,10 +148,10 @@ extension CellGridView
             cellSize: Int,
             cellPadding: Int,
             cellShape: CellShape,
-            cellTransparency: UInt8,
+            cellShading: Bool = false,
+            cellTransparency: UInt8 = Colour.OPAQUE,
             cellAntialiasFade: Float = Defaults.cellAntialiasFade,
-            cellRoundedRadius: Float = Defaults.cellRoundedRadius,
-            cellShading: Bool = false) -> BufferBlocks
+            cellRoundedRadius: Float = Defaults.cellRoundedRadius) -> BufferBlocks
         {
             // Note that all size related arguments here are assume to be scaled.
 
