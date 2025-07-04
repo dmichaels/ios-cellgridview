@@ -153,6 +153,10 @@ extension CellGridView
             cellPadding: Int,
             cellShape: CellShape,
             cellShading: Bool = false,
+            //
+            // TODO
+            // Currently doing nothing with the transparency.
+            //
             cellTransparency: UInt8 = Colour.OPAQUE,
             cellAntialiasFade: Float = Defaults.cellAntialiasFade,
             cellRoundedRadius: Float = Defaults.cellRoundedRadius) -> BufferBlocks

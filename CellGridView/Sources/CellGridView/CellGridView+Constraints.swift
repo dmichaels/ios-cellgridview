@@ -218,7 +218,7 @@ extension CellGridView
         return gridColumns.clamped(self.minimumGridColumns...self.maximumGridColumns)
     }
 
-    internal final func constrainGridRows(_ gridColumns: Int) -> Int {
+    internal final func constrainGridRows(_ gridRows: Int) -> Int {
         return gridRows.clamped(self.minimumGridRows...self.maximumGridRows)
     }
 

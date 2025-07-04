@@ -24,7 +24,7 @@ open class CellGridView: ObservableObject
     // i.e. if we pass viewScaling as false to the initialize method, in which case the size related
     // properties values are stored as unscaled; and in this case even the scaled property names,
     // e.g. cellSizeScaled, return the unscaled values. We actually (by default) switch to this mode
-    // during zooming/resizing, for performance reasons (since the image buffer is nominall 3x smaller).
+    // during zooming/resizing, for performance reasons (since the image buffer is nominally 3x smaller).
 
     private var _screen: Screen? = nil
     private var _viewWidth: Int = 0
@@ -285,8 +285,10 @@ open class CellGridView: ObservableObject
 
         if (self._automationInterval != config.automationInterval) {
             self._automationInterval = config.automationInterval
-            self._actions.automationStop()
-            self._actions.automationStart()
+            if (self._automationMode) {
+                self._actions.automationStop()
+                self._actions.automationStart()
+            }
         }
 
         if (self._fit == CellGridView.Fit.enabled) {
