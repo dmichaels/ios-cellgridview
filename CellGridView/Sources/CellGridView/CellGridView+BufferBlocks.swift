@@ -67,6 +67,7 @@ extension CellGridView
                     //  }
                     //
                     // self.truncatexCache[truncatex]?.forEach { write(self, $0.index, $0.count) }
+                    //
                     truncatexValues.forEach { write(self, $0.index, $0.count) }
                     return
                 }
