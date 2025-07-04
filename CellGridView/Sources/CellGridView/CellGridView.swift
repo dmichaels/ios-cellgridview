@@ -298,6 +298,8 @@ open class CellGridView: ObservableObject
             //
             self._fit = CellGridView.Fit.disabled
         }
+
+        self._unscaledZoom = config.unscaledZoom
     }
 
     public   final var initialized: Bool          { self._screen != nil }
