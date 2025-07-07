@@ -701,8 +701,8 @@ open class CellGridView: ObservableObject
         }
     }
 
-    open func automationStart() { self._actions.automationStart() }
-    open func automationStop() { self._actions.automationStop() }
+    open func automationStart() { self._automationMode = true ; self._actions.automationStart() }
+    open func automationStop() { self._automationMode = false ; self._actions.automationStop() }
     open func automationStep() {}
 
     open func onTap(_ viewPoint: CGPoint) { self._actions.onTap(viewPoint) }
