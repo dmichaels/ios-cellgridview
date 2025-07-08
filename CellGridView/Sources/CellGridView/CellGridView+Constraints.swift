@@ -223,6 +223,6 @@ extension CellGridView
     }
 
     public func cellShapeRequiresNoScaling(_ cellShape: CellShape) -> Bool {
-        return [CellShape.square, CellShape.inset].contains(cellShape)
+        return [CellShape.square].contains(cellShape)
     }
 }

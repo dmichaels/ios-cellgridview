@@ -154,7 +154,7 @@ open class CellGridView: ObservableObject
         guard self._screen != nil else { return }
 
         // Setting of viewScaling is here first so subsequent calls to self.scaled/unscaled work properly.
-        // If the cellShape is square or inset there is no need for scaling so we forcibly disable it.  
+        // If the cellShape is a square there is no need for scaling so we forcibly disable it.  
 
         if (self._viewScalingArtificiallyDisabled) {
             if (!self.cellShapeRequiresNoScaling(config.cellShape)) {

@@ -165,13 +165,11 @@ extension CellGridView
             // Note that all size related arguments here are assume to be scaled.
 
             let blocks: BufferBlocks = BufferBlocks(width: viewWidth)
-            let padding: Int = ((cellPadding > 0) && (cellShape != .square))
-                               ? (((cellPadding * 2) >= cellSize)
-                                 ? ((cellSize / 2) - 1)
-                                 : cellPadding) : 0
+            let padding: Int = (cellPadding * 2) >= cellSize
+                               ? ((cellSize / 2) - 1)
+                               : cellPadding
             let cellSizeMinusPadding: Int = cellSize - padding
             let cellSizeMinusPaddingTimesTwo: Int = cellSize - (2 * padding)
-            let shape: CellShape = (cellSizeMinusPaddingTimesTwo < 3) ? .inset : cellShape
             let fade: Float = cellAntialiasFade
 
             for dy in 0..<cellSize {
@@ -181,8 +179,8 @@ extension CellGridView
                     if ((dx < 0) || (dy < 0)) { continue }
                     var coverage: Float
 
-                    switch shape {
-                    case .square, .inset:
+                    switch cellShape {
+                    case .square:
                         if ((dx >= padding) && (dx < cellSizeMinusPadding) &&
                             (dy >= padding) && (dy < cellSizeMinusPadding)) {
                             coverage = 1.0
