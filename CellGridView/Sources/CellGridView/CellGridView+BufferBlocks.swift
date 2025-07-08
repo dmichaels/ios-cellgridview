@@ -229,9 +229,9 @@ extension CellGridView
                     //
                     if (cellShading && (coverage > 0.0)) {
                         let size: Float = Float(cellSize - 2 * padding)
-                        let gradient = ((Float(dx - padding) / size) + (Float(dy - padding) / size)) / 2.0
+                        let gradient: Float = ((Float(dx - padding) / size) + (Float(dy - padding) / size)) / 2.0
                         let shadingStrength: Float = 1.4
-                        let shading = shadingStrength * (0.5 - gradient)
+                        let shading: Float = shadingStrength * (0.5 - gradient)
                         coverage = max(0.0, min(1.0, coverage + shading))
                     }
 
