@@ -181,11 +181,10 @@ extension CellGridView
 
                     switch cellShape {
                     case .square:
-                        if ((dx >= padding) && (dx < cellSizeMinusPadding) &&
-                            (dy >= padding) && (dy < cellSizeMinusPadding)) {
-                            coverage = 1.0
-                        }
-                        else { coverage = 0.0 }
+                        coverage = ((dx >= padding) && (dx < cellSizeMinusPadding) &&
+                                    (dy >= padding) && (dy < cellSizeMinusPadding))
+                                   ? 1.0
+                                   : 0.0
 
                     case .circle:
                         let fx: Float = Float(dx) + 0.5
@@ -222,25 +221,18 @@ extension CellGridView
                             let d: Float = cornerRadius - sqrt(dx * dx + dy * dy)
                             coverage = max(0.0, min(1.0, d / fade))
                         }
-                        //
-                        // NEW (3D shading) BUT NOT YET WORKING VERY WELL (VIA CHATGPT) ...
-                        // Plus it slows down rendering considerably (noticable mostly on zoom in/out);
-                        // and (related) it consumes significantly more memory, i.e. via BufferBlocks.
-                        //
-                        if (cellShading && (coverage > 0.0)) {
-                            let fx = Float(dx - padding)
-                            let fy = Float(dy - padding)
-                            let size = Float(cellSize - 2 * padding)
-                            // normalized [0, 1] coordinate within cell
-                            let u = fx / size
-                            let v = fy / size
-                            // diagonal gradient factor; 0 at top/left; 1 at bottom/right
-                            let gradient = (u + v) / 2.0
-                            // apply shading; brightens near top/left; darkens near bottom/right
-                            let shadingStrength: Float = 1.4 // max effect
-                            let shading = shadingStrength * (0.5 - gradient)
-                            coverage = max(0.0, min(1.0, coverage + shading))
-                        }
+                    }
+
+                    // FYI 3D shading via ChatGPT.
+                    // Note that this slows down rendering considerably (noticable mostly on zoom in/out);
+                    // and (related) it consumes significantly more memory, i.e. via BufferBlocks.
+                    //
+                    if (cellShading && (coverage > 0.0)) {
+                        let size: Float = Float(cellSize - 2 * padding)
+                        let gradient = ((Float(dx - padding) / size) + (Float(dy - padding) / size)) / 2.0
+                        let shadingStrength: Float = 1.4
+                        let shading = shadingStrength * (0.5 - gradient)
+                        coverage = max(0.0, min(1.0, coverage + shading))
                     }
 
                     let index: Int = (dy * viewWidth + dx) * Screen.channels
