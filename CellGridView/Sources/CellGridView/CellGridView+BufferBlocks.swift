@@ -224,7 +224,7 @@ extension CellGridView
                     }
 
                     // FYI 3D shading via ChatGPT.
-                    // Note that this slows down rendering considerably (noticable mostly on zoom in/out);
+                    // This slows down rendering considerably (noticeable mostly on zoom in/out);
                     // and (related) it consumes significantly more memory, i.e. via BufferBlocks.
                     //
                     if (cellShading && (coverage > 0.0)) {
