@@ -90,8 +90,14 @@ extension CellGridView
                         }
                     } else {
                         if let j: Int = index {
-                            truncatexValuesToCache.append((index: j, count: count))
-                            write(self, j, count)
+                            //
+                            // OMG (2025-07-08) are these two lines below not necessary?
+                            // Noticed duplicate calls to writeCellBlock back-to-back with the
+                            // same index (j) and count; this is done outside this loop below.
+                            //
+                            // truncatexValuesToCache.append((index: j, count: count))
+                            // write(self, j, count)
+                            //
                             if (shiftr && (shift > shiftw)) { break }
                             else if (shiftl && (shift >= shiftw)) { break }
                             index = nil
