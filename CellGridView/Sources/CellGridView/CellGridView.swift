@@ -532,7 +532,7 @@ open class CellGridView: ObservableObject
     internal final func writeCell(viewCellX: Int, viewCellY: Int, foregroundOnly: Bool = false)
     {
         // Get the left/right truncation amount.
-        // This was all a lot tricker than you might expect (yes basic arithmetic).
+        // This was all a LOT tricker than you might expect (yes basic arithmetic).
 
         let truncate: Int
 
