@@ -10,8 +10,9 @@ extension CellGridView
             internal let index: Int
             internal let foreground: Bool
             internal let blend: Float
+            internal let blendr: Float
             internal var count: Int
-            internal var width: Int
+            internal let width: Int
             internal var indexLast: Int
             internal var truncatexCache: [Int: [(index: Int, count: Int)]] = [:]
             internal typealias WriteCellBlock = (_ block: BufferBlock, _ index: Int, _ count: Int) -> Void
@@ -21,6 +22,7 @@ extension CellGridView
                 self.count = max(count, 0)
                 self.foreground = foreground
                 self.blend = blend
+                self.blendr = 1.0 - blend
                 self.width = width
                 self.indexLast = self.index
             }
@@ -116,12 +118,7 @@ extension CellGridView
             }
         }
 
-        private let _width: Int
         private var _blocks: [BufferBlock] = []
-
-        init(width: Int = 0) {
-            self._width = width
-        }
 
         internal var blocks: [BufferBlock] {
             self._blocks
@@ -170,10 +167,8 @@ extension CellGridView
         {
             // Note that all size related arguments here are assume to be scaled.
 
-            let blocks: BufferBlocks = BufferBlocks(width: viewWidth)
-            let padding: Int = (cellPadding * 2) >= cellSize
-                               ? ((cellSize / 2) - 1)
-                               : cellPadding
+            let blocks: BufferBlocks = BufferBlocks()
+            let padding: Int = (cellPadding * 2) >= cellSize ? ((cellSize / 2) - 1) : cellPadding
             let cellSizeMinusPadding: Int = cellSize - padding
             let cellSizeMinusPaddingTimesTwo: Int = cellSize - (2 * padding)
             let fade: Float = cellAntialiasFade

@@ -640,12 +640,11 @@ open class CellGridView: ObservableObject
                 }
                 if (block.foreground) {
                     if (block.blend != 1.0) {
-                        let blend: Float = block.blend
-                        let blendr: Float = 1.0 - blend
-                        Memory.fastcopy(to: buffer.advanced(by: start), count: count,
-                                        value: (UInt32(UInt8(fgr * blend + bgr * blendr)) << Colour.RSHIFT) |
-                                               (UInt32(UInt8(fgg * blend + bgg * blendr)) << Colour.GSHIFT) |
-                                               (UInt32(UInt8(fgb * blend + bgb * blendr)) << Colour.BSHIFT) | fga)
+                        Memory.fastcopy(
+                            to: buffer.advanced(by: start), count: count,
+                            value: (UInt32(UInt8(fgr * block.blend + bgr * block.blendr)) << Colour.RSHIFT) |
+                                   (UInt32(UInt8(fgg * block.blend + bgg * block.blendr)) << Colour.GSHIFT) |
+                                   (UInt32(UInt8(fgb * block.blend + bgb * block.blendr)) << Colour.BSHIFT) | fga)
                     }
                     else {
                         Memory.fastcopy(to: buffer.advanced(by: start), count: count, value: fg)
