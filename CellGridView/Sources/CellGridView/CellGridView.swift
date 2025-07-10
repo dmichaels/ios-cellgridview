@@ -296,7 +296,11 @@ open class CellGridView: ObservableObject
         if (false && self._fit == CellGridView.Fit.enabled) {
             //
             // TODO
-            // Experiment. Enable initially only then disable.
+            // Experiment; enable initially only then disable; actually forget now
+            // why we wanted to do this; it messes up (for iPhone 15 Pro simulator)
+            // with cellSize == 23 and fit = .enabled when just going to settings
+            // view and doing nothing and back to view; it shifts slightly from the
+            // initial nice fit; we will run into the problem this was trying to solve.
             //
             self._fit = CellGridView.Fit.disabled
         }
