@@ -208,8 +208,10 @@ open class CellGridView: ObservableObject
             adjust && (cellSizeIncrement != 0)
             ? self.shiftForResizeCells(cellSizeIncrement: cellSizeIncrement)
             : (config.center
-               ? self.shiftForCenterCells(cellSize: preferred.cellSize, gridColumns: gridColumns, gridRows: gridRows,
-                                          viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight, fit: config.fit)
+               ? self.shiftForCenterCells(cellSize: preferred.cellSize,
+                                          gridColumns: gridColumns, gridRows: gridRows,
+                                          viewWidth: preferred.viewWidth, viewHeight: preferred.viewHeight,
+                                          fit: preferred.fit ? config.fit : CellGridView.Fit.disabled)
                : (x: self.scaled(self.shiftTotalX), y: self.scaled(self.shiftTotalY)))
         )
         if (self._fit != config.fit) {

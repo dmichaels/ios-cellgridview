@@ -182,8 +182,8 @@ extension CellGridView
         var shiftTotalX: Int = -Int(round(Double(gridWidth - viewWidth) / 2.0))
         var shiftTotalY: Int = -Int(round(Double(gridHeight - viewHeight) / 2.0))
         if (fit != CellGridView.Fit.disabled) {
-            shiftTotalX += shiftTotalX % cellSize
-            shiftTotalY += shiftTotalY % cellSize
+            shiftTotalX -= shiftTotalX % cellSize
+            shiftTotalY -= shiftTotalY % cellSize
         }
         return (x: shiftTotalX, y: shiftTotalY)
     }
