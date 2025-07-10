@@ -140,15 +140,14 @@ open class CellGridView: ObservableObject
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, initial: true)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, _initial: true)
     }
 
     public func configure(_ config: CellGridView.Config,
                             viewWidth: Int,
                             viewHeight: Int,
                             adjust: Bool = false,
-                            scaled: Bool = false,
-                            initial: Bool = false)
+                            scaled: Bool = false, _initial: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
 
@@ -156,6 +155,12 @@ open class CellGridView: ObservableObject
 
         // Setting of viewScaling is here first so subsequent calls to self.scaled/unscaled work properly.
         // If the cellShape is a square there is no need for scaling so we forcibly disable it.  
+        //
+        // This scaling stuff does complicate thing in general a bit; but nice to have the option of an extra
+        // performance benefit, and especially where it's done implicitly when the cell-shape is square rather
+        // than rounded or circle; note that when we are in unscaled mode the scaled versions of the properties
+        // are not really scaled, i.e. the scaled and unscaled properties (internall and externally) are the
+        // same, i.e. since when we are in unscaled mode, then nothing is scaled.
 
         if (self._viewScalingArtificiallyDisabled) {
             if (!self.cellShapeRequiresNoScaling(config.cellShape)) {
@@ -180,15 +185,31 @@ open class CellGridView: ObservableObject
         self._cellSizeMax = config.cellSizeMax
         self._cellPaddingMax = config.cellPaddingMax
 
-        let cellPadding: Int = self.constrainCellPadding(!scaled ? self.scaled(config.cellPadding) : config.cellPadding,
-                                                         scaled: true)
-        let cellSize: Int = self.constrainCellSize(!scaled ? self.scaled(config.cellSize) : config.cellSize,
+        // Careful here: If the given cell-size is UNSCALED and it is EQUAL to the current UNSCALED cell-size,
+        // then NO change; i.e. even if the scaled version of the given cell-size is not equal to the current
+        // scaled cell-size; e.g. if our current SCALED cell-size is 73 it means the current UNSCALED cell-size
+        // is 24, and then if the given scaled argument is false and the given config argument has an cell-size
+        // of 24, then we do NOT want to want to use the scaled version of that which would be 72 (24 * 3),
+        // which would change the current cell-size from a scaled value of 73 to 72, for no good reason.
+        // And note the call below to self.scaled(self.cellSize) i.e. rather than self._cellSize, so that
+        // we do the right thing if we are now unscaled (e.g. even if because we switched to square from
+        // rounded or circle). And of course, the same goes for cell-padding.
+        //
+        let cellSizeScaled: Int    = !scaled && (config.cellSize == self._cellSizeUnscaled)
+                                     ? self.scaled(self.cellSize)
+                                     : (!scaled ? self.scaled(config.cellSize) : config.cellSize)
+        let cellPaddingScaled: Int = !scaled && (config.cellPadding == self._cellPaddingUnscaled)
+                                     ? self.scaled(self.cellPadding)
+                                     : (!scaled ? self.scaled(config.cellPadding) : config.cellPadding)
+
+        let cellPadding: Int = self.constrainCellPadding(cellPaddingScaled, scaled: true)
+        let cellSize: Int = self.constrainCellSize(cellSizeScaled,
                                                    cellPadding: cellPadding, cellShape: config.cellShape, scaled: true)
         let cellSizeIncrement: Int = cellSize - self._cellSize
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        let preferred: PreferredSize = initial || (config.fit == .fixed)
+        let preferred: PreferredSize = _initial || (config.fit == .fixed)
                                        ? CellGridView.preferredSize(cellSize: cellSize,
                                                                     viewWidth: self.scaled(self._screen!.width),
                                                                     viewHeight: self.scaled(self._screen!.height),

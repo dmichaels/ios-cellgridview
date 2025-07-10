@@ -200,8 +200,8 @@ extension CellGridView
         let cellPadding: Int = !scaled ? self.scaled(cellPadding ?? self.cellPadding) : (cellPadding ?? self.cellPaddingScaled)
         let constrainedCellSize: Int = cellSize.clamped(cellSizeInnerMin + (cellPadding * 2)...cellSizeMax)
         if let cellShape: CellShape = cellShape, [CellShape.rounded, CellShape.circle].contains(cellShape) {
-            if ((cellSize - cellPadding) < self.scaled(4)) {
-                return self.scaled(4)
+            if ((cellSize - cellPadding) < self.scaled(3)) {
+                return self.scaled(3)
             }
         }
         return !scaled ? self.unscaled(constrainedCellSize) : constrainedCellSize

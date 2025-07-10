@@ -63,9 +63,10 @@ extension CellGridView
         //
         self.configure(self.config.update(cellSize: cellSize,
                                           cellPadding: self.cellPaddingScaled),
-                       viewWidth: self.viewWidthScaled,
-                       viewHeight: self.viewHeightScaled,
-                       adjust: true, scaled: true)
+                                          viewWidth: self.viewWidthScaled,
+                                          viewHeight: self.viewHeightScaled,
+                                          adjust: true,
+                                          scaled: true)
     }
 
     public func scale(_ scaling: Bool) {
@@ -74,12 +75,13 @@ extension CellGridView
         let shiftTotalY: Int = scaling ? self.screen.scaled(self.shiftTotalY) : self.screen.unscaled(self.shiftTotalY)
         //
         // Remember that CellGridView.Config is agnostic about its property values being scaled or not.
-        // Though (TODO) we could make it cognizant of this; might (or might not) make a littler clearer. 
+        // Though (TODO) we could make it cognizant of this; might (or might not) make a little clearer. 
         //
         self.configure(self.config.update(viewScaling: scaling),
                        viewWidth: self.viewWidth,
                        viewHeight: self.viewHeight,
-                       adjust: false, scaled: false)
+                       adjust: false,
+                       scaled: false)
         self.shift(shiftTotalX: shiftTotalX, shiftTotalY: shiftTotalY, scaled: scaling)
     }
 
