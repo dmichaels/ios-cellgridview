@@ -140,14 +140,15 @@ open class CellGridView: ObservableObject
     {
         self._screen = screen
         self._onChangeImage = onChangeImage ?? {}
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, initial: true)
     }
 
     public func configure(_ config: CellGridView.Config,
                             viewWidth: Int,
                             viewHeight: Int,
                             adjust: Bool = false,
-                            scaled: Bool = false)
+                            scaled: Bool = false,
+                            initial: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
 
@@ -187,12 +188,13 @@ open class CellGridView: ObservableObject
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        let preferred: PreferredSize = CellGridView.preferredSize(
-            cellSize: cellSize,
-            viewWidth: self.scaled(self._screen!.width),
-            viewHeight: self.scaled(self._screen!.height),
-            fit: config.fit,
-            fitMarginMax: Defaults.fitMarginMax)
+        let preferred: PreferredSize = initial || (config.fit == .fixed)
+                                       ? CellGridView.preferredSize(cellSize: cellSize,
+                                                                    viewWidth: self.scaled(self._screen!.width),
+                                                                    viewHeight: self.scaled(self._screen!.height),
+                                                                    fit: config.fit,
+                                                                    fitMarginMax: Defaults.fitMarginMax)
+                                       : (cellSize: cellSize, viewWidth: viewWidth, viewHeight: viewHeight, fit: false)
 
         // Note that we got the cellSizeIncrement above based on the cellSize value before updating it below.
 
