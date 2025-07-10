@@ -293,7 +293,7 @@ open class CellGridView: ObservableObject
             }
         }
 
-        if (self._fit == CellGridView.Fit.enabled) {
+        if (false && self._fit == CellGridView.Fit.enabled) {
             //
             // TODO
             // Experiment. Enable initially only then disable.

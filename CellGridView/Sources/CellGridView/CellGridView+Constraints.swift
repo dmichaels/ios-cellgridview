@@ -2,10 +2,10 @@ extension CellGridView
 {
     public enum Fit: String, CaseIterable, Identifiable, Sendable
     {
-        case disabled = "disabled"
-        case enabled = "enabled"
-        case view  = "view"
-        case fixed = "fixed"
+        case disabled = "disabled"  // no cell/view fitting attempt
+        case enabled  = "enabled"   // try to fit cell and/or view size
+        case view     = "view"      // try to fit view (but not cell) size
+        case fixed    = "fixed"     // same as enabled but also limit total number of cell columns/rows to fit view
         public var id: String { self.rawValue }
     }
 
