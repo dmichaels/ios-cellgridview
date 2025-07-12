@@ -718,6 +718,15 @@ open class CellGridView: ObservableObject
         self._selectMode = !self._selectMode
     }
 
+    public func selectRandom() {
+        let randomViewCellX: Int = Int.random(in: 0...self.viewCellEndX)
+        let randomViewCellY: Int = Int.random(in: 0...self.viewCellEndY)
+        if let cell: Cell = self.gridCell(viewCellX: randomViewCellX, viewCellY: randomViewCellY) {
+            cell.select()
+            self.onChangeImage()
+        }
+    }
+
     public func automationModeToggle() {
         if (self._automationMode) {
             self._automationMode = false
