@@ -342,7 +342,7 @@ open class CellGridView: ObservableObject
     public   final var gridRows: Int              { self._gridRows }
     public   final var fit: CellGridView.Fit      { self._fit }
     public   final var center: Bool               { self._center }
-    internal final var cells: [Cell]              { self._cells }
+    public   final var cells: [Cell]              { self._cells }
 
     public   final var viewBackground: Colour     { self._viewBackground }
     public   final var viewTransparency: UInt8    { self._viewTransparency }
