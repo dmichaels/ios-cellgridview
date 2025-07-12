@@ -372,8 +372,8 @@ open class CellGridView: ObservableObject
 
     internal final var viewWidthScaled: Int       { self._viewWidth }
     internal final var viewHeightScaled: Int      { self._viewHeight }
-    internal final var viewCellEndX: Int          { self._viewCellEndX }
-    internal final var viewCellEndY: Int          { self._viewCellEndY }
+    public   final var viewCellEndX: Int          { self._viewCellEndX }
+    public   final var viewCellEndY: Int          { self._viewCellEndY }
     internal final var viewWidthExtraScaled: Int  { self._viewWidthExtra }
     internal final var cellSizeScaled: Int        { self._cellSize }
     internal final var cellPaddingScaled: Int     { self._cellPadding }
