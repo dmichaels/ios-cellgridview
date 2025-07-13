@@ -297,10 +297,17 @@ open class CellGridView: ObservableObject
                                                              cellAntialiasFade: self._cellAntialiasFade,
                                                              cellRoundedRadius: self._cellRoundedRadius)
         var defineCells: Bool = false
+        let currentGridColumns: Int = self._gridColumns
+        let currentGridRows: Int = self._gridRows
         if (gridColumns != self.gridColumns) { self._gridColumns = gridColumns ; defineCells = true }
         if (gridRows    != self.gridRows)    { self._gridRows    = gridRows    ; defineCells = true }
         if (defineCells || (self._cells.count == 0)) {
-            self._cells = self.defineCells(gridColumns: self._gridColumns, gridRows: self._gridRows)
+            self._cells = self.defineCells(
+                gridColumns: self._gridColumns,
+                gridRows: self._gridRows,
+                currentCells: self._cells,
+                currentColumns: currentGridColumns,
+                currentRows: currentGridRows)
         }
 
         self._restrictShift = config.restrictShift || (config.fit == CellGridView.Fit.fixed)
