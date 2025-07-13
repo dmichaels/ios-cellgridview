@@ -3,7 +3,7 @@ import Foundation
 // Represents an integer based point within the grid-view.
 // Note that we say "point" here, not "location", meaning the pixel-based coordinate
 // within the grid-view; see notes on terminology at the top of the CellGridView module.
-// Exactly the same implementation as CellLocation and ViewLocation; differential naming as documentation.
+// Exactly the same implementation as CellLocation & ViewLocation; differential naming as documentation.
 //
 public struct ViewPoint
 {
