@@ -160,8 +160,8 @@ open class CellGridView: ObservableObject
         // This scaling stuff does complicate thing in general a bit; but nice to have the option of an extra
         // performance benefit, and especially where it's done implicitly when the cell-shape is square rather
         // than rounded or circle; note that when we are in unscaled mode the scaled versions of the properties
-        // are not really scaled, i.e. the scaled and unscaled properties (internall and externally) are the
-        // same, i.e. since when we are in unscaled mode, then nothing is scaled.
+        // are not really scaled, i.e. the scaled and unscaled properties (internally and externally) are the
+        // same, i.e. both unscaled, since when we are in unscaled mode, then nothing is scaled.
 
         if (self._viewScalingArtificiallyDisabled) {
             if (!self.cellShapeRequiresNoScaling(config.cellShape)) {
@@ -197,10 +197,10 @@ open class CellGridView: ObservableObject
         // rounded or circle). And of course, the same goes for cell-padding.
         //
         let cellSizeScaled: Int    = !scaled && (config.cellSize == self._cellSizeUnscaled)
-                                     ? self.scaled(self.cellSize)
+                                     ? self._cellSize
                                      : (!scaled ? self.scaled(config.cellSize) : config.cellSize)
         let cellPaddingScaled: Int = !scaled && (config.cellPadding == self._cellPaddingUnscaled)
-                                     ? self.scaled(self.cellPadding)
+                                     ? self._cellPadding
                                      : (!scaled ? self.scaled(config.cellPadding) : config.cellPadding)
 
         let cellPadding: Int = self.constrainCellPadding(cellPaddingScaled, scaled: true)
@@ -647,7 +647,7 @@ open class CellGridView: ObservableObject
         let bgb: Float = Float(self._viewBackground.blue)
 
         // Loop through the blocks for the cell and write each of the indices to the buffer with the right colors/blends.
-        // Being careful to truncate the left or right side of the cell appropriately (tricky stuff).
+        // Being careful to truncate the left or right side of the cell appropriately (this was tricky).
 
         self._buffer.withUnsafeMutableBytes { raw in
 
