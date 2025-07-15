@@ -101,7 +101,7 @@ extension CellGridView
         return CellLocation(gridCellX, gridCellY)
     }
 
-    // Returns the cell-grid location relative to the grid-view of the given grid-view input point, or nil.
+    // Returns the grid-view location relative to the grid-view of the given grid-view input point, or nil.
     //
     private final func viewCellLocation(viewPoint: CGPoint) -> ViewLocation? {
         let viewPoint: ViewPoint = ViewPoint(self.scaled(viewPoint.x), self.scaled(viewPoint.y))
@@ -144,7 +144,7 @@ extension CellGridView
 
     // Returns the grid-view location of the given cell-grid cell location, or nil.
     //
-    internal final func viewCellLocation(gridCellX: Int, gridCellY: Int) -> ViewLocation? {
+    public final func viewCellLocation(gridCellX: Int, gridCellY: Int) -> ViewLocation? {
         guard gridCellX >= 0, gridCellX < self.gridColumns, gridCellY >= 0, gridCellY < self.gridRows else {
             return nil
         }
