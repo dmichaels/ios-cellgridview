@@ -162,6 +162,10 @@ open class CellGridView: ObservableObject
         // than rounded or circle; note that when we are in unscaled mode the scaled versions of the properties
         // are not really scaled, i.e. the scaled and unscaled properties (internally and externally) are the
         // same, i.e. both unscaled, since when we are in unscaled mode, then nothing is scaled.
+        //
+        // And one odd thing about what we're doing, in the ios-lifegame imploemention which uses ios-cellgridview,
+        // is that we only allow showing/manipulating the cell-size (and padding) in unscalled terms, within the 
+        // the SettingsView that is, HOWEVER, when zooming in/out (via pinch gesture) this can occur in scaled terms.
 
         let viewScalingPrevious: Bool = self._viewScaling
         if (self._viewScalingArtificiallyDisabled) {
