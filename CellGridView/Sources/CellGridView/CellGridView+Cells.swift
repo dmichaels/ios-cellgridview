@@ -22,8 +22,9 @@ extension CellGridView {
 
         for y in 0..<gridRows {
             for x in 0..<gridColumns {
-                let color: Colour = currentCell?(x, y)?.color ?? color ?? self.cellColor
-                if let cell: Cell = self.createCell(x: x, y: y, color: color) {
+                let previous: Cell? = currentCell?(x, y)
+                let color: Colour = previous?.color ?? color ?? self.cellColor
+                if let cell: Cell = self.createCell(x: x, y: y, color: color, previous: previous) {
                     cells.append(cell)
                 }
             }

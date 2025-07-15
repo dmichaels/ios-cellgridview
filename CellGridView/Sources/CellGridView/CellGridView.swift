@@ -769,7 +769,7 @@ open class CellGridView: ObservableObject
     open func onZoom(_ zoomFactor: CGFloat) { self._actions.onZoom(zoomFactor) }
     open func onZoomEnd(_ zoomFactor: CGFloat) { self._actions.onZoomEnd(zoomFactor) }
 
-    open func createCell<T: Cell>(x: Int, y: Int, color: Colour) -> T? {
+    open func createCell<T: Cell>(x: Int, y: Int, color: Colour, previous: T? = nil) -> T? {
         return Cell(cellGridView: self, x: x, y: y, color: color) as? T
     }
 }
