@@ -5,7 +5,9 @@ extension CellGridView
         case disabled = "disabled"  // no cell/view fitting attempt
         case enabled  = "enabled"   // try to fit cell and/or view size
         case view     = "view"      // try to fit view (but not cell) size
-        case fixed    = "fixed"     // same as enabled but also limit total number of cell columns/rows to fit view
+        case fixed    = "fixed"     // same as enabled but also limit number of cell to fit view
+        case square   = "square"    // same as fixed but square
+        public var fixed: Bool { self == .fixed || self == .square }
         public var id: String { self.rawValue }
     }
 
