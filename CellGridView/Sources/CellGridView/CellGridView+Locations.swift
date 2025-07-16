@@ -174,6 +174,10 @@ extension CellGridView
         return ViewLocation(viewCellX, viewCellY)
     }
 
+    public final func cellVisible(_ gridCellX: Int, _ gridCellY: Int) -> Bool {
+        return self.viewCellLocation(gridCellX: gridCellX, gridCellY: gridCellY) != nil
+    }
+
     private final var cellGridSmallWidth: Bool  { (self.cellSizeScaled * self.gridColumns) < self.viewWidthScaled }
     private final var cellGridSmallHeight: Bool { (self.cellSizeScaled * self.gridRows) < self.viewHeightScaled }
 }
