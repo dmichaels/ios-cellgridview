@@ -93,13 +93,13 @@ open class CellGridView: ObservableObject
     private var _cellPaddingMax: Int = Defaults.cellPaddingMax
 
     private var _selectMode: Bool = Defaults.selectMode
+    private var _selectRandomMode: Bool = false
+    private var _selectRandomModePaused: Bool = false
+    private var _selectRandomInterval: Double = Defaults.selectRandomInterval
+    private var _selectRandomTimer: Timer? = nil
     private var _automationMode: Bool = Defaults.automationMode
     private var _automationModePaused: Bool = false
     private var _automationInterval: Double = Defaults.automationInterval
-    private var _automationRandom: Bool = false
-    private var _automationRandomPaused: Bool = false
-    private var _automationRandomInterval: Double = Defaults.automationRandomInterval
-    private var _automationRandomTimer: Timer? = nil
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     // This _onChangeImage function property is the update function from the caller
@@ -130,9 +130,10 @@ open class CellGridView: ObservableObject
         self._restrictShift        = config.restrictShift
         self._unscaledZoom         = config.unscaledZoom
         self._selectMode           = config.selectMode
+        self._selectRandomMode     = config.selectRandomMode
+        self._selectRandomInterval = config.selectRandomInterval
         self._automationMode       = config.automationMode
         self._automationInterval   = config.automationInterval
-        self._automationRandomInterval = config.automationRandomInterval
     }
 
     open var config: CellGridView.Config {
@@ -386,12 +387,12 @@ open class CellGridView: ObservableObject
     public   final var restrictShift: Bool        { self._restrictShift }
     public   final var unscaledZoom: Bool         { self._unscaledZoom }
 
-    public   final var selectMode: Bool                 { self._selectMode }
-    public   final var automationMode: Bool             { self._automationMode }
-    public   final var automationInterval: Double       { self._automationInterval }
-    public   final var automationRandom: Bool           { self._automationRandom }
-    public   final var automationRandomInterval: Double { self._automationRandomInterval }
-    public   final var gridWrapAround: Bool             { self._gridWrapAround }
+    public   final var selectMode: Bool             { self._selectMode }
+    public   final var automationMode: Bool         { self._automationMode }
+    public   final var automationInterval: Double   { self._automationInterval }
+    public   final var selectRandomMode: Bool       { self._selectRandomMode }
+    public   final var selectRandomInterval: Double { self._selectRandomInterval }
+    public   final var gridWrapAround: Bool         { self._gridWrapAround }
 
     internal final var shiftCellX: Int  { self._shiftCellUnscaledX }
     internal final var shiftCellY: Int  { self._shiftCellUnscaledY }
@@ -786,37 +787,37 @@ open class CellGridView: ObservableObject
     open func automationStop() { self._automationMode = false ; self._actions.automationStop() }
     open func automationStep() {}
 
-    public func automationRandomToggle() {
-        self._automationRandom ? self.automationRandomStop() : self.automationRandomStart()
+    public func selectRandomModeToggle() {
+        self._selectRandomMode ? self.selectRandomStop() : self.selectRandomStart()
     }
 
-    public func automationRandomStart() {
-        self._automationRandom = true
-        self._automationRandomTimer = Timer.scheduledTimer(withTimeInterval: self._automationRandomInterval,
+    public func selectRandomStart() {
+        self._selectRandomMode = true
+        self._selectRandomTimer = Timer.scheduledTimer(withTimeInterval: self._selectRandomInterval,
                                                            repeats: true) { _ in
             self.selectRandom()
         }
     }
 
-    public func automationRandomStop() {
-        self._automationRandom = false
-        if let automationRandomTimer = self._automationRandomTimer {
-            automationRandomTimer.invalidate()
-            self._automationRandomTimer = nil
+    public func selectRandomStop() {
+        self._selectRandomMode = false
+        if let selectRandomTimer = self._selectRandomTimer {
+            selectRandomTimer.invalidate()
+            self._selectRandomTimer = nil
         }
     }
 
-    public func automationRandomPause() {
-        if (self._automationRandom) {
-            self._automationRandomPaused = true
-            self.automationRandomStop()
+    public func selectRandomModePause() {
+        if (self._selectRandomMode) {
+            self._selectRandomModePaused = true
+            self.selectRandomStop()
         }
     }
 
-    public func automationRandomResume() {
-        if (self._automationRandomPaused) {
-            self.automationRandomStart()
-            self._automationRandomPaused = false
+    public func selectRandomModeResume() {
+        if (self._selectRandomModePaused) {
+            self.selectRandomStart()
+            self._selectRandomModePaused = false
         }
     }
 
