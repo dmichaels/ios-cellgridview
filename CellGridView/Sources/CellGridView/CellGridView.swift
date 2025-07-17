@@ -92,8 +92,9 @@ open class CellGridView: ObservableObject
     private var _cellSizeInnerMin: Int = Defaults.cellSizeInnerMin
     private var _cellPaddingMax: Int = Defaults.cellPaddingMax
 
-    private var _automationMode: Bool = Defaults.automationMode
     private var _selectMode: Bool = Defaults.selectMode
+    private var _automationMode: Bool = Defaults.automationMode
+    private var _automationModePaused: Bool = false
     private var _automationInterval: Double = Defaults.automationInterval
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
@@ -756,6 +757,20 @@ open class CellGridView: ObservableObject
         else {
             self._automationMode = true
             self.automationStart()
+        }
+    }
+
+    public func automationModePause() {
+        if (self._automationMode) {
+            self._automationModePaused = true
+            self.automationStop()
+        }
+    }
+
+    public func automationModeResume() {
+        if (self._automationModePaused) {
+            self.automationStart()
+            self._automationModePaused = false
         }
     }
 
