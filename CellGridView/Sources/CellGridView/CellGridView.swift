@@ -96,6 +96,10 @@ open class CellGridView: ObservableObject
     private var _automationMode: Bool = Defaults.automationMode
     private var _automationModePaused: Bool = false
     private var _automationInterval: Double = Defaults.automationInterval
+    private var _automationRandom: Bool = false
+    private var _automationRandomPaused: Bool = false
+    private var _automationRandomInterval: Double = Defaults.automationRandomInterval
+    private var _automationRandomTimer: Timer? = nil
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     // This _onChangeImage function property is the update function from the caller
@@ -128,6 +132,7 @@ open class CellGridView: ObservableObject
         self._selectMode           = config.selectMode
         self._automationMode       = config.automationMode
         self._automationInterval   = config.automationInterval
+        self._automationRandomInterval = config.automationRandomInterval
     }
 
     open var config: CellGridView.Config {
@@ -380,10 +385,13 @@ open class CellGridView: ObservableObject
     public   final var cellRoundedRadius: Float   { self._cellRoundedRadius }
     public   final var restrictShift: Bool        { self._restrictShift }
     public   final var unscaledZoom: Bool         { self._unscaledZoom }
-    public   final var selectMode: Bool           { self._selectMode }
-    public   final var automationMode: Bool       { self._automationMode }
-    public   final var automationInterval: Double { self._automationInterval }
-    public   final var gridWrapAround: Bool       { self._gridWrapAround }
+
+    public   final var selectMode: Bool                 { self._selectMode }
+    public   final var automationMode: Bool             { self._automationMode }
+    public   final var automationInterval: Double       { self._automationInterval }
+    public   final var automationRandom: Bool           { self._automationRandom }
+    public   final var automationRandomInterval: Double { self._automationRandomInterval }
+    public   final var gridWrapAround: Bool             { self._gridWrapAround }
 
     internal final var shiftCellX: Int  { self._shiftCellUnscaledX }
     internal final var shiftCellY: Int  { self._shiftCellUnscaledY }
@@ -777,6 +785,40 @@ open class CellGridView: ObservableObject
     open func automationStart() { self._automationMode = true ; self._actions.automationStart() }
     open func automationStop() { self._automationMode = false ; self._actions.automationStop() }
     open func automationStep() {}
+
+    public func automationRandomToggle() {
+        self._automationRandom ? self.automationRandomStop() : self.automationRandomStart()
+    }
+
+    public func automationRandomStart() {
+        self._automationRandom = true
+        self._automationRandomTimer = Timer.scheduledTimer(withTimeInterval: self._automationRandomInterval,
+                                                           repeats: true) { _ in
+            self.selectRandom()
+        }
+    }
+
+    public func automationRandomStop() {
+        self._automationRandom = false
+        if let automationRandomTimer = self._automationRandomTimer {
+            automationRandomTimer.invalidate()
+            self._automationRandomTimer = nil
+        }
+    }
+
+    public func automationRandomPause() {
+        if (self._automationRandom) {
+            self._automationRandomPaused = true
+            self.automationRandomStop()
+        }
+    }
+
+    public func automationRandomResume() {
+        if (self._automationRandomPaused) {
+            self.automationRandomStart()
+            self._automationRandomPaused = false
+        }
+    }
 
     open func onTap(_ viewPoint: CGPoint) { self._actions.onTap(viewPoint) }
     open func onDrag(_ viewPoint: CGPoint) { self._actions.onDrag(viewPoint) }

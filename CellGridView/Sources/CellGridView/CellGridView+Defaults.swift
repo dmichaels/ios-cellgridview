@@ -35,9 +35,11 @@ extension CellGridView
         public static let restrictShift: Bool        = true
         public static let unscaledZoom: Bool         = false
 
-        public static let selectMode: Bool           = true
-        public static let automationMode: Bool       = true
-        public static let automationInterval: Double = 0.5
+        public static let selectMode: Bool                 = true
+        public static let automationMode: Bool             = true
+        public static let automationInterval: Double       = 0.5
+        public static let automationRandom: Bool           = false
+        public static let automationRandomInterval: Double = 0.5
 
         // Only used on CellGridView.initialize
         //
