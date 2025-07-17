@@ -102,11 +102,11 @@ open class CellGridView: ObservableObject
     private var _automationInterval: Double = Defaults.automationInterval
     private lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
-    // This _onChangeImage function property is the update function from the caller
+    // This _updateImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
     // view can make sure the the image updated here is actually visually updated.
     //
-    private var _onChangeImage: () -> Void = {}
+    private var _updateImage: () -> Void = {}
 
     public init(_ config: CellGridView.Config? = nil) {
         let config: CellGridView.Config = config ?? CellGridView.Config()
@@ -144,10 +144,10 @@ open class CellGridView: ObservableObject
                            screen: Screen,
                            viewWidth: Int,
                            viewHeight: Int,
-                           onChangeImage: (() -> Void)? = nil)
+                           updateImage: (() -> Void)? = nil)
     {
         self._screen = screen
-        self._onChangeImage = onChangeImage ?? {}
+        self._updateImage = updateImage ?? {}
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, _initial: true)
     }
 
@@ -741,8 +741,8 @@ open class CellGridView: ObservableObject
         }
     }
 
-    public final func onChangeImage() {
-        self._onChangeImage()
+    public final func updateImage() {
+        self._updateImage()
     }
 
     public func selectModeToggle() {
@@ -754,7 +754,7 @@ open class CellGridView: ObservableObject
         let randomViewCellY: Int = Int.random(in: 0...self.viewCellEndY)
         if let cell: Cell = self.gridCell(viewCellX: randomViewCellX, viewCellY: randomViewCellY) {
             cell.select()
-            self.onChangeImage()
+            self.updateImage()
         }
     }
 

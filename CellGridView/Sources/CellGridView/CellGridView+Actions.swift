@@ -31,7 +31,7 @@ extension CellGridView
         internal func onTap(_ viewPoint: CGPoint) {
             if let cell: Cell = self._cellGridView.gridCell(viewPoint: viewPoint) {
                 cell.select()
-                self._cellGridView.onChangeImage()
+                self._cellGridView.updateImage()
             }
         }
 
@@ -41,14 +41,14 @@ extension CellGridView
                 return
             }
             dragger.drag(viewPoint)
-            self._cellGridView.onChangeImage()
+            self._cellGridView.updateImage()
         }
 
         internal func onDragEnd(_ viewPoint: CGPoint) {
             if let dragger: CellGridView.Drag = self._dragger {
                 dragger.end(viewPoint)
                 self._dragger = nil
-                self._cellGridView.onChangeImage()
+                self._cellGridView.updateImage()
             }
         }
 
@@ -67,7 +67,7 @@ extension CellGridView
             else {
                 self._zoomer = CellGridView.Zoom(self._cellGridView, zoomFactor)
             }
-            self._cellGridView.onChangeImage()
+            self._cellGridView.updateImage()
         }
 
         internal func onZoomEnd(_ zoomFactor: CGFloat) {
