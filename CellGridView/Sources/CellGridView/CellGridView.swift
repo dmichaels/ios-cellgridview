@@ -749,10 +749,22 @@ open class CellGridView: ObservableObject
         self._selectMode = !self._selectMode
     }
 
+    public var visibleCellRangeX: ClosedRange<Int> {
+        let from = -self.shiftCellX
+        let thru = min(self.gridColumns - 1, from + self.viewCellEndX)
+        return from...thru
+    }
+
+    public var visibleCellRangeY: ClosedRange<Int> {
+        let from = -self.shiftCellY
+        let thru = min(self.gridRows - 1, from + self.viewCellEndY)
+        return from...thru
+    }
+
     public func selectRandom() {
-        let randomViewCellX: Int = Int.random(in: 0...self.viewCellEndX)
-        let randomViewCellY: Int = Int.random(in: 0...self.viewCellEndY)
-        if let cell: Cell = self.gridCell(viewCellX: randomViewCellX, viewCellY: randomViewCellY) {
+        let randomGridCellX: Int = Int.random(in: self.visibleCellRangeX)
+        let randomGridCellY: Int = Int.random(in: self.visibleCellRangeY)
+        if let cell: Cell = self.gridCell(randomGridCellX, randomGridCellY) {
             cell.select()
             self.updateImage()
         }
