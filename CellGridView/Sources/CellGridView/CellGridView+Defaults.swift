@@ -37,7 +37,7 @@ extension CellGridView
 
         public static let selectMode: Bool             = true
         public static let selectRandomMode: Bool       = false
-        public static let selectRandomInterval: Double = 0.5
+        public static let selectRandomInterval: Double = 0.75
         public static let automationMode: Bool         = true
         public static let automationInterval: Double   = 0.5
 
