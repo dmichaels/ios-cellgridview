@@ -415,6 +415,18 @@ open class CellGridView: ObservableObject
     internal final var shiftTotalScaledX: Int     { self._shiftX + (self._shiftCellX * self._cellSize) }
     internal final var shiftTotalScaledY: Int     { self._shiftY + (self._shiftCellY * self._cellSize) }
 
+    public var visibleCellRangeX: ClosedRange<Int> {
+        let from = -self.shiftCellX
+        let thru = min(self.gridColumns - 1, from + self.viewCellEndX)
+        return from...thru
+    }
+
+    public var visibleCellRangeY: ClosedRange<Int> {
+        let from = -self.shiftCellY
+        let thru = min(self.gridRows - 1, from + self.viewCellEndY)
+        return from...thru
+    }
+
     public internal(set) var viewScaling: Bool {
         get { self._viewScaling }
         set {
@@ -749,27 +761,6 @@ open class CellGridView: ObservableObject
         self._selectMode = !self._selectMode
     }
 
-    public var visibleCellRangeX: ClosedRange<Int> {
-        let from = -self.shiftCellX
-        let thru = min(self.gridColumns - 1, from + self.viewCellEndX)
-        return from...thru
-    }
-
-    public var visibleCellRangeY: ClosedRange<Int> {
-        let from = -self.shiftCellY
-        let thru = min(self.gridRows - 1, from + self.viewCellEndY)
-        return from...thru
-    }
-
-    public func selectRandom() {
-        let randomGridCellX: Int = Int.random(in: self.visibleCellRangeX)
-        let randomGridCellY: Int = Int.random(in: self.visibleCellRangeY)
-        if let cell: Cell = self.gridCell(randomGridCellX, randomGridCellY) {
-            cell.select()
-            self.updateImage()
-        }
-    }
-
     public func automationModeToggle() {
         if (self._automationMode) {
             self._automationMode = false
@@ -830,6 +821,15 @@ open class CellGridView: ObservableObject
         if (self._selectRandomModePaused) {
             self.selectRandomStart()
             self._selectRandomModePaused = false
+        }
+    }
+
+    public func selectRandom() {
+        let randomGridCellX: Int = Int.random(in: self.visibleCellRangeX)
+        let randomGridCellY: Int = Int.random(in: self.visibleCellRangeY)
+        if let cell: Cell = self.gridCell(randomGridCellX, randomGridCellY) {
+            cell.select()
+            self.updateImage()
         }
     }
 
