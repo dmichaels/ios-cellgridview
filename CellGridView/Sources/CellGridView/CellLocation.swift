@@ -10,6 +10,4 @@ import Foundation
 // say "view-location" to mean a cell-based coordinate on the grid-view (always zero-based). We say "location"
 // generically to refer to a cell-location or a view-location, as opposed to "point" referring a view-point.
 //
-// TODO: Maybe rename to GridLocation (to match the new ViewLocation).
-//
 public typealias CellLocation = GenericPoint

@@ -1,6 +1,6 @@
 import Foundation
 
-// Represents an integer based point within the grid-view.
+// Represents an integer based point within the (visible) grid-view.
 // Exactly the same implementation as CellLocation & ViewLocation; differential naming as documentation.
 //
 // Note on terminology: We say "cell-grid" to mean the virtual grid of all cells in existence, and "grid-view"
