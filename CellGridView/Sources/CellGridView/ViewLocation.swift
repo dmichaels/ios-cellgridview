@@ -3,8 +3,9 @@ import Foundation
 // Represents an integer based cell-based (i.e. cell-indexed) location within the (visible) grid-view.
 // Exactly the same implementation as ViewPoint & CellLocation; differential naming as documentation.
 //
-// Note that this grid-view location (not "point" - see ViewPoint) always starts at (index) zero, the left/top,
-// and continues to the right/bottom to the index of the maximum cells able to be of displayed in the grid-view.
+// Note that this grid-view location (not "point" - see ViewPoint) ALWAYS starts at (index) zero, the left/top,
+// and continues to the right/bottom to the index of the maximum cells able to be of displayed in the grid-view;
+// and it DOES include cells which are only partially visible.
 //
 // Note on terminology: We say "cell-grid" to mean the virtual grid of all cells in existence, and "grid-view"
 // to mean the viewable window (image) within which is displayed a subset of the currently viewable cell-grid.
