@@ -93,7 +93,7 @@ open class CellGridView: ObservableObject
     private var _cellPaddingMax: Int = Defaults.cellPaddingMax
 
     private var _selectMode: Bool = Defaults.selectMode
-    internal lazy var _actions: CellGridView.Actions = CellGridView.Actions(self) // xyzzy
+    internal lazy var _actions: CellGridView.Actions = CellGridView.Actions(self)
 
     // This _updateImage function property is the update function from the caller
     // to be called from CellGridView when the image changes, so that the calling
@@ -118,9 +118,12 @@ open class CellGridView: ObservableObject
                            viewHeight: Int,
                            updateImage: (() -> Void)? = nil)
     {
+        guard self._screen == nil else { return }
         self._screen = screen
         self._updateImage = updateImage ?? {}
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, _initial: true)
+        if (self.automationMode) { self.automationStart() }
+        if (self.selectRandomMode) { self.selectRandomStart() }
     }
 
     public func configure(_ config: CellGridView.Config,
@@ -303,20 +306,9 @@ open class CellGridView: ObservableObject
         }
 
         self._restrictShift = config.restrictShift || (config.fit == CellGridView.Fit.fixed)
-        self._selectMode = config.selectMode
-        // self._automationMode = config.automationMode
+        // self._selectMode = config.selectMode
 
         self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
-
-        /* xyzzy/todo
-        if (self._automationInterval != config.automationInterval) {
-            self._automationInterval = config.automationInterval
-            if (self._automationMode) {
-                self._actions.automationStop()
-                self._actions.automationStart()
-            }
-        }
-        */
 
         if (false && self._fit == CellGridView.Fit.enabled) {
             //
@@ -331,6 +323,9 @@ open class CellGridView: ObservableObject
         }
 
         self._unscaledZoom = config.unscaledZoom
+
+        self.automationInterval = config.automationInterval
+        self.selectRandomInterval = config.selectRandomInterval
     }
 
     public   final var initialized: Bool          { self._screen != nil }
@@ -361,7 +356,6 @@ open class CellGridView: ObservableObject
     public   final var restrictShift: Bool        { self._restrictShift }
     public   final var unscaledZoom: Bool         { self._unscaledZoom }
 
-    public   final var selectMode: Bool             { self._selectMode }
     public   final var gridWrapAround: Bool         { self._gridWrapAround }
 
     internal final var shiftCellX: Int  { self._shiftCellUnscaledX }
@@ -727,9 +721,8 @@ open class CellGridView: ObservableObject
         self._updateImage()
     }
 
-    public func selectModeToggle() {
-        self._selectMode = !self._selectMode
-    }
+    public final var selectMode: Bool             { get { self._selectMode } set { self._selectMode = newValue } }
+    public final func selectModeToggle()          { self._selectMode = !self._selectMode }
 
     public final var  automationMode: Bool       { self._actions.automationMode }
     public final var  automationInterval: Double { get { self._actions.automationInterval }
