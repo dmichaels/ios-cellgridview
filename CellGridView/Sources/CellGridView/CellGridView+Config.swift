@@ -30,9 +30,9 @@ extension CellGridView
         public private(set) var unscaledZoom: Bool
 
         public private(set) var selectMode: Bool
-        public private(set) var selectRandomMode: Bool
+        // public private(set) var selectRandomMode: Bool
         public private(set) var selectRandomInterval: Double
-        public private(set) var automationMode: Bool
+        // public private(set) var automationMode: Bool
         public private(set) var automationInterval: Double
 
         public init(_ config: CellGridView.Config? = nil,
@@ -56,9 +56,9 @@ extension CellGridView
                     restrictShift: Bool?           = nil,
                     unscaledZoom: Bool?            = nil,
                     selectMode: Bool?              = nil,
-                    selectRandomMode: Bool?        = nil,
+                    // selectRandomMode: Bool?        = nil,
                     selectRandomInterval: Double?  = nil,
-                    automationMode: Bool?          = nil,
+                    // automationMode: Bool?          = nil,
                     automationInterval: Double?    = nil)
         {
             self.viewBackground     = viewBackground     ?? config?.viewBackground     ?? Defaults.viewBackground
@@ -82,9 +82,9 @@ extension CellGridView
             self.unscaledZoom       = unscaledZoom       ?? config?.unscaledZoom       ?? Defaults.unscaledZoom
 
             self.selectMode           = selectMode           ?? config?.selectMode           ?? Defaults.selectMode
-            self.selectRandomMode     = selectRandomMode     ?? config?.selectRandomMode     ?? Defaults.selectRandomMode
+            // self.selectRandomMode     = selectRandomMode     ?? config?.selectRandomMode     ?? Defaults.selectRandomMode
             self.selectRandomInterval = selectRandomInterval ?? config?.selectRandomInterval ?? Defaults.selectRandomInterval
-            self.automationMode       = automationMode       ?? config?.automationMode       ?? Defaults.automationMode
+            // self.automationMode       = automationMode       ?? config?.automationMode       ?? Defaults.automationMode
             self.automationInterval   = automationInterval   ?? config?.automationInterval   ?? Defaults.automationInterval
         }
 
@@ -113,9 +113,9 @@ extension CellGridView
             self.unscaledZoom       = cellGridView?.unscaledZoom       ?? Defaults.unscaledZoom
 
             self.selectMode           = cellGridView?.selectMode           ?? Defaults.selectMode
-            self.selectRandomMode     = cellGridView?.selectRandomMode     ?? Defaults.selectRandomMode
+            // self.selectRandomMode     = cellGridView?.selectRandomMode     ?? Defaults.selectRandomMode
             self.selectRandomInterval = cellGridView?.selectRandomInterval ?? Defaults.selectRandomInterval
-            self.automationMode       = cellGridView?.automationMode       ?? Defaults.automationMode
+            // self.automationMode       = cellGridView?.automationMode       ?? Defaults.automationMode
             self.automationInterval   = cellGridView?.automationInterval   ?? Defaults.automationInterval
         }
 
@@ -139,9 +139,9 @@ extension CellGridView
                            restrictShift: Bool?           = nil,
                            unscaledZoom: Bool?            = nil,
                            selectMode: Bool?              = nil,
-                           selectRandomMode: Bool?        = nil,
+                           // selectRandomMode: Bool?        = nil,
                            selectRandomeInterval: Double? = nil,
-                           automationMode: Bool?          = nil,
+                           // automationMode: Bool?          = nil,
                            automationInterval: Double?    = nil) -> CellGridView.Config
         {
             return CellGridView.Config(
@@ -165,9 +165,9 @@ extension CellGridView
                 restrictShift:        restrictShift        ?? self.restrictShift,
                 unscaledZoom:         unscaledZoom         ?? self.unscaledZoom,
                 selectMode:           selectMode           ?? self.selectMode,
-                selectRandomMode:     selectRandomMode     ?? self.selectRandomMode,
+                // selectRandomMode:     selectRandomMode     ?? self.selectRandomMode,
                 selectRandomInterval: selectRandomInterval ?? self.selectRandomInterval,
-                automationMode:       automationMode       ?? self.automationMode,
+                // automationMode:       automationMode       ?? self.automationMode,
                 automationInterval:   automationInterval   ?? self.automationInterval)
         }
     }

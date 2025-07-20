@@ -9,15 +9,32 @@ extension CellGridView
         private var _dragger: CellGridView.Drag? = nil
         private var _zoomer: CellGridView.Zoom? = nil
         private var _automationTimer: Timer? = nil
+        private var _selectRandomTimer: Timer? = nil
 
         internal init(_ cellGridView: CellGridView) {
             self._cellGridView = cellGridView
         }
 
         internal func automationStart() {
+            if let automationTimer: Timer = self._automationTimer {
+                if (automationTimer.timeInterval == self._cellGridView.automationInterval) {
+                    //
+                    // Here, the automation is already running, with the
+                    // same time interval as is current in our CellGridView.
+                    //
+                    return
+                }
+                //
+                // Here, the automation is already running, but with
+                // a time interval as is current in our CellGridView.
+                //
+                automationTimer.invalidate()
+            }
             self._automationTimer = Timer.scheduledTimer(withTimeInterval: self._cellGridView.automationInterval,
                                                          repeats: true) { _ in
-                self._cellGridView.automationStep()
+                if (!self._cellGridView.automationPaused) {
+                    self._cellGridView.automationStep()
+                }
             }
         }
 
@@ -25,6 +42,28 @@ extension CellGridView
             if let automationTimer = self._automationTimer {
                 automationTimer.invalidate()
                 self._automationTimer = nil
+            }
+        }
+
+        internal func selectRandomStart() {
+            if let selectRandomTimer: Timer = self._selectRandomTimer {
+                if (selectRandomTimer.timeInterval == self._cellGridView.selectRandomInterval) {
+                    return
+                }
+                selectRandomTimer.invalidate()
+            }
+            self._selectRandomTimer = Timer.scheduledTimer(withTimeInterval: self._cellGridView.selectRandomInterval,
+                                                        repeats: true) { _ in
+                if (!self._cellGridView.selectRandomPaused) {
+                    self._cellGridView.selectRandom()
+                }
+            }
+        }
+
+        internal func selectRandomStop() {
+            if let selectRandomTimer = self._selectRandomTimer {
+                selectRandomTimer.invalidate()
+                self._selectRandomTimer = nil
             }
         }
 
