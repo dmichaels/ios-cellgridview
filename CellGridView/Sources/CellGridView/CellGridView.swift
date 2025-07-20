@@ -379,14 +379,14 @@ open class CellGridView: ObservableObject
     internal final var shiftTotalScaledY: Int     { self._shiftY + (self._shiftCellY * self._cellSize) }
 
     public var visibleGridCellRangeX: ClosedRange<Int> {
-        let from = -self.shiftCellX
-        let thru = min(self.gridColumns - 1, from + self.viewCellEndX)
+        let from: Int = -self.shiftCellX
+        let thru: Int = min(self.gridColumns - 1, from + self.viewCellEndX)
         return from...thru
     }
 
     public var visibleGridCellRangeY: ClosedRange<Int> {
-        let from = -self.shiftCellY
-        let thru = min(self.gridRows - 1, from + self.viewCellEndY)
+        let from: Int = -self.shiftCellY
+        let thru: Int = min(self.gridRows - 1, from + self.viewCellEndY)
         return from...thru
     }
 
