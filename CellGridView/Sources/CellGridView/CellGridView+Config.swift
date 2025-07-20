@@ -29,7 +29,6 @@ extension CellGridView
         public private(set) var restrictShift: Bool
         public private(set) var unscaledZoom: Bool
 
-        // public private(set) var selectMode: Bool
         public private(set) var selectRandomInterval: Double
         public private(set) var automationInterval: Double
 
@@ -53,7 +52,6 @@ extension CellGridView
                     cellRoundedRadius: Float?      = nil,
                     restrictShift: Bool?           = nil,
                     unscaledZoom: Bool?            = nil,
-                    // selectMode: Bool?              = nil,
                     selectRandomInterval: Double?  = nil,
                     automationInterval: Double?    = nil)
         {
@@ -77,7 +75,6 @@ extension CellGridView
             self.restrictShift      = restrictShift      ?? config?.restrictShift      ?? Defaults.restrictShift
             self.unscaledZoom       = unscaledZoom       ?? config?.unscaledZoom       ?? Defaults.unscaledZoom
 
-            // self.selectMode           = selectMode           ?? config?.selectMode           ?? Defaults.selectMode
             self.selectRandomInterval = selectRandomInterval ?? config?.selectRandomInterval ?? Defaults.selectRandomInterval
             self.automationInterval   = automationInterval   ?? config?.automationInterval   ?? Defaults.automationInterval
         }
@@ -106,7 +103,6 @@ extension CellGridView
             self.restrictShift      = cellGridView?.restrictShift      ?? Defaults.restrictShift
             self.unscaledZoom       = cellGridView?.unscaledZoom       ?? Defaults.unscaledZoom
 
-            // self.selectMode           = cellGridView?.selectMode           ?? Defaults.selectMode
             self.selectRandomInterval = cellGridView?.selectRandomInterval ?? Defaults.selectRandomInterval
             self.automationInterval   = cellGridView?.automationInterval   ?? Defaults.automationInterval
         }
@@ -130,7 +126,6 @@ extension CellGridView
                            cellRoundedRadius: Float?      = nil,
                            restrictShift: Bool?           = nil,
                            unscaledZoom: Bool?            = nil,
-                           // selectMode: Bool?              = nil,
                            selectRandomInterval: Double?  = nil,
                            automationInterval: Double?    = nil) -> CellGridView.Config
         {
@@ -154,7 +149,6 @@ extension CellGridView
                 cellRoundedRadius:    cellRoundedRadius    ?? self.cellRoundedRadius,
                 restrictShift:        restrictShift        ?? self.restrictShift,
                 unscaledZoom:         unscaledZoom         ?? self.unscaledZoom,
-                // selectMode:           selectMode           ?? self.selectMode,
                 selectRandomInterval: selectRandomInterval ?? self.selectRandomInterval,
                 automationInterval:   automationInterval   ?? self.automationInterval)
         }

@@ -112,25 +112,25 @@ open class CellGridView: ObservableObject
         CellGridView.Config(self)
     }
 
-    open func initialize(_ config: CellGridView.Config,
-                           screen: Screen,
-                           viewWidth: Int,
-                           viewHeight: Int,
-                           updateImage: (() -> Void)? = nil)
+    public final func initialize(_ config: CellGridView.Config,
+                                   screen: Screen,
+                                   viewWidth: Int,
+                                   viewHeight: Int,
+                                   updateImage: (() -> Void)? = nil)
     {
         guard self._screen == nil else { return }
         self._screen = screen
         self._updateImage = updateImage ?? {}
-        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, _initial: true)
+        self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, _initialize: true)
         if (self.automationMode) { self.automationStart() }
         if (self.selectRandomMode) { self.selectRandomStart() }
     }
 
-    public func configure(_ config: CellGridView.Config,
-                            viewWidth: Int,
-                            viewHeight: Int,
-                            adjust: Bool = false,
-                            scaled: Bool = false, _initial: Bool = false)
+    public final func configure(_ config: CellGridView.Config,
+                                  viewWidth: Int,
+                                  viewHeight: Int,
+                                  adjust: Bool = false,
+                                  scaled: Bool = false, _initialize: Bool = false)
     {
         // Ensure screen is set; otherwise initialize was not called before this configure function.
 
@@ -205,7 +205,7 @@ open class CellGridView: ObservableObject
         let viewWidth: Int = !scaled ? self.scaled(viewWidth) : viewWidth
         let viewHeight: Int = !scaled ? self.scaled(viewHeight) : viewHeight
 
-        let preferred: PreferredSize = _initial || (config.fit == .fixed)
+        let preferred: PreferredSize = _initialize || (config.fit == .fixed)
                                        ? CellGridView.preferredSize(cellSize: cellSize,
                                                                     viewWidth: self.scaled(self._screen!.width),
                                                                     viewHeight: self.scaled(self._screen!.height),
@@ -323,7 +323,6 @@ open class CellGridView: ObservableObject
         }
 
         self._unscaledZoom = config.unscaledZoom
-
         self.automationInterval = config.automationInterval
         self.selectRandomInterval = config.selectRandomInterval
     }
@@ -721,10 +720,14 @@ open class CellGridView: ObservableObject
         self._updateImage()
     }
 
-    public final var selectMode: Bool             { get { self._selectMode } set { self._selectMode = newValue } }
+    public final var  selectMode: Bool            { get { self._selectMode }
+    set {
+        self._selectMode = newValue
+        } }
     public final func selectModeToggle()          { self._selectMode = !self._selectMode }
 
-    public final var  automationMode: Bool       { self._actions.automationMode }
+    public final var  automationMode: Bool       { get { self._actions.automationMode }
+                                                   set { self._actions.automationMode = newValue } }
     public final var  automationInterval: Double { get { self._actions.automationInterval }
                                                    set { self._actions.automationInterval = newValue} }
     public final func automationModeToggle()     { self._actions.automationModeToggle() }
@@ -735,7 +738,8 @@ open class CellGridView: ObservableObject
     public final func automationResume()         { self._actions.automationResume() }
     open         func automationStep() {}
 
-    public final var  selectRandomMode: Bool       { self._actions.selectRandomMode }
+    public final var  selectRandomMode: Bool       { get { self._actions.selectRandomMode }
+                                                     set { self._actions.selectRandomMode = newValue } }
     public final var  selectRandomInterval: Double { get { self._actions.selectRandomInterval }
                                                      set { self._actions.selectRandomInterval = newValue } }
     public final func selectRandomModeToggle()     { self._actions.selectRandomModeToggle() }

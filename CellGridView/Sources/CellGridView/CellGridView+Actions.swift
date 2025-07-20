@@ -22,7 +22,8 @@ extension CellGridView
         }
 
         internal final var automationMode: Bool {
-            self._automationMode
+            get { self._automationMode }
+            set { if (newValue) { self.automationStart() } else { self.automationStop() } }
         }
 
         internal final var automationInterval: Double {
@@ -89,7 +90,8 @@ extension CellGridView
         }
 
         internal final var selectRandomMode: Bool {
-            self._selectRandomMode
+            get { self._selectRandomMode }
+            set { if (newValue) { self.selectRandomStart() } else { self.selectRandomStop() } }
         }
 
         internal final var selectRandomInterval: Double {
