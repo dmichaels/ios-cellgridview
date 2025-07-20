@@ -153,7 +153,6 @@ extension CellGridView
             let randomGridCellX: Int = Int.random(in: self._cellGridView.visibleGridCellRangeX)
             let randomGridCellY: Int = Int.random(in: self._cellGridView.visibleGridCellRangeY)
             if let cell: Cell = self._cellGridView.gridCell(randomGridCellX, randomGridCellY) {
-                print("SELECT-RANDOM: \(randomGridCellX),\(randomGridCellY)")
                 cell.select()
                 self._cellGridView.updateImage()
             }
