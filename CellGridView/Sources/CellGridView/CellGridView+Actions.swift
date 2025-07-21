@@ -75,6 +75,7 @@ extension CellGridView
                 automationTimer.invalidate()
                 self._automationTimer = nil
             }
+            self._automationPaused = false // stopping resets any pause (right?)
         }
 
         internal var automationPaused: Bool {
