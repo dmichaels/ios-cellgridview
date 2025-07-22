@@ -31,6 +31,7 @@ extension CellGridView
 
         public private(set) var selectRandomInterval: Double
         public private(set) var automationInterval: Double
+        public private(set) var undulationInterval: Double
 
         public init(_ config: CellGridView.Config? = nil,
                     viewBackground: Colour?        = nil,
@@ -53,7 +54,8 @@ extension CellGridView
                     restrictShift: Bool?           = nil,
                     unscaledZoom: Bool?            = nil,
                     selectRandomInterval: Double?  = nil,
-                    automationInterval: Double?    = nil)
+                    automationInterval: Double?    = nil,
+                    undulationInterval: Double?    = nil)
         {
             self.viewBackground     = viewBackground     ?? config?.viewBackground     ?? Defaults.viewBackground
             self.viewTransparency   = viewTransparency   ?? config?.viewTransparency   ?? Defaults.viewTransparency
@@ -77,6 +79,7 @@ extension CellGridView
 
             self.selectRandomInterval = selectRandomInterval ?? config?.selectRandomInterval ?? Defaults.selectRandomInterval
             self.automationInterval   = automationInterval   ?? config?.automationInterval   ?? Defaults.automationInterval
+            self.undulationInterval   = undulationInterval   ?? config?.undulationInterval   ?? Defaults.undulationInterval
         }
 
         // Initializes this instance of CellGridView.Config with the properties from the given
@@ -105,6 +108,7 @@ extension CellGridView
 
             self.selectRandomInterval = cellGridView?.selectRandomInterval ?? Defaults.selectRandomInterval
             self.automationInterval   = cellGridView?.automationInterval   ?? Defaults.automationInterval
+            self.undulationInterval   = cellGridView?.undulationInterval   ?? Defaults.undulationInterval
         }
 
         public func update(viewBackground: Colour?        = nil,
@@ -127,7 +131,8 @@ extension CellGridView
                            restrictShift: Bool?           = nil,
                            unscaledZoom: Bool?            = nil,
                            selectRandomInterval: Double?  = nil,
-                           automationInterval: Double?    = nil) -> CellGridView.Config
+                           automationInterval: Double?    = nil,
+                           undulationInterval: Double?    = nil) -> CellGridView.Config
         {
             return CellGridView.Config(
                 viewBackground:       viewBackground       ?? self.viewBackground,
@@ -150,7 +155,8 @@ extension CellGridView
                 restrictShift:        restrictShift        ?? self.restrictShift,
                 unscaledZoom:         unscaledZoom         ?? self.unscaledZoom,
                 selectRandomInterval: selectRandomInterval ?? self.selectRandomInterval,
-                automationInterval:   automationInterval   ?? self.automationInterval)
+                automationInterval:   automationInterval   ?? self.automationInterval,
+                undulationInterval:   undulationInterval   ?? self.undulationInterval)
         }
     }
 }

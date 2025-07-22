@@ -122,9 +122,9 @@ open class CellGridView: ObservableObject
         self._screen = screen
         self._updateImage = updateImage ?? {}
         self.configure(config, viewWidth: viewWidth, viewHeight: viewHeight, _initialize: true)
-        if (self.automationMode) { self.automationStart() }
+        if (self.automationMode)   { self.automationStart() }
         if (self.selectRandomMode) { self.selectRandomStart() }
-        if (Defaults.undulateMode) { self._actions.undulateStart() }
+        if (self.undulationMode)   { self.undulationStart() }
     }
 
     public final func configure(_ config: CellGridView.Config,
@@ -324,8 +324,9 @@ open class CellGridView: ObservableObject
         }
 
         self._unscaledZoom = config.unscaledZoom
-        self.automationInterval = config.automationInterval
         self.selectRandomInterval = config.selectRandomInterval
+        self.automationInterval = config.automationInterval
+        self.undulationInterval = config.undulationInterval
     }
 
     public   final var initialized: Bool          { self._screen != nil }
@@ -750,6 +751,18 @@ open class CellGridView: ObservableObject
     public final func selectRandomPause()          { self._actions.selectRandomPause() }
     public final func selectRandomResume()         { self._actions.selectRandomResume() }
     open         func selectRandom()               { self._actions.selectRandom() }
+
+    //xyzzy
+    public final var  undulationMode: Bool       { get { self._actions.undulationMode }
+                                                     set { self._actions.undulationMode = newValue } }
+    public final var  undulationInterval: Double { get { self._actions.undulationInterval }
+                                                     set { self._actions.undulationInterval = newValue } }
+    public final func undulationModeToggle()     { self._actions.undulationModeToggle() }
+    public final func undulationStart()          { self._actions.undulationStart() }
+    public final func undulationStop()           { self._actions.undulationStop() }
+    public final var  undulationPaused: Bool     { self._actions.undulationPaused }
+    public final func undulationPause()          { self._actions.undulationPause() }
+    public final func undulationResume()         { self._actions.undulationResume() }
 
     open func onTap(_ viewPoint: CGPoint) { self._actions.onTap(viewPoint) }
     open func onDrag(_ viewPoint: CGPoint) { self._actions.onDrag(viewPoint) }

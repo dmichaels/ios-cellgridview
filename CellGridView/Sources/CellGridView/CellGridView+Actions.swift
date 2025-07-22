@@ -18,13 +18,13 @@ extension CellGridView
         private var _selectRandomInterval: Double = Defaults.selectRandomInterval
         private var _selectRandomTimer: Timer? = nil
 
-        private var _undulateMode: Bool = Defaults.undulateMode
-        private var _undulatePaused: Bool = false
-        private var _undulateInterval: Double = Defaults.undulateInterval
-        private var _undulateTimer: ScheduledTimer? = nil
-        private let _undulateCellSizeMin: Int = 20
-        private let _undulateCellSizeMax: Int = 200
-        private var _undulateCellSizeIncrement: Int = 2
+        private var _undulationMode: Bool = Defaults.undulationMode
+        private var _undulationPaused: Bool = false
+        private var _undulationInterval: Double = Defaults.undulationInterval
+        private var _undulationTimer: ScheduledTimer? = nil
+        private let _undulationCellSizeMin: Int = 20
+        private let _undulationCellSizeMax: Int = 200
+        private var _undulationCellSizeIncrement: Int = 2
 
         internal init(_ cellGridView: CellGridView) {
             self._cellGridView = cellGridView
@@ -168,30 +168,74 @@ extension CellGridView
             }
         }
 
-        internal func undulateStart() {
-            guard !self._undulateMode || (self._undulateTimer == nil) else { return }
-            self._undulateMode = true
-            if let undulateTimer: ScheduledTimer = self._undulateTimer {
-                if (undulateTimer.interval == self._undulateInterval) {
+        internal final var undulationMode: Bool {
+            get { self._undulationMode }
+            set { if (newValue) { self.undulationStart() } else { self.undulationStop() } }
+        }
+
+        internal final var undulationInterval: Double {
+            get { self._undulationInterval }
+            set {
+                if (self._undulationInterval != newValue) {
+                    self._undulationInterval = newValue
+                    if (self._undulationMode) {
+                        self.undulationStop()
+                        self.undulationStart()
+                    }
+                }
+            }
+        }
+
+        internal func undulationModeToggle() {
+            self._undulationMode ? self.undulationStop() : self.undulationStart()
+        }
+
+        internal func undulationStart() {
+            guard !self._undulationMode || (self._undulationTimer == nil) else { return }
+            self._undulationMode = true
+            if let undulationTimer: ScheduledTimer = self._undulationTimer {
+                if (undulationTimer.interval == self._undulationInterval) {
                     return
                 }
-                undulateTimer.stop()
+                undulationTimer.stop()
             }
-            self._undulateTimer = ScheduledTimer(interval: self._undulateInterval, mode: .dispatchTimer) {
-                if (!self._undulatePaused) {
-                    var cellSize: Int = self._cellGridView.cellSizeScaled + self._undulateCellSizeIncrement
-                    if (cellSize > self._undulateCellSizeMax) {
-                        cellSize = self._undulateCellSizeMax
-                        self._undulateCellSizeIncrement = -self._undulateCellSizeIncrement
+            self._undulationTimer = ScheduledTimer(interval: self._undulationInterval, mode: .dispatchTimer) {
+                if (!self._undulationPaused) {
+                    var cellSize: Int = self._cellGridView.cellSizeScaled + self._undulationCellSizeIncrement
+                    if (cellSize > self._undulationCellSizeMax) {
+                        cellSize = self._undulationCellSizeMax
+                        self._undulationCellSizeIncrement = -self._undulationCellSizeIncrement
                     }
-                    else if (cellSize < self._undulateCellSizeMin) {
-                        cellSize = self._undulateCellSizeMin
-                        self._undulateCellSizeIncrement = -self._undulateCellSizeIncrement
+                    else if (cellSize < self._undulationCellSizeMin) {
+                        cellSize = self._undulationCellSizeMin
+                        self._undulationCellSizeIncrement = -self._undulationCellSizeIncrement
                     }
                     self._cellGridView.resizeCells(cellSize: cellSize, adjustShiftOnResizeCells: true, scaled: true)
                     self._cellGridView.updateImage()
                 }
             }
+        }
+
+        internal func undulationStop() {
+            guard self._undulationMode else { return }
+            self._undulationMode = false
+            if let undulationTimer = self._undulationTimer {
+                undulationTimer.stop()
+                self._undulationTimer = nil
+            }
+            self._undulationPaused = false // stopping resets any pause (right?)
+        }
+
+        internal var undulationPaused: Bool {
+            self._undulationPaused
+        }
+
+        internal func undulationPause() {
+            self._undulationPaused = true
+        }
+
+        internal func undulationResume() {
+            self._undulationPaused = false
         }
 
         internal final func onTap(_ viewPoint: CGPoint) {
