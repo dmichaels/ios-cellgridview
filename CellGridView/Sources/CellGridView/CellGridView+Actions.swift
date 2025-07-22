@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Utils
 
 extension CellGridView
 {
@@ -16,6 +17,14 @@ extension CellGridView
         private var _selectRandomPaused: Bool = false
         private var _selectRandomInterval: Double = Defaults.selectRandomInterval
         private var _selectRandomTimer: Timer? = nil
+
+        private var _undulateMode: Bool = Defaults.undulateMode
+        private var _undulatePaused: Bool = false
+        private var _undulateInterval: Double = Defaults.undulateInterval
+        private var _undulateTimer: ScheduledTimer? = nil
+        private let _undulateCellSizeMin: Int = 20
+        private let _undulateCellSizeMax: Int = 200
+        private var _undulateCellSizeIncrement: Int = 2
 
         internal init(_ cellGridView: CellGridView) {
             self._cellGridView = cellGridView
@@ -156,6 +165,32 @@ extension CellGridView
             if let cell: Cell = self._cellGridView.gridCell(randomGridCellX, randomGridCellY) {
                 cell.select()
                 self._cellGridView.updateImage()
+            }
+        }
+
+        internal func undulateStart() {
+            guard !self._undulateMode || (self._undulateTimer == nil) else { return }
+            self._undulateMode = true
+            if let undulateTimer: ScheduledTimer = self._undulateTimer {
+                if (undulateTimer.interval == self._undulateInterval) {
+                    return
+                }
+                undulateTimer.stop()
+            }
+            self._undulateTimer = ScheduledTimer(interval: self._undulateInterval, mode: .dispatchTimer) {
+                if (!self._undulatePaused) {
+                    var cellSize: Int = self._cellGridView.cellSizeScaled + self._undulateCellSizeIncrement
+                    if (cellSize > self._undulateCellSizeMax) {
+                        cellSize = self._undulateCellSizeMax
+                        self._undulateCellSizeIncrement = -self._undulateCellSizeIncrement
+                    }
+                    else if (cellSize < self._undulateCellSizeMin) {
+                        cellSize = self._undulateCellSizeMin
+                        self._undulateCellSizeIncrement = -self._undulateCellSizeIncrement
+                    }
+                    self._cellGridView.resizeCells(cellSize: cellSize, adjustShiftOnResizeCells: true, scaled: true)
+                    self._cellGridView.updateImage()
+                }
             }
         }
 

@@ -8,6 +8,7 @@ extension CellGridView
     internal final func printSizes(viewWidthInit: Int = 0, viewHeightInit: Int = 0,
                                    cellSizeInit: Int = 0, fit: Bool = false) {
 
+        return
         func scaled(_ value: Int) -> Int {
             //
             // Here so we can leave it as private in CellGridView.
@@ -62,6 +63,7 @@ extension CellGridView
     }
 
     internal final func printWriteCellsResult(_ start: Date) {
+        return
         let time: TimeInterval = Date().timeIntervalSince(start)
         let shiftOppositeScaled: Int = modulo(self.cellSizeScaled + self.shiftScaledX - self.viewWidthExtraScaled,
                                               self.cellSizeScaled)

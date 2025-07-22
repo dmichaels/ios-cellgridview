@@ -40,6 +40,8 @@ extension CellGridView
         public static let selectRandomInterval: Double = 0.25
         public static let automationMode: Bool         = true
         public static let automationInterval: Double   = 0.50
+        public static let undulateMode: Bool           = false
+        public static let undulateInterval: Double     = 0.001
 
         // Only used on CellGridView.initialize
         //
