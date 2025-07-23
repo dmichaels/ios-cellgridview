@@ -15,7 +15,7 @@ let package = Package(
             targets: ["CellGridView"]),
     ],
     dependencies: [
-        .package(path: "../../ios-utils/Utils")
+        .package(path: "https://github.com/dmichaels/ios-utils.git")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
