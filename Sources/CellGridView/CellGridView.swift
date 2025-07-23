@@ -125,6 +125,7 @@ open class CellGridView: ObservableObject
         if (self.automationMode)   { self.automationStart() }
         if (self.selectRandomMode) { self.selectRandomStart() }
         if (self.undulationMode)   { self.undulationStart() }
+        self.undulationStart()
     }
 
     public final func configure(_ config: CellGridView.Config,
