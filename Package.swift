@@ -23,7 +23,7 @@ let package = Package(
         .target(
             name: "CellGridView",
             dependencies: [
-                "ios-utils"
+                "Utils"
             ]),
         .testTarget(
             name: "CellGridViewTests",
