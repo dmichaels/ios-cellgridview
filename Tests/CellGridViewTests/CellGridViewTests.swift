@@ -1,4 +1,4 @@
-import Testing
+import XCTest
 @testable import CellGridView
 
 @Test func example() async throws {
