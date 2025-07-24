@@ -22,8 +22,8 @@ extension CellGridView
         private var _undulationPaused: Bool = false
         private var _undulationInterval: Double = Defaults.undulationInterval
         private var _undulationTimer: ScheduledTimer? = nil
-        private let _undulationCellSizeMin: Int = 20
-        private let _undulationCellSizeMax: Int = 200
+        private let _undulationCellSizeMin: Int = 12
+        private let _undulationCellSizeMax: Int = 300
         private var _undulationCellSizeIncrement: Int = 2
 
         internal init(_ cellGridView: CellGridView) {
@@ -206,7 +206,8 @@ extension CellGridView
                         cellSize = self._undulationCellSizeMax
                         self._undulationCellSizeIncrement = -self._undulationCellSizeIncrement
                     }
-                    else if (cellSize < self._undulationCellSizeMin) {
+                    else if ((cellSize < self._undulationCellSizeMin) ||
+                             (cellSize <= self._cellGridView.minimumCellSize)) {
                         cellSize = self._undulationCellSizeMin
                         self._undulationCellSizeIncrement = -self._undulationCellSizeIncrement
                     }
