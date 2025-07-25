@@ -752,7 +752,6 @@ open class CellGridView: ObservableObject
     public final func selectRandomResume()         { self._actions.selectRandomResume() }
     open         func selectRandom()               { self._actions.selectRandom() }
 
-    //xyzzy
     public final var  undulationMode: Bool       { get { self._actions.undulationMode }
                                                      set { self._actions.undulationMode = newValue } }
     public final var  undulationInterval: Double { get { self._actions.undulationInterval }
