@@ -24,9 +24,10 @@ extension CellGridView
         internal func drag(_ viewPoint: CGPoint, end: Bool = false) {
             if let _ = self._startCell, let cell: Cell = self._cellGridView.gridCell(viewPoint: viewPoint) {
                 //
-                // N.B. On 2025-07-27 changed the dragging true argument below to !end; in response
-                // to developing Tetris; was appearing to get a drag start notification at the end
-                // of a drag; don't think this will break anything else but noting it here in case.
+                // N.B. On 2025-07-27 changed the dragging argument to select from Bool to Bool?.
+                // The dragging argument is nil if there is no dragging involved at all; if it is true then the
+                // cell selection occurred during dragging; and if it is false then the cell selection occurred
+                // at the very end of dragging, i.e. when the drag/selection stops (e.g. the finger is lifted).
                 //
                 cell.select(dragging: !end)
                 return

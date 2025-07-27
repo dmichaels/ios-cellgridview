@@ -47,9 +47,12 @@ open class Cell
         }
     }
 
-    open func select(dragging: Bool = false) {
+    open func select(dragging: Bool? = nil) {
         //
         // To be implemented by subclasses.
+        // The dragging argument is nil if there is no dragging involved at all; if it is true then the
+        // cell selection occurred during dragging; and if it is false then the cell selection occurred
+        // at the very end of dragging, i.e. when the drag/selection stops (e.g. the finger is lifted).
         //
     }
 }
