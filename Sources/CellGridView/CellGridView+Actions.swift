@@ -249,6 +249,12 @@ extension CellGridView
         internal final func onDrag(_ viewPoint: CGPoint) {
             guard let dragger: CellGridView.Drag = self._dragger else {
                 self._dragger = CellGridView.Drag(self._cellGridView, viewPoint, selectMode: self._cellGridView.selectMode)
+                //
+                // Changed on 2025-07-27 to call dragger.drag (and updateImage) here; was
+                // missing for some reason; hopefully non-breaking but noting just in case.
+                //
+                self._dragger!.drag(viewPoint)
+                self._cellGridView.updateImage()
                 return
             }
             dragger.drag(viewPoint)
