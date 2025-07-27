@@ -3,7 +3,7 @@ import Utils
 
 extension CellGridView
 {
-    public struct Drag
+    internal struct Drag
     {
         private let _cellGridView: CellGridView
         private let _startX: Int
@@ -23,7 +23,12 @@ extension CellGridView
 
         internal func drag(_ viewPoint: CGPoint, end: Bool = false) {
             if let _ = self._startCell, let cell: Cell = self._cellGridView.gridCell(viewPoint: viewPoint) {
-                cell.select(dragging: true)
+                //
+                // N.B. On 2025-07-27 changed the dragging true argument below to !end; in response
+                // to developing Tetris; was appearing to get a drag start notification at the end
+                // of a drag; don't think this will break anything else but noting it here in case.
+                //
+                cell.select(dragging: !end)
                 return
             }
             let dragPoint: ViewPoint = ViewPoint(viewPoint)

@@ -307,7 +307,6 @@ open class CellGridView: ObservableObject
         }
 
         self._restrictShift = config.restrictShift || (config.fit == CellGridView.Fit.fixed)
-        // self._selectMode = config.selectMode
 
         self.shift(shiftTotalX: shift.x, shiftTotalY: shift.y, scaled: self.viewScaling)
 
@@ -723,21 +722,19 @@ open class CellGridView: ObservableObject
     }
 
     public final var  selectMode: Bool            { get { self._selectMode }
-    set {
-        self._selectMode = newValue
-        } }
+                                                    set { self._selectMode = newValue } }
     public final func selectModeToggle()          { self._selectMode = !self._selectMode }
 
-    public final var  automationMode: Bool       { get { self._actions.automationMode }
-                                                   set { self._actions.automationMode = newValue } }
-    public final var  automationInterval: Double { get { self._actions.automationInterval }
-                                                   set { self._actions.automationInterval = newValue} }
-    public final func automationModeToggle()     { self._actions.automationModeToggle() }
-    public final func automationStart()          { self._actions.automationStart() }
-    public final func automationStop()           { self._actions.automationStop() }
-    public final var  automationPaused: Bool     { self._actions.automationPaused }
-    public final func automationPause()          { self._actions.automationPause() }
-    public final func automationResume()         { self._actions.automationResume() }
+    public final var  automationMode: Bool         { get { self._actions.automationMode }
+                                                     set { self._actions.automationMode = newValue } }
+    public final var  automationInterval: Double   { get { self._actions.automationInterval }
+                                                     set { self._actions.automationInterval = newValue} }
+    public final func automationModeToggle()       { self._actions.automationModeToggle() }
+    public final func automationStart()            { self._actions.automationStart() }
+    public final func automationStop()             { self._actions.automationStop() }
+    public final var  automationPaused: Bool       { self._actions.automationPaused }
+    public final func automationPause()            { self._actions.automationPause() }
+    public final func automationResume()           { self._actions.automationResume() }
     open         func automationStep() {}
 
     public final var  selectRandomMode: Bool       { get { self._actions.selectRandomMode }
@@ -752,22 +749,22 @@ open class CellGridView: ObservableObject
     public final func selectRandomResume()         { self._actions.selectRandomResume() }
     open         func selectRandom()               { self._actions.selectRandom() }
 
-    public final var  undulationMode: Bool       { get { self._actions.undulationMode }
+    public final var  undulationMode: Bool         { get { self._actions.undulationMode }
                                                      set { self._actions.undulationMode = newValue } }
-    public final var  undulationInterval: Double { get { self._actions.undulationInterval }
+    public final var  undulationInterval: Double   { get { self._actions.undulationInterval }
                                                      set { self._actions.undulationInterval = newValue } }
-    public final func undulationModeToggle()     { self._actions.undulationModeToggle() }
-    public final func undulationStart()          { self._actions.undulationStart() }
-    public final func undulationStop()           { self._actions.undulationStop() }
-    public final var  undulationPaused: Bool     { self._actions.undulationPaused }
-    public final func undulationPause()          { self._actions.undulationPause() }
-    public final func undulationResume()         { self._actions.undulationResume() }
+    public final func undulationModeToggle()       { self._actions.undulationModeToggle() }
+    public final func undulationStart()            { self._actions.undulationStart() }
+    public final func undulationStop()             { self._actions.undulationStop() }
+    public final var  undulationPaused: Bool       { self._actions.undulationPaused }
+    public final func undulationPause()            { self._actions.undulationPause() }
+    public final func undulationResume()           { self._actions.undulationResume() }
 
-    open func onTap(_ viewPoint: CGPoint) { self._actions.onTap(viewPoint) }
-    open func onDrag(_ viewPoint: CGPoint) { self._actions.onDrag(viewPoint) }
-    open func onDragEnd(_ viewPoint: CGPoint) { self._actions.onDragEnd(viewPoint) }
-    open func onZoom(_ zoomFactor: CGFloat) { self._actions.onZoom(zoomFactor) }
-    open func onZoomEnd(_ zoomFactor: CGFloat) { self._actions.onZoomEnd(zoomFactor) }
+    open func onTap(_ viewPoint: CGPoint)          { self._actions.onTap(viewPoint) }
+    open func onDrag(_ viewPoint: CGPoint)         { self._actions.onDrag(viewPoint) }
+    open func onDragEnd(_ viewPoint: CGPoint)      { self._actions.onDragEnd(viewPoint) }
+    open func onZoom(_ zoomFactor: CGFloat)        { self._actions.onZoom(zoomFactor) }
+    open func onZoomEnd(_ zoomFactor: CGFloat)     { self._actions.onZoomEnd(zoomFactor) }
 
     open func createCell<T: Cell>(x: Int, y: Int, color: Colour, previous: T? = nil) -> T? {
         return Cell(cellGridView: self, x: x, y: y, color: color) as? T
