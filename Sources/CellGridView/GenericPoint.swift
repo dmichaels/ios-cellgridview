@@ -3,7 +3,7 @@ import Foundation
 // Represents an integer based point or location within the cell-grid or grid-view.
 // See CellLocation, ViewLocation, and ViewPoint.
 //
-public struct GenericPoint: Hashable
+public struct GenericPoint: Hashable, CustomStringConvertible
 {
     public let x: Int
     public let y: Int
