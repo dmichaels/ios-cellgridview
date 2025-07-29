@@ -240,6 +240,7 @@ extension CellGridView
         }
 
         internal final func onTap(_ viewPoint: CGPoint) {
+            guard self._cellGridView.viewPointInbounds(viewPoint) else { return }
             if let cell: Cell = self._cellGridView.gridCell(viewPoint: viewPoint) {
                 cell.select()
                 self._cellGridView.updateImage()
@@ -247,6 +248,7 @@ extension CellGridView
         }
 
         internal final func onDrag(_ viewPoint: CGPoint) {
+            guard self._cellGridView.viewPointInbounds(viewPoint) else { return }
             guard let dragger: CellGridView.Drag = self._dragger else {
                 self._dragger = CellGridView.Drag(self._cellGridView, viewPoint, selectMode: self._cellGridView.selectMode)
                 //

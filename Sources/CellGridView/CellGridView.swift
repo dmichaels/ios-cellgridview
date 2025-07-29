@@ -421,6 +421,17 @@ open class CellGridView: ObservableObject
         return self.screen.unscaled(value, scaling: self._viewScaling)
     }
 
+    internal func viewPointInbounds(_ viewPoint: CGPoint) -> Bool {
+        //
+        // N.B. Not actually 100% sure why we are getting gesture events
+        // outside of the bounds of the view (image) from the ContentView.
+        //
+        return (viewPoint.x >= 0.0)
+            && (viewPoint.y >= 0.0)
+            && (self.scaled(Int(round(viewPoint.x))) < self.viewWidthScaled)
+            && (self.scaled(Int(round(viewPoint.y))) < self.viewHeightScaled)
+    }
+
     // Sets the cell-grid within the grid-view to be shifted by the given amount, from the upper-left;
     // note that the given shiftTotalX and shiftTotalY values, if not already scaled (as indicated by
     // the scaled argument) will be scaled for the execution of this function.
