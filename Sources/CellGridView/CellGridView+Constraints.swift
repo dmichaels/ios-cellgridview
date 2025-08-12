@@ -27,7 +27,7 @@ extension CellGridView
                                      fit: preferred.fit)
     }
 
-    internal static func preferredSize
+    public static func preferredSize
     (
         cellSize: Int,
         viewWidth: Int,
